@@ -30,7 +30,7 @@ trait Visibility_Controls {
             'show_field_phone'    => [ 'Phone Field', 'yes' ],
             'show_field_notes'    => [ 'Notes Field', 'yes' ],
             'show_service_price'  => [ 'Price on Service Cards', 'yes' ],
-            'show_service_duration' => [ 'Duration on Service Cards', 'yes' ],
+            'show_service_duration' => [ 'Duration on Service Cards', 'no' ],
             'show_service_desc'   => [ 'Description on Service Cards', 'yes' ],
             'show_service_images' => [ 'Images on Service Cards', 'yes' ],
             'show_pro_photos'     => [ 'Photos on Professional Cards', 'yes' ],

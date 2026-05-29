@@ -159,9 +159,6 @@
       if (vis('show_service_price') && svc.price) {
         priceHtml += '<span class="sb-svc-price">$' + svc.price + '</span>';
       }
-      if (vis('show_service_duration') && svc.duration) {
-        priceHtml += '<span class="sb-svc-duration">' + svc.duration + ' min</span>';
-      }
 
       const card = document.createElement('div');
       card.className = 'sb-service-card';

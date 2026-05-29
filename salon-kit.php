@@ -144,7 +144,7 @@ add_shortcode( 'salon_booking', function ( $atts ) {
         'data-show-field-phone' => 'yes',
         'data-show-field-notes' => 'yes',
         'data-show-service-price' => 'yes',
-        'data-show-service-duration' => 'yes',
+        'data-show-service-duration' => 'no',
         'data-show-service-desc' => 'yes',
         'data-show-service-images' => 'yes',
         'data-show-pro-photos' => 'yes',
