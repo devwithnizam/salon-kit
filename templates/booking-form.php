@@ -31,20 +31,40 @@ defined( 'ABSPATH' ) || exit;
 
   <div class="sb-summary" id="sbSummaryBar" data-sk-vis="show-summary-bar">
     <div class="sb-summary-item" id="summaryService">
-      <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.862 4.487l1.687-1.688a2.25 2.25 0 113.182 3.182L10.582 17.13a4.5 4.5 0 01-1.897 1.13L6 19l.74-2.685a4.5 4.5 0 011.13-1.897L16.862 4.487z"/></svg>
-      <span class="sb-summary-text" data-sk-text="summary_service" id="sumService">No service selected</span>
+      <div class="sb-summary-icon">
+        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.862 4.487l1.687-1.688a2.25 2.25 0 113.182 3.182L10.582 17.13a4.5 4.5 0 01-1.897 1.13L6 19l.74-2.685a4.5 4.5 0 011.13-1.897L16.862 4.487z"/></svg>
+      </div>
+      <div class="sb-summary-body">
+        <span class="sb-summary-label" data-sk-text="step_label_1">Service</span>
+        <span class="sb-summary-text" data-sk-text="summary_service" id="sumService">No service selected</span>
+      </div>
     </div>
     <div class="sb-summary-item" id="summaryProfessional">
-      <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      <span class="sb-summary-text" data-sk-text="summary_pro" id="sumProfessional">No professional selected</span>
+      <div class="sb-summary-icon">
+        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <div class="sb-summary-body">
+        <span class="sb-summary-label" data-sk-text="step_label_2">Professional</span>
+        <span class="sb-summary-text" data-sk-text="summary_pro" id="sumProfessional">No professional selected</span>
+      </div>
     </div>
     <div class="sb-summary-item" id="summaryDate">
-      <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-      <span class="sb-summary-text" data-sk-text="summary_date" id="sumDate">No date selected</span>
+      <div class="sb-summary-icon">
+        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </div>
+      <div class="sb-summary-body">
+        <span class="sb-summary-label" data-sk-text="step_label_3">Date</span>
+        <span class="sb-summary-text" data-sk-text="summary_date" id="sumDate">No date selected</span>
+      </div>
     </div>
     <div class="sb-summary-item" id="summaryTime">
-      <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <span class="sb-summary-text" data-sk-text="summary_time" id="sumTime">No time selected</span>
+      <div class="sb-summary-icon">
+        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div class="sb-summary-body">
+        <span class="sb-summary-label" data-sk-text="step_label_4">Time</span>
+        <span class="sb-summary-text" data-sk-text="summary_time" id="sumTime">No time selected</span>
+      </div>
     </div>
   </div>
 
