@@ -14,7 +14,7 @@ class Services_Widget extends \Elementor\Widget_Base {
     }
 
     public function get_icon() {
-        return 'sk-icon-scissors';
+        return 'dashicons-screenoptions';
     }
 
     public function get_categories() {

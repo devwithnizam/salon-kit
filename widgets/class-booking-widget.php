@@ -30,7 +30,7 @@ class Booking_Widget extends \Elementor\Widget_Base {
     }
 
     public function get_icon() {
-        return 'sk-icon-logo';
+        return 'dashicons-calendar-alt';
     }
 
     public function get_categories() {
