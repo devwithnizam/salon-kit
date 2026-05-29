@@ -35,7 +35,7 @@ class Frontend_Assets {
         $all = get_posts( [
             'post_type'      => 'salon_service',
             'posts_per_page' => -1,
-            'orderby'        => 'title',
+            'orderby'        => 'menu_order',
             'order'          => 'ASC',
         ] );
         foreach ( $all as $svc ) {

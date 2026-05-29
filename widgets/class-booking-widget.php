@@ -257,12 +257,25 @@ class Booking_Widget extends \Elementor\Widget_Base {
         $data_attrs .= ' data-services-orderby="' . esc_attr( $settings['services_orderby'] ?? 'menu_order' ) . '"';
         $data_attrs .= ' data-services-order="' . esc_attr( $settings['services_order'] ?? 'asc' ) . '"';
 
-        $all_services = get_posts( [
+        $query_orderby = $settings['services_orderby'] ?? 'menu_order';
+        $query_order   = strtoupper( $settings['services_order'] ?? 'asc' );
+
+        $args = [
             'post_type'      => 'salon_service',
             'posts_per_page' => -1,
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-        ] );
+        ];
+
+        if ( in_array( $query_orderby, [ 'menu_order', 'title', 'date' ], true ) ) {
+            $args['orderby'] = $query_orderby;
+            $args['order']   = $query_order;
+        } elseif ( in_array( $query_orderby, [ 'price', 'duration' ], true ) ) {
+            $meta_key = $query_orderby === 'price' ? '_sb_price' : '_sb_duration';
+            $args['meta_key'] = $meta_key;
+            $args['orderby']  = 'meta_value_num';
+            $args['order']    = $query_order;
+        }
+
+        $all_services = get_posts( $args );
         $svc_data = [];
         foreach ( $all_services as $svc ) {
             $thumb_id = get_post_thumbnail_id( $svc->ID );
