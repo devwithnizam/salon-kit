@@ -281,6 +281,29 @@
 .sk-sched-head:hover { background: #f1f5f9; }
 .sk-sched-day--on .sk-sched-head:hover { background: #e0e7ff; }
 
+.sk-sched-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Copy single-day button ────────────────────── */
+.sk-sched-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  color: var(--sk-muted);
+  opacity: 0;
+  transition: opacity var(--sk-tr), background var(--sk-tr), color var(--sk-tr);
+  text-decoration: none;
+  cursor: pointer;
+}
+.sk-sched-day--on:hover .sk-sched-copy-btn,
+.sk-sched-copy-btn:focus { opacity: 1; }
+.sk-sched-copy-btn:hover { background: #e2e8f0; color: var(--sk-pri); }
+
 /* ── Schedule Toggle ────────────────────────────── */
 
 .sk-sched-toggle {
@@ -323,17 +346,13 @@
 }
 .sk-sched-toggle input:checked ~ .sk-sched-abbr { color: var(--sk-pri); }
 
-.sk-sched-hours {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--sk-muted);
-}
-.sk-sched-day--on .sk-sched-hours { color: var(--sk-pri); }
-
 .sk-sched-range {
   font-family: "SF Mono", Consolas, monospace;
   font-size: 11.5px;
+  color: var(--sk-muted);
 }
+.sk-sched-day--on .sk-sched-range { color: var(--sk-pri); }
+.sk-sched-range .sk-plus { font-weight: 400; opacity: .6; }
 
 /* ── Schedule Body (expandable) ─────────────────── */
 
@@ -346,9 +365,22 @@
 }
 .sk-sched-day--on .sk-sched-body { display: flex; }
 
-.sk-sched-row {
+/* ── Segments ───────────────────────────────────── */
+
+.sk-sched-segments {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sk-sched-seg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--sk-gray-bg);
+  border-radius: var(--sk-r);
+  border: 1px solid var(--sk-bd);
 }
 
 .sk-sched-fld {
@@ -359,7 +391,7 @@
   color: var(--sk-muted);
 }
 .sk-sched-fld input[type="time"] {
-  width: 100px;
+  width: 90px;
   border: 1px solid var(--sk-bd);
   border-radius: var(--sk-r);
   padding: 4px 7px;
@@ -372,7 +404,197 @@
   box-shadow: 0 0 0 1.5px rgba(99,102,241,.1);
   outline: none;
 }
-.sk-sched-fld--lunch span { display: none; }
+
+.sk-sched-remove-seg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  color: var(--sk-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--sk-tr), background var(--sk-tr);
+}
+.sk-sched-remove-seg:hover { color: var(--sk-red); background: var(--sk-red-bg); }
+
+.sk-sched-add-seg {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sk-pri);
+  border: 1px dashed var(--sk-bd);
+  border-radius: var(--sk-r);
+  padding: 5px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--sk-tr), background var(--sk-tr);
+  background: transparent;
+}
+.sk-sched-add-seg:hover { border-color: var(--sk-pri); background: var(--sk-pri-bg); }
+
+/* ── Schedule options (buffer, max daily) ───────── */
+
+.sk-sched-options {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+
+.sk-sched-opt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--sk-muted);
+}
+.sk-sched-opt span:first-child { font-weight: 600; color: var(--sk-text); }
+.sk-sched-num {
+  width: 52px;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-r);
+  padding: 3px 6px;
+  font-size: 12px;
+  text-align: center;
+  background: #fff;
+}
+.sk-sched-num:focus { border-color: var(--sk-pri); box-shadow: 0 0 0 1.5px rgba(99,102,241,.1); outline: none; }
+
+/* ── Toolbar ────────────────────────────────────── */
+
+.sk-sched-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 0 2px;
+}
+.sk-sched-toolbar-hint {
+  font-size: 11.5px;
+  color: var(--sk-muted);
+  font-style: italic;
+}
+.sk-sched-toolbar-hint svg { color: var(--sk-pri); }
+
+/* ── Date Exceptions ────────────────────────────── */
+
+.sk-exceptions {
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-rl);
+  padding: 14px 16px;
+  background: #fff;
+}
+.sk-exceptions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0;
+}
+.sk-exc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sk-exc-row input[type="date"] {
+  width: 140px;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-r);
+  padding: 4px 7px;
+  font-size: 12px;
+}
+.sk-exc-row input[type="date"]:focus { border-color: var(--sk-pri); box-shadow: 0 0 0 1.5px rgba(99,102,241,.1); outline: none; }
+.sk-exc-reason {
+  flex: 1;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-r);
+  padding: 4px 7px;
+  font-size: 12px;
+  min-width: 120px;
+}
+.sk-exc-reason:focus { border-color: var(--sk-pri); box-shadow: 0 0 0 1.5px rgba(99,102,241,.1); outline: none; }
+.sk-sched-remove-exc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  color: var(--sk-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--sk-tr), background var(--sk-tr);
+}
+.sk-sched-remove-exc:hover { color: var(--sk-red); background: var(--sk-red-bg); }
+
+/* ── Visual Timeline Preview ────────────────────── */
+
+.sk-sched-timeline {
+  margin-top: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--sk-bd);
+}
+.sk-tl-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--sk-muted); margin-bottom: 4px; }
+.sk-tl-track {
+  position: relative;
+  height: 12px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.sk-tl-bar {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: var(--sk-pri);
+  border-radius: 6px;
+  opacity: .35;
+  min-width: 2px;
+}
+.sk-tl-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--sk-muted);
+  margin-top: 2px;
+}
+
+/* ── Copy Dialog Modal ──────────────────────────── */
+
+.sk-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.4);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sk-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,.12);
+}
+.sk-modal h3 { margin: 0 0 4px; font-size: 15px; }
+.sk-modal-desc { margin: 0 0 12px; font-size: 13px; color: var(--sk-muted); }
+.sk-modal-days {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.sk-modal-day {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 6px 8px;
+  border-radius: var(--sk-r);
+  transition: background var(--sk-tr);
+}
+.sk-modal-day:hover { background: var(--sk-gray-bg); }
+.sk-modal-day--src { opacity: .5; font-style: italic; }
+.sk-modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
 /* ═══ DATA TABLE — Clean Light ════════════════════ */
 

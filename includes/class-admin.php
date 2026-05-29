@@ -34,6 +34,16 @@ class Admin {
             [],
             SK_VERSION
         );
+
+        if ( $screen->post_type === 'salon_professional' ) {
+            wp_enqueue_script(
+                'salon-kit-admin',
+                SK_URL . 'assets/js/salon-kit-admin.js',
+                [],
+                SK_VERSION,
+                true
+            );
+        }
     }
 
     public static function admin_inline_styles() {

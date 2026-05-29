@@ -217,55 +217,108 @@ class Meta_Boxes {
     }
 
     public static function render_pro_schedule( $post ) {
-        $schedule = (array) get_post_meta( $post->ID, '_sb_schedule', true );
+        $schedule   = (array) get_post_meta( $post->ID, '_sb_schedule', true );
+        $exceptions = (array) get_post_meta( $post->ID, '_sb_exceptions', true );
         $days     = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
         $labels   = [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ];
         ?>
-        <div class="sk-sched">
+        <div class="sk-sched" data-sk-sched>
             <?php foreach ( $days as $i => $day ) :
-                $segments = $schedule[ $day ] ?? [];
-                $active   = ! empty( $segments );
-                $start    = $segments[0]['start'] ?? '09:00';
-                $end      = $segments[0]['end']   ?? '17:00';
-                $lunch_s  = $segments[1]['start'] ?? '';
-                $lunch_e  = $segments[1]['end']   ?? '';
+                $day_data  = $schedule[ $day ] ?? [];
+                $segments  = [];
+                $buffer    = 10;
+                $max_daily = 0;
+                $active    = false;
+
+                if ( ! empty( $day_data ) ) {
+                    // New format: { segments: [...], buffer, max_daily }
+                    if ( isset( $day_data['segments'] ) ) {
+                        $segments  = $day_data['segments'];
+                        $buffer    = (int) ( $day_data['buffer'] ?? 10 );
+                        $max_daily = (int) ( $day_data['max_daily'] ?? 0 );
+                        $active    = ! empty( $segments );
+                    } else {
+                        // Legacy format: [ {start,end}, {start,end} ]
+                        $segments = $day_data;
+                        $active   = ! empty( $segments );
+                    }
+                }
+
+                if ( $active && empty( $segments ) ) $active = false;
             ?>
-            <div class="sk-sched-day<?php echo $active ? ' sk-sched-day--on' : ''; ?>">
+            <div class="sk-sched-day<?php echo $active ? ' sk-sched-day--on' : ''; ?>" data-sk-day="<?php echo esc_attr( $day ); ?>">
                 <div class="sk-sched-head">
                     <label class="sk-sched-toggle">
-                        <input type="checkbox" name="sb_schedule[<?php echo esc_attr( $day ); ?>][active]" value="1" <?php checked( $active ); ?>>
+                        <input type="checkbox" name="sb_schedule[<?php echo esc_attr( $day ); ?>][active]" value="1" <?php checked( $active ); ?> data-sk-toggle>
                         <span class="sk-sched-track"><span class="sk-sched-knob"></span></span>
                         <span class="sk-sched-abbr"><?php echo esc_html( $labels[ $i ] ); ?></span>
                     </label>
-                    <div class="sk-sched-hours">
-                        <span class="sk-sched-range"><?php echo $active ? esc_html( $start ) . ' – ' . esc_html( $end ) : '—'; ?></span>
+                    <div class="sk-sched-head-actions">
+                        <button type="button" class="sk-sched-copy-btn button-link" title="Copy to weekdays" data-sk-copy="<?php echo esc_attr( $day ); ?>">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                        </button>
+                        <span class="sk-sched-range"><?php echo $active ? esc_html( $segments[0]['start'] ?? '--' ) . ' – ' . esc_html( $segments[0]['end'] ?? '--' ) . ( count( $segments ) > 1 ? ' <span class="sk-plus">+' . ( count( $segments ) - 1 ) . '</span>' : '' ) : '—'; ?></span>
                     </div>
                 </div>
                 <div class="sk-sched-body">
-                    <div class="sk-sched-row">
-                        <label class="sk-sched-fld">
-                            <span>Open</span>
-                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][start]" value="<?php echo esc_attr( $start ); ?>">
-                        </label>
-                        <label class="sk-sched-fld">
-                            <span>Close</span>
-                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][end]" value="<?php echo esc_attr( $end ); ?>">
-                        </label>
+                    <div class="sk-sched-segments" data-sk-segments>
+                        <?php foreach ( $segments as $si => $seg ) : ?>
+                        <div class="sk-sched-seg" data-sk-seg="<?php echo esc_attr( $si ); ?>">
+                            <label class="sk-sched-fld">
+                                <span>From</span>
+                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][start]" value="<?php echo esc_attr( $seg['start'] ); ?>">
+                            </label>
+                            <label class="sk-sched-fld">
+                                <span>To</span>
+                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][end]" value="<?php echo esc_attr( $seg['end'] ); ?>">
+                            </label>
+                            <button type="button" class="sk-sched-remove-seg button-link" title="Remove segment"<?php echo count( $segments ) <= 1 ? ' style="display:none"' : ''; ?>>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <?php endforeach; ?>
                     </div>
-                    <div class="sk-sched-row">
-                        <label class="sk-sched-fld sk-sched-fld--lunch">
-                            <span>Lunch start</span>
-                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][lunch_start]" value="<?php echo esc_attr( $lunch_s ); ?>">
+                    <button type="button" class="sk-sched-add-seg button-link">+ Add segment</button>
+
+                    <div class="sk-sched-options">
+                        <label class="sk-sched-opt">
+                            <span>Buffer</span>
+                            <input type="number" name="sb_schedule[<?php echo esc_attr( $day ); ?>][buffer]" value="<?php echo esc_attr( $buffer ); ?>" min="0" max="60" step="5" class="sk-sched-num">
+                            <span class="sk-unit">min</span>
                         </label>
-                        <label class="sk-sched-fld sk-sched-fld--lunch">
-                            <span>Lunch end</span>
-                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][lunch_end]" value="<?php echo esc_attr( $lunch_e ); ?>">
+                        <label class="sk-sched-opt">
+                            <span>Max/day</span>
+                            <input type="number" name="sb_schedule[<?php echo esc_attr( $day ); ?>][max_daily]" value="<?php echo esc_attr( $max_daily ); ?>" min="0" max="200" class="sk-sched-num">
+                            <span class="sk-unit">0 = unlimited</span>
                         </label>
                     </div>
                 </div>
             </div>
             <?php endforeach; ?>
-            <p class="sk-fld-note">Toggle a day on to set hours. Leave lunch blank for no break.</p>
+
+            <div class="sk-sched-toolbar">
+                <button type="button" class="button button-small sk-sched-copy-all" data-sk-copy-all>Apply Mon–Fri to all weekdays</button>
+                <span class="sk-sched-toolbar-hint">Use the <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:text-bottom"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> button on any day to copy its schedule to other days.</span>
+            </div>
+        </div>
+
+        <div class="sk-exceptions" style="margin-top:16px;">
+            <div class="sk-mb-card-head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Date Exceptions (days off / holidays)
+            </div>
+            <div class="sk-exceptions-list" data-sk-exceptions>
+                <?php foreach ( $exceptions as $ei => $exc ) : ?>
+                <div class="sk-exc-row" data-sk-exc="<?php echo esc_attr( $ei ); ?>">
+                    <input type="date" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][date]" value="<?php echo esc_attr( $exc['date'] ?? '' ); ?>">
+                    <input type="text" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][reason]" value="<?php echo esc_attr( $exc['reason'] ?? '' ); ?>" placeholder="Reason (optional)" class="sk-exc-reason">
+                    <button type="button" class="sk-sched-remove-exc button-link" title="Remove exception">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" class="button button-small sk-sched-add-exc" data-sk-add-exc>+ Add exception</button>
         </div>
         <?php
     }
@@ -283,16 +336,33 @@ class Meta_Boxes {
         $raw = isset( $_POST['sb_schedule'] ) ? $_POST['sb_schedule'] : [];
         foreach ( [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ] as $day ) {
             if ( ! empty( $raw[ $day ]['active'] ) ) {
-                $start    = sanitize_text_field( $raw[ $day ]['start'] ?? '09:00' );
-                $end      = sanitize_text_field( $raw[ $day ]['end']   ?? '17:00' );
-                $segments = [ [ 'start' => $start, 'end' => $end ] ];
-                $lunch_s  = sanitize_text_field( $raw[ $day ]['lunch_start'] ?? '' );
-                $lunch_e  = sanitize_text_field( $raw[ $day ]['lunch_end']   ?? '' );
-                if ( $lunch_s && $lunch_e ) $segments[] = [ 'start' => $lunch_s, 'end' => $lunch_e ];
-                $schedule[ $day ] = $segments;
+                $day_raw_segments = $raw[ $day ]['segments'] ?? [];
+                $segments = [];
+                foreach ( $day_raw_segments as $s ) {
+                    $start = sanitize_text_field( $s['start'] ?? '' );
+                    $end   = sanitize_text_field( $s['end'] ?? '' );
+                    if ( $start && $end ) $segments[] = [ 'start' => $start, 'end' => $end ];
+                }
+                if ( ! empty( $segments ) ) {
+                    $schedule[ $day ] = [
+                        'segments'  => $segments,
+                        'buffer'    => min( 60, max( 0, absint( $raw[ $day ]['buffer'] ?? 10 ) ) ),
+                        'max_daily' => max( 0, absint( $raw[ $day ]['max_daily'] ?? 0 ) ),
+                    ];
+                }
             }
         }
         update_post_meta( $post_id, '_sb_schedule', $schedule );
+
+        // Save exceptions
+        $exceptions = [];
+        $raw_exc = isset( $_POST['sb_exceptions'] ) ? $_POST['sb_exceptions'] : [];
+        foreach ( $raw_exc as $e ) {
+            $date   = sanitize_text_field( $e['date'] ?? '' );
+            $reason = sanitize_text_field( $e['reason'] ?? '' );
+            if ( $date ) $exceptions[] = [ 'date' => $date, 'reason' => $reason ];
+        }
+        update_post_meta( $post_id, '_sb_exceptions', $exceptions );
     }
 
     private static function sync_services_for_pro( $pro_id, $assigned_service_ids ) {
