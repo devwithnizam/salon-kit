@@ -75,17 +75,17 @@ class Booking_Widget extends \Elementor\Widget_Base {
     private function get_text_settings() {
         $s = $this->get_settings_for_display();
         $keys = [
-            'step1_title', 'step2_title', 'step3_title', 'step4_title', 'step5_title',
-            'step1_btn', 'step2_btn', 'step3_btn', 'step4_btn', 'submit_btn', 'back_btn',
+            'step1_title', 'step2_title', 'step3_title', 'step4_title',
+            'step1_btn', 'step2_btn', 'step3_btn', 'submit_btn', 'back_btn',
             'book_again', 'success_title', 'success_text',
-            'step_label_1', 'step_label_2', 'step_label_3', 'step_label_4', 'step_label_5',
-            'summary_service', 'summary_pro', 'summary_date', 'summary_time',
+            'step_label_1', 'step_label_2', 'step_label_3', 'step_label_4',
+            'summary_service', 'summary_date', 'summary_time',
             'field_name_label', 'field_email_label', 'field_phone_label', 'field_notes_label',
             'field_name_placeholder', 'field_email_placeholder', 'field_phone_placeholder', 'field_notes_placeholder',
             'field_required_mark',
-            'bsb_service', 'bsb_professional', 'bsb_date', 'bsb_time', 'bsb_price',
-            'msg_loading_services', 'msg_loading_pros', 'msg_loading_slots',
-            'msg_empty_services', 'msg_empty_pros', 'msg_empty_slots',
+            'bsb_service', 'bsb_date', 'bsb_time', 'bsb_price',
+            'msg_loading_services', 'msg_loading_slots',
+            'msg_empty_services', 'msg_empty_slots',
             'msg_error_name', 'msg_error_email', 'msg_error_network', 'msg_error_slot_taken',
             'msg_submitting', 'slot_remaining', 'slot_full',
         ];
@@ -100,10 +100,10 @@ class Booking_Widget extends \Elementor\Widget_Base {
         $s = $this->get_settings_for_display();
         $keys = [
             'show_step_indicator', 'show_summary_bar',
-            'show_step1', 'show_step2', 'show_step3', 'show_step4', 'show_step5', 'show_success',
+            'show_step1', 'show_step2', 'show_step3', 'show_step4', 'show_success',
             'show_field_name', 'show_field_email', 'show_field_phone', 'show_field_notes',
             'show_service_price', 'show_service_duration', 'show_service_desc', 'show_service_images',
-            'show_pro_photos', 'show_remaining_slots', 'show_booking_summary',
+            'show_remaining_slots', 'show_booking_summary',
             'require_name', 'require_email',
         ];
         $data = [];

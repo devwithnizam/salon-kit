@@ -9,9 +9,6 @@ class Admin {
         add_filter( 'manage_salon_service_posts_columns',       [ __CLASS__, 'service_columns' ] );
         add_action( 'manage_salon_service_posts_custom_column', [ __CLASS__, 'service_values' ], 10, 2 );
 
-        add_filter( 'manage_salon_professional_posts_columns',       [ __CLASS__, 'professional_columns' ] );
-        add_action( 'manage_salon_professional_posts_custom_column', [ __CLASS__, 'professional_values' ], 10, 2 );
-
         add_filter( 'manage_salon_booking_posts_columns',       [ __CLASS__, 'booking_columns' ] );
         add_action( 'manage_salon_booking_posts_custom_column', [ __CLASS__, 'booking_values' ], 10, 2 );
 
@@ -25,7 +22,7 @@ class Admin {
     public static function admin_assets( $hook ) {
         $screen = get_current_screen();
         if ( ! $screen ) return;
-        $types = [ 'salon_service', 'salon_professional', 'salon_booking' ];
+        $types = [ 'salon_service', 'salon_booking' ];
         if ( ! in_array( $screen->post_type, $types ) && $hook !== 'index.php' ) return;
 
         wp_enqueue_style(
@@ -35,7 +32,7 @@ class Admin {
             SK_VERSION
         );
 
-        if ( $screen->post_type === 'salon_professional' ) {
+        if ( $screen->post_type === 'salon_service' ) {
             wp_enqueue_script(
                 'salon-kit-admin',
                 SK_URL . 'assets/js/salon-kit-admin.js',
@@ -50,11 +47,9 @@ class Admin {
         $screen = get_current_screen();
         if ( ! $screen ) return;
 
-        // Column widths for list tables
-        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_professional', 'salon_booking' ] ) ) : ?>
+        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_booking' ] ) ) : ?>
         <style>
-            .fixed .column-sb_thumb,
-            .fixed .column-sb_photo { width: 44px; }
+            .fixed .column-sb_thumb { width: 44px; }
             .fixed .column-sb_price,
             .fixed .column-sb_dur,
             .fixed .column-sb_slots { width: 70px; }
@@ -66,23 +61,13 @@ class Admin {
         </style>
         <?php endif;
 
-        // Postbox polish for meta box screens
-        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_professional', 'salon_booking' ] ) ) : ?>
+        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_booking' ] ) ) : ?>
         <style>
             #sb_service_details .inside,
-            #sb_pro_schedule .inside,
-            #sb_booking_details .inside { padding: 14px 16px; }
-            #sb_service_pros .inside,
-            #sb_pro_services .inside,
-            #sb_booking_actions .inside { padding: 11px 11px 12px; }
+            #sb_service_schedule .inside { padding: 14px 16px; }
             #sb_service_details .postbox-header,
-            #sb_service_pros .postbox-header,
-            #sb_pro_services .postbox-header,
-            #sb_pro_schedule .postbox-header,
-            #sb_booking_details .postbox-header,
-            #sb_booking_actions .postbox-header { border-bottom: 1px solid #e5e7eb; }
+            #sb_service_schedule .postbox-header { border-bottom: 1px solid #e5e7eb; }
             .post-type-salon_service .handle-actions,
-            .post-type-salon_professional .handle-actions,
             .post-type-salon_booking .handle-actions { display: flex; align-items: center; }
             .sk-booking-info-table { width:100%; border-collapse:collapse; }
             .sk-booking-info-table td { padding:6px 0; border-bottom:1px solid #f1f5f9; font-size:13px; }
@@ -109,7 +94,7 @@ class Admin {
             'sb_price' => 'Price',
             'sb_dur'   => 'Duration',
             'sb_slots' => 'Capacity',
-            'sb_pros'  => 'Team',
+            'sb_sched' => 'Schedule',
             'date'     => 'Date',
         ];
     }
@@ -138,61 +123,9 @@ class Admin {
                 echo '<span class="sk-badge sk-badge-slot">' . esc_html( $qty ) . ' <span class="sk-unit">slot' . ( $qty > 1 ? 's' : '' ) . '</span></span>';
                 break;
 
-            case 'sb_pros':
-                $pros = (array) get_post_meta( $post_id, '_sb_professionals', true );
-                if ( ! empty( $pros ) ) {
-                    $count = count( $pros );
-                    $first = get_the_title( $pros[0] ) ?: "(ID {$pros[0]})";
-                    echo '<span class="sk-team-count">' . esc_html( $count ) . '</span>';
-                    echo '<span class="sk-team-list">' . esc_html( $first );
-                    if ( $count > 1 ) echo ' +' . ( $count - 1 );
-                    echo '</span>';
-                } else {
-                    echo '<span class="sk-na">None</span>';
-                }
-                break;
-        }
-    }
-
-    // ── PROFESSIONALS TABLE ───────────────────────────────
-
-    public static function professional_columns( $cols ) {
-        return [
-            'cb'          => '<input type="checkbox">',
-            'title'       => 'Name',
-            'sb_photo'    => '',
-            'sb_services' => 'Services',
-            'sb_sched'    => 'Schedule',
-            'date'        => 'Date',
-        ];
-    }
-
-    public static function professional_values( $col, $post_id ) {
-        switch ( $col ) {
-            case 'sb_photo':
-                $img = get_the_post_thumbnail( $post_id, [ 36, 36 ], [ 'class' => 'sk-admin-avatar' ] );
-                echo $img ?: '<span class="sk-admin-avatar sk-admin-avatar--empty">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </span>';
-                break;
-
-            case 'sb_services':
-                $svcs = (array) get_post_meta( $post_id, '_sb_assigned_services', true );
-                if ( ! empty( $svcs ) ) {
-                    $count = count( $svcs );
-                    $names = array_map( function( $sid ) { return get_the_title( $sid ) ?: "(ID $sid)"; }, $svcs );
-                    echo '<span class="sk-badge sk-badge-svc">' . esc_html( $count ) . '</span>';
-                    echo '<span class="sk-team-list">' . esc_html( implode( ', ', array_slice( $names, 0, 2 ) ) );
-                    if ( $count > 2 ) echo ' +' . ( $count - 2 );
-                    echo '</span>';
-                } else {
-                    echo '<span class="sk-na">None</span>';
-                }
-                break;
-
             case 'sb_sched':
-                $sched = (array) get_post_meta( $post_id, '_sb_schedule', true );
-                $days  = array_keys( $sched );
+                $schedule = (array) get_post_meta( $post_id, '_sb_schedule', true );
+                $days     = array_keys( $schedule );
                 if ( ! empty( $days ) ) {
                     $all = [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ];
                     echo '<span class="sk-day-dots">';
@@ -218,7 +151,6 @@ class Admin {
             'client_name'   => 'Client',
             'client_email'  => 'Email',
             'service'       => 'Service',
-            'professional'  => 'Professional',
             'booking_date'  => 'Date',
             'booking_time'  => 'Time',
             'booking_price' => 'Price',
@@ -231,7 +163,6 @@ class Admin {
             'client_name'   => '_client_name',
             'client_email'  => '_client_email',
             'service'       => '_service',
-            'professional'  => '_professional',
             'booking_date'  => '_booking_date',
             'booking_time'  => '_booking_time',
             'booking_price' => '_booking_price',
@@ -291,7 +222,6 @@ class Admin {
 
         echo '<div class="sk-dash">';
 
-        // Summary stat
         echo '<div class="sk-dash-stat">';
         echo '<span class="sk-dash-stat-num">' . esc_html( $total ) . '</span>';
         echo '<span class="sk-dash-stat-label">appointment' . ( $total !== 1 ? 's' : '' ) . ' today</span>';
@@ -306,12 +236,11 @@ class Admin {
             echo '<div class="sk-dash-list">';
             foreach ( $bookings as $b ) {
                 $svc_name = get_the_title( $b->service_id ) ?: "Service #{$b->service_id}";
-                $pro_name = get_the_title( $b->professional_id ) ?: "Pro #{$b->professional_id}";
                 echo '<div class="sk-dash-row">';
                 echo '<div class="sk-dash-time">' . esc_html( date( 'g:i A', strtotime( $b->booking_time ) ) ) . '</div>';
                 echo '<div class="sk-dash-info">';
                 echo '<strong class="sk-dash-client">' . esc_html( $b->client_name ) . '</strong>';
-                echo '<span class="sk-dash-meta">' . esc_html( $svc_name ) . ' &middot; ' . esc_html( $pro_name ) . '</span>';
+                echo '<span class="sk-dash-meta">' . esc_html( $svc_name ) . '</span>';
                 echo '</div>';
                 echo '</div>';
             }

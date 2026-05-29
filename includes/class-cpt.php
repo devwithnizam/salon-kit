@@ -11,7 +11,6 @@ class CPT {
 
     public static function register_all() {
         self::register_service();
-        self::register_professional();
         self::register_booking();
     }
 
@@ -34,32 +33,9 @@ class CPT {
             'show_in_menu'  => true,
             'menu_position' => 25,
             'menu_icon'     => self::menu_icon_data_url(),
-            'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
+            'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ],
             'has_archive'   => false,
             'rewrite'       => [ 'slug' => 'service' ],
-            'show_in_rest'  => true,
-        ] );
-    }
-
-    private static function register_professional() {
-        register_post_type( 'salon_professional', [
-            'labels' => [
-                'name'               => 'Professionals',
-                'singular_name'      => 'Professional',
-                'menu_name'          => 'Professionals',
-                'add_new'            => 'Add Professional',
-                'add_new_item'       => 'Add New Professional',
-                'edit_item'          => 'Edit Professional',
-                'view_item'          => 'View Professional',
-                'search_items'       => 'Search Professionals',
-                'not_found'          => 'No professionals found.',
-            ],
-            'public'        => true,
-            'show_ui'       => true,
-            'show_in_menu'  => 'edit.php?post_type=salon_service',
-            'supports'      => [ 'title', 'editor', 'thumbnail' ],
-            'has_archive'   => false,
-            'rewrite'       => [ 'slug' => 'professional' ],
             'show_in_rest'  => true,
         ] );
     }

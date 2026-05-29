@@ -288,17 +288,15 @@
   letter-spacing: -0.01em;
 }
 
-/* ── Services & Professional Grid ── */
-.sb-services-grid,
-.sb-pro-grid {
+/* ── Services Grid ── */
+.sb-services-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 24px;
 }
 
-.sb-service-card,
-.sb-pro-card {
+.sb-service-card {
   background: var(--sk-card-bg);
   border: 1.5px solid var(--sk-card-border);
   border-radius: var(--sk-radius-lg);
@@ -313,20 +311,17 @@
   outline: none;
 }
 
-.sb-service-card:hover,
-.sb-pro-card:hover {
+.sb-service-card:hover {
   border-color: var(--sk-primary);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--sk-shadow-color);
 }
 
-.sb-service-card:focus-visible,
-.sb-pro-card:focus-visible {
+.sb-service-card:focus-visible {
   box-shadow: 0 0 0 3px var(--sk-primary-lite), 0 0 0 5px var(--sk-primary);
 }
 
-.sb-service-card.active,
-.sb-pro-card.active {
+.sb-service-card.active {
   background: var(--sk-card-active-bg);
   border-color: var(--sk-card-active-bg);
   color: var(--sk-card-active-text);
@@ -342,8 +337,7 @@
   background: var(--sk-primary-lite);
 }
 
-.sb-svc-info,
-.sb-pro-info {
+.sb-svc-info {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -351,15 +345,13 @@
   gap: 2px;
 }
 
-.sb-svc-name,
-.sb-pro-name {
+.sb-svc-name {
   font-size: 15px;
   font-weight: 600;
   line-height: 1.3;
 }
 
-.sb-svc-desc,
-.sb-pro-bio {
+.sb-svc-desc {
   font-size: 12px;
   color: var(--sk-text-muted);
   line-height: 1.3;
@@ -369,8 +361,7 @@
   max-width: 180px;
 }
 
-.sb-service-card.active .sb-svc-desc,
-.sb-pro-card.active .sb-pro-bio {
+.sb-service-card.active .sb-svc-desc {
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -390,16 +381,6 @@
 
 .sb-service-card.active .sb-svc-price {
   color: var(--sk-card-active-text);
-}
-
-
-.sb-pro-photo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-  background: var(--sk-primary-lite);
 }
 
 /* ═══════════════════════════════════════
@@ -465,29 +446,6 @@
 
 [data-show-service-images="no"][data-show-service-desc="no"][data-show-service-price="no"] .sb-svc-name {
   font-size: 15px;
-}
-
-/* ── Professional Cards ────────────────── */
-
-/* No photo: info centered, more compact */
-[data-show-pro-photos="no"] .sb-pro-card {
-  justify-content: center;
-  text-align: center;
-  padding: 12px 16px;
-  min-height: 56px;
-}
-
-[data-show-pro-photos="no"] .sb-pro-photo {
-  display: none;
-}
-
-[data-show-pro-photos="no"] .sb-pro-name {
-  font-size: 16px;
-}
-
-/* No photo + single row: balanced spacing */
-[data-show-pro-photos="no"] .sb-pro-info {
-  align-items: center;
 }
 
 /* ── Summary Bar — Auto-fit grid ────────── */
@@ -1095,7 +1053,7 @@
   }
   .sb-panel-title { font-size: 20px; }
   .sb-step-num { width: 30px; height: 30px; font-size: 13px; }
-  .sb-service-card, .sb-pro-card { padding: 12px; }
+  .sb-service-card { padding: 12px; }
   .sb-time-grid { grid-template-columns: repeat(2, 1fr); }
   .sb-summary { border-radius: 8px; }
   .sb-summary-item { padding: 8px 12px; min-height: 40px; }
@@ -1118,18 +1076,15 @@
   .sb-step-label { display: none; }
   .sb-step-line { margin-bottom: 0; }
 
-  .sb-services-grid,
-  .sb-pro-grid {
+  .sb-services-grid {
     grid-template-columns: 1fr;
     gap: 8px;
     margin-bottom: 18px;
   }
-  .sb-service-card, .sb-pro-card { padding: 10px; }
+  .sb-service-card { padding: 10px; }
   .sb-svc-thumb { width: 44px; height: 44px; }
-  .sb-svc-name, .sb-pro-name { font-size: 14px; }
+  .sb-svc-name { font-size: 14px; }
   .sb-svc-price { font-size: 14px; }
-
-  .sb-pro-photo { width: 40px; height: 40px; }
 
   .sb-time-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1195,9 +1150,8 @@
     border-radius: 0;
     box-shadow: none;
   }
-  .sb-service-card, .sb-pro-card { padding: 8px; }
+  .sb-service-card { padding: 8px; }
   .sb-svc-thumb { width: 38px; height: 38px; }
-  .sb-pro-photo { width: 36px; height: 36px; }
   .sb-time-slot { padding: 8px 4px; font-size: 12px; }
 
   .sb-calendar-wrap { padding: 8px; margin-bottom: 14px; }
@@ -1226,7 +1180,7 @@
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .sb-panel.active { animation: none; }
-  .sb-service-card, .sb-pro-card,
+  .sb-service-card,
   .sb-btn, .sb-time-slot,
   .sb-step-num, .sb-step-line,
   .sb-summary-item svg { transition: none; }

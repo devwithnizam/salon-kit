@@ -1,11 +1,6 @@
-/**
- * SalonKit v2 — Booking Form
- * Vanilla JS, state machine, data-attribute driven
- */
 (function () {
   'use strict';
 
-  // ── Helpers ─────────────────────────────────
   const $ = (s, c) => (c || document).querySelector(s);
   const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
 
@@ -13,13 +8,10 @@
                   'July','August','September','October','November','December'];
   const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-  // ── State ───────────────────────────────────
   let state = {
     step: 1,
     services: [],
     service: null,
-    professionals: [],
-    professional: null,
     date: '',
     dateLabel: '',
     time: '',
@@ -28,7 +20,6 @@
     isSubmitting: false,
   };
 
-  // ── Read settings from data attributes ──────
   function getWrap() {
     return $('#salonBookingWrap') || document.querySelector('.sb-wrap');
   }
@@ -47,7 +38,6 @@
     return el.getAttribute(attr) !== 'no';
   }
 
-  // ── Apply visibility from data attributes ───
   function applyVisibility() {
     $$('[data-sk-vis]').forEach(el => {
       const key = el.dataset.skVis.replace(/-/g, '_');
@@ -56,7 +46,6 @@
     });
   }
 
-  // ── Apply text from data attributes ─────────
   function applyTexts() {
     $$('[data-sk-text]').forEach(el => {
       const key = el.dataset.skText.replace(/-/g, '_');
@@ -69,10 +58,8 @@
         }
       }
     });
-    // Required marks handled via data-sk-vis in template
   }
 
-  // ── Navigation ──────────────────────────────
   function goTo(step) {
     $$('.sb-panel').forEach(p => p.classList.remove('active'));
     const panel = $('#sbPanel' + step);
@@ -87,15 +74,12 @@
 
     state.step = step;
     updateSummary();
-    // Focus management
     const focusable = panel ? panel.querySelector('button, input, [tabindex]:not([tabindex="-1"])') : null;
     if (focusable) focusable.focus();
   }
 
-  // ── Summary ─────────────────────────────────
   function updateSummary() {
     const svc = $('#sumService');
-    const pro = $('#sumProfessional');
     const dt  = $('#sumDate');
     const tm  = $('#sumTime');
 
@@ -114,24 +98,10 @@
         svc.textContent = text('summary_service') || 'No service selected';
       }
     }
-    if (pro) {
-      if (state.professional) {
-        const p = state.professional;
-        let html = '';
-        if (p.photo_url && vis('show_pro_photos')) {
-          html += '<img src="' + p.photo_url + '" alt="" class="sk-summary-photo">';
-        }
-        html += p.name;
-        pro.innerHTML = html;
-      } else {
-        pro.textContent = text('summary_pro') || 'No professional selected';
-      }
-    }
     if (dt) dt.textContent = state.dateLabel || text('summary_date') || 'No date selected';
     if (tm) tm.textContent = state.time || text('summary_time') || 'No time selected';
   }
 
-  // ── Render Services ─────────────────────────
   function renderServices() {
     const grid = $('#sbServicesGrid');
     if (!grid) return;
@@ -184,8 +154,6 @@
     $$('.sb-service-card').forEach(c => c.classList.remove('active'));
     card.classList.add('active');
     state.service = svc;
-    state.professional = null;
-    state.professionals = [];
     state.date = '';
     state.dateLabel = '';
     state.time = '';
@@ -194,82 +162,6 @@
     updateSummary();
   }
 
-  // ── Load & Render Professionals ─────────────
-  function loadProfessionals(serviceId) {
-    const grid = $('#sbProGrid');
-    if (!grid) return;
-    grid.innerHTML = '<div class="sk-skeleton sk-skeleton-card"></div><div class="sk-skeleton sk-skeleton-card"></div>';
-    const btn = $('#step2Next');
-    if (btn) btn.disabled = true;
-
-    fetch(SalonKit.ajax_url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ action: 'salon_get_professionals', service_id: serviceId }),
-    })
-    .then(r => r.json())
-    .then(res => {
-      if (res.success && res.data.length) {
-        state.professionals = res.data;
-        renderProfessionals();
-      } else {
-        grid.innerHTML = '<p class="sb-empty-msg">' + (text('msg_empty_pros') || 'No professionals available.') + '</p>';
-      }
-    })
-    .catch(() => {
-      grid.innerHTML = '<p class="sb-error-msg">' + (text('msg_error_network') || 'Failed to load.') + '</p>';
-    });
-  }
-
-  function renderProfessionals() {
-    const grid = $('#sbProGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    if (!state.professionals.length) {
-      grid.innerHTML = '<p class="sb-empty-msg">' + (text('msg_empty_pros') || 'No professionals available.') + '</p>';
-      return;
-    }
-
-    state.professionals.forEach(pro => {
-      let photo = '';
-      if (vis('show_pro_photos')) {
-        photo = pro.photo_url
-          ? '<img src="' + pro.photo_url + '" alt="' + pro.name + '" class="sb-pro-photo">'
-          : '<div class="sb-pro-photo" style="background:var(--sk-primary-lite)"></div>';
-      }
-
-      const card = document.createElement('div');
-      card.className = 'sb-pro-card';
-      card.dataset.id = pro.id;
-      card.tabIndex = 0;
-      card.innerHTML = photo +
-        '<div class="sb-pro-info">' +
-          '<span class="sb-pro-name">' + pro.name + '</span>' +
-          '<span class="sb-pro-bio">' + (pro.bio || '&nbsp;') + '</span>' +
-        '</div>';
-
-      card.addEventListener('click', () => selectProfessional(pro, card));
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectProfessional(pro, card); }
-      });
-      grid.appendChild(card);
-    });
-  }
-
-  function selectProfessional(pro, card) {
-    $$('.sb-pro-card').forEach(c => c.classList.remove('active'));
-    card.classList.add('active');
-    state.professional = pro;
-    state.date = '';
-    state.dateLabel = '';
-    state.time = '';
-    const btn = $('#step2Next');
-    if (btn) btn.disabled = false;
-    updateSummary();
-  }
-
-  // ── Calendar ────────────────────────────────
   function initCalendar() {
     const now = new Date();
     state.calYear = now.getFullYear();
@@ -317,7 +209,7 @@
           state.date = isoStr;
           state.dateLabel = DAYS[cellDate.getDay()] + ', ' + MONTHS[state.calMonth].slice(0, 3) + ' ' + cellDate.getDate() + ', ' + state.calYear;
           renderCalendar();
-          const btn = $('#step3Next');
+          const btn = $('#step2Next');
           if (btn) btn.disabled = false;
           updateSummary();
         });
@@ -333,12 +225,11 @@
     }
   }
 
-  // ── Time Slots ──────────────────────────────
-  function loadSlots(proId, serviceId, date) {
+  function loadSlots(serviceId, date) {
     const grid = $('#sbTimeGrid');
     if (!grid) return;
     grid.innerHTML = '<div class="sk-skeleton sk-skeleton-slot"></div><div class="sk-skeleton sk-skeleton-slot"></div><div class="sk-skeleton sk-skeleton-slot"></div>';
-    const btn = $('#step4Next');
+    const btn = $('#step3Next');
     if (btn) btn.disabled = true;
 
     fetch(SalonKit.ajax_url, {
@@ -346,7 +237,6 @@
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         action: 'salon_get_slots',
-        professional_id: proId,
         service_id: serviceId,
         date: date,
       }),
@@ -393,7 +283,7 @@
           $$('.sb-time-slot').forEach(s => s.classList.remove('active'));
           div.classList.add('active');
           state.time = slot.time;
-          const btn = $('#step4Next');
+          const btn = $('#step3Next');
           if (btn) btn.disabled = false;
           updateSummary();
         });
@@ -415,7 +305,6 @@
     return h + ':' + m + ' ' + ampm;
   }
 
-  // ── Submit ──────────────────────────────────
   function handleSubmit() {
     if (state.isSubmitting) return;
 
@@ -449,7 +338,6 @@
         action: 'salon_save_booking',
         nonce: SalonKit.nonce,
         service_id: state.service.id,
-        professional_id: state.professional.id,
         booking_date: state.date,
         booking_time: state.time,
         client_name: name,
@@ -497,7 +385,6 @@
     if (details) {
       details.innerHTML =
         '<p><strong>' + (text('bsb_service') || 'Service') + ':</strong> ' + (state.service ? state.service.name : '--') + '</p>' +
-        '<p><strong>' + (text('bsb_professional') || 'Professional') + ':</strong> ' + (state.professional ? state.professional.name : '--') + '</p>' +
         '<p><strong>' + (text('bsb_date') || 'Date') + ':</strong> ' + (state.dateLabel || state.date) + '</p>' +
         '<p><strong>' + (text('bsb_time') || 'Time') + ':</strong> ' + (state.time ? formatTime(state.time) : '--') + '</p>' +
         '<p><strong>' + (text('bsb_price') || 'Price') + ':</strong> ' + (state.service ? '$' + state.service.price : '--') + '</p>';
@@ -509,18 +396,14 @@
     });
   }
 
-  // ── Reset ───────────────────────────────────
   function resetForm() {
     state.service = null;
-    state.professional = null;
-    state.professionals = [];
     state.date = '';
     state.dateLabel = '';
     state.time = '';
     state.isSubmitting = false;
 
     $$('.sb-service-card').forEach(c => c.classList.remove('active'));
-    $$('.sb-pro-card').forEach(c => c.classList.remove('active'));
     $$('.sb-time-slot').forEach(s => s.classList.remove('active'));
 
     const nameEl = $('#sbClientName');
@@ -540,9 +423,7 @@
     goTo(1);
   }
 
-  // ── Keyboard Navigation ─────────────────────
   function handleKeydown(e) {
-    // Escape goes back one step
     if (e.key === 'Escape' && state.step > 1) {
       e.preventDefault();
       const backBtn = $('#step' + state.step + 'Back');
@@ -550,71 +431,57 @@
     }
   }
 
-  // ═══════════════════════════════════════════
-  //  INIT
-  // ═══════════════════════════════════════════
-
   function init() {
     const wrap = getWrap();
     if (!wrap) return;
 
-    // Apply texts and visibility
     applyTexts();
     applyVisibility();
 
-    // Store services
     state.services = SalonKit.services || [];
 
-    // Render initial step
     renderServices();
 
-    // ── Event Binding ──
     const bind = (id, event, fn) => {
       const el = $(id);
       if (el) el.addEventListener(event, fn);
     };
 
-    // Navigation
+    // Step 1 → 2 (Service → Date)
     bind('#step1Next', 'click', () => {
       if (!state.service) return;
-      loadProfessionals(state.service.id);
+      state.time = '';
+      initCalendar();
       goTo(2);
     });
 
+    // Step 2 navigation
     bind('#step2Back', 'click', () => goTo(1));
     bind('#step2Next', 'click', () => {
-      if (!state.professional) return;
+      if (!state.date || !state.service) return;
       state.time = '';
-      initCalendar();
+      loadSlots(state.service.id, state.date);
       goTo(3);
     });
 
+    // Step 3 navigation
     bind('#step3Back', 'click', () => goTo(2));
     bind('#step3Next', 'click', () => {
-      if (!state.date || !state.professional || !state.service) return;
-      state.time = '';
-      loadSlots(state.professional.id, state.service.id, state.date);
-      goTo(4);
-    });
-
-    bind('#step4Back', 'click', () => goTo(3));
-    bind('#step4Next', 'click', () => {
       if (state.time) {
         const bsbSvc = $('#bsbService');
-        const bsbPro = $('#bsbProfessional');
         const bsbDt  = $('#bsbDate');
         const bsbTm  = $('#bsbTime');
         const bsbPr  = $('#bsbPrice');
         if (bsbSvc) bsbSvc.textContent = state.service ? state.service.name + ' -- $' + state.service.price : '--';
-        if (bsbPro) bsbPro.textContent = state.professional ? state.professional.name : '--';
         if (bsbDt) bsbDt.textContent = state.dateLabel || '--';
         if (bsbTm) bsbTm.textContent = formatTime(state.time);
         if (bsbPr) bsbPr.textContent = state.service ? '$' + state.service.price : '--';
-        goTo(5);
+        goTo(4);
       }
     });
 
-    bind('#step5Back', 'click', () => goTo(4));
+    // Step 4
+    bind('#step4Back', 'click', () => goTo(3));
 
     // Calendar
     bind('#calPrev', 'click', () => {
@@ -633,11 +500,9 @@
 
     // Submit
     bind('#sbSubmitBtn', 'click', handleSubmit);
-
-    // Book again
     bind('#sbBookAgain', 'click', resetForm);
 
-    // Allow clicking done steps to jump back
+    // Click done steps to jump back
     document.addEventListener('click', e => {
       const step = e.target.closest('.sb-step.done');
       if (step) {
@@ -646,15 +511,13 @@
       }
     });
 
-    // Keyboard navigation
     document.addEventListener('keydown', handleKeydown);
 
-    // Form submit prevention (in case wrapped in form)
+    // Enter on input → trigger next button in current panel
     const inner = wrap.querySelector('.sb-inner');
     if (inner) {
       inner.addEventListener('keydown', e => {
         if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
-          // Find next button in current panel
           const panel = $('#sbPanel' + state.step);
           if (panel) {
             const nextBtn = panel.querySelector('.sb-btn-next, .sb-btn-submit');
@@ -665,7 +528,6 @@
     }
   }
 
-  // Wait for DOM and SalonKit data
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {

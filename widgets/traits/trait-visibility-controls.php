@@ -20,10 +20,9 @@ trait Visibility_Controls {
             'show_step_indicator' => [ 'Step Indicator', 'yes' ],
             'show_summary_bar'    => [ 'Summary Bar', 'yes' ],
             'show_step1'          => [ 'Step 1 — Service Selection', 'yes' ],
-            'show_step2'          => [ 'Step 2 — Professional Selection', 'yes' ],
-            'show_step3'          => [ 'Step 3 — Date Selection', 'yes' ],
-            'show_step4'          => [ 'Step 4 — Time Selection', 'yes' ],
-            'show_step5'          => [ 'Step 5 — Details Form', 'yes' ],
+            'show_step2'          => [ 'Step 2 — Date Selection', 'yes' ],
+            'show_step3'          => [ 'Step 3 — Time Selection', 'yes' ],
+            'show_step4'          => [ 'Step 4 — Details Form', 'yes' ],
             'show_success'        => [ 'Success Screen', 'yes' ],
             'show_field_name'     => [ 'Name Field', 'yes' ],
             'show_field_email'    => [ 'Email Field', 'yes' ],
@@ -33,9 +32,8 @@ trait Visibility_Controls {
             'show_service_duration' => [ 'Duration on Service Cards', 'no' ],
             'show_service_desc'   => [ 'Description on Service Cards', 'yes' ],
             'show_service_images' => [ 'Images on Service Cards', 'yes' ],
-            'show_pro_photos'     => [ 'Photos on Professional Cards', 'yes' ],
             'show_remaining_slots'=> [ 'Remaining Slot Count', 'yes' ],
-            'show_booking_summary'=> [ 'Booking Summary Box (Step 5)', 'yes' ],
+            'show_booking_summary'=> [ 'Booking Summary Box (Step 4)', 'yes' ],
         ];
 
         foreach ( $switches as $key => $data ) {

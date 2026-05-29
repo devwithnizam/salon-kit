@@ -13,14 +13,12 @@ trait Text_Controls {
 
         $texts = [
             'step1_title'   => [ 'Step 1 Title', 'Choose a Service' ],
-            'step2_title'   => [ 'Step 2 Title', 'Choose Your Professional' ],
-            'step3_title'   => [ 'Step 3 Title', 'Choose a Date' ],
-            'step4_title'   => [ 'Step 4 Title', 'Choose a Time' ],
-            'step5_title'   => [ 'Step 5 Title', 'Your Details' ],
-            'step1_btn'     => [ 'Step 1 Button', 'Choose Professional →' ],
-            'step2_btn'     => [ 'Step 2 Button', 'Choose Date →' ],
-            'step3_btn'     => [ 'Step 3 Button', 'Choose Time →' ],
-            'step4_btn'     => [ 'Step 4 Button', 'Your Details →' ],
+            'step2_title'   => [ 'Step 2 Title', 'Choose a Date' ],
+            'step3_title'   => [ 'Step 3 Title', 'Choose a Time' ],
+            'step4_title'   => [ 'Step 4 Title', 'Your Details' ],
+            'step1_btn'     => [ 'Step 1 Button', 'Choose Date →' ],
+            'step2_btn'     => [ 'Step 2 Button', 'Choose Time →' ],
+            'step3_btn'     => [ 'Step 3 Button', 'Your Details →' ],
             'submit_btn'    => [ 'Submit Button', 'Confirm Booking' ],
             'back_btn'      => [ 'Back Button', '← Back' ],
             'book_again'    => [ 'Book Again Button', 'Book Another Appointment' ],
@@ -44,10 +42,9 @@ trait Text_Controls {
 
         $step_labels = [
             'step_label_1' => [ 'Step 1 Label', 'Service' ],
-            'step_label_2' => [ 'Step 2 Label', 'Professional' ],
-            'step_label_3' => [ 'Step 3 Label', 'Date' ],
-            'step_label_4' => [ 'Step 4 Label', 'Time' ],
-            'step_label_5' => [ 'Step 5 Label', 'Details' ],
+            'step_label_2' => [ 'Step 2 Label', 'Date' ],
+            'step_label_3' => [ 'Step 3 Label', 'Time' ],
+            'step_label_4' => [ 'Step 4 Label', 'Details' ],
         ];
         foreach ( $step_labels as $key => $data ) {
             $this->add_control( $key, [
@@ -65,7 +62,6 @@ trait Text_Controls {
 
         $summaries = [
             'summary_service' => [ 'No Service Text', 'No service selected' ],
-            'summary_pro'     => [ 'No Professional Text', 'No professional selected' ],
             'summary_date'    => [ 'No Date Text', 'No date selected' ],
             'summary_time'    => [ 'No Time Text', 'No time selected' ],
         ];
@@ -110,7 +106,6 @@ trait Text_Controls {
 
         $box_labels = [
             'bsb_service'      => [ 'Service Label', 'Service' ],
-            'bsb_professional' => [ 'Professional Label', 'Professional' ],
             'bsb_date'         => [ 'Date Label', 'Date' ],
             'bsb_time'         => [ 'Time Label', 'Time' ],
             'bsb_price'        => [ 'Price Label', 'Price' ],
@@ -131,10 +126,8 @@ trait Text_Controls {
 
         $messages = [
             'msg_loading_services' => [ 'Loading Services', 'Loading services...' ],
-            'msg_loading_pros'     => [ 'Loading Professionals', 'Loading professionals...' ],
             'msg_loading_slots'    => [ 'Loading Slots', 'Loading available times...' ],
             'msg_empty_services'   => [ 'Empty Services', 'No services available. Please check back later.' ],
-            'msg_empty_pros'       => [ 'Empty Professionals', 'No professionals available for this service.' ],
             'msg_empty_slots'      => [ 'Empty Slots', 'No available slots for this date. Choose another.' ],
             'msg_error_name'       => [ 'Error — Name', 'Please enter your full name.' ],
             'msg_error_email'      => [ 'Error — Email', 'Please enter a valid email.' ],

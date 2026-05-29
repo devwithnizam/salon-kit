@@ -10,22 +10,17 @@ defined( 'ABSPATH' ) || exit;
     <div class="sb-step-line"></div>
     <div class="sb-step" data-step="2">
       <span class="sb-step-num">2</span>
-      <span class="sb-step-label" data-sk-text="step_label_2">Professional</span>
+      <span class="sb-step-label" data-sk-text="step_label_2">Date</span>
     </div>
     <div class="sb-step-line"></div>
     <div class="sb-step" data-step="3">
       <span class="sb-step-num">3</span>
-      <span class="sb-step-label" data-sk-text="step_label_3">Date</span>
+      <span class="sb-step-label" data-sk-text="step_label_3">Time</span>
     </div>
     <div class="sb-step-line"></div>
     <div class="sb-step" data-step="4">
       <span class="sb-step-num">4</span>
-      <span class="sb-step-label" data-sk-text="step_label_4">Time</span>
-    </div>
-    <div class="sb-step-line"></div>
-    <div class="sb-step" data-step="5">
-      <span class="sb-step-num">5</span>
-      <span class="sb-step-label" data-sk-text="step_label_5">Details</span>
+      <span class="sb-step-label" data-sk-text="step_label_4">Details</span>
     </div>
   </div>
 
@@ -39,21 +34,12 @@ defined( 'ABSPATH' ) || exit;
         <span class="sb-summary-text" data-sk-text="summary_service" id="sumService">No service selected</span>
       </div>
     </div>
-    <div class="sb-summary-item" id="summaryProfessional">
-      <div class="sb-summary-icon">
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-      </div>
-      <div class="sb-summary-body">
-        <span class="sb-summary-label" data-sk-text="step_label_2">Professional</span>
-        <span class="sb-summary-text" data-sk-text="summary_pro" id="sumProfessional">No professional selected</span>
-      </div>
-    </div>
     <div class="sb-summary-item" id="summaryDate">
       <div class="sb-summary-icon">
         <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
       </div>
       <div class="sb-summary-body">
-        <span class="sb-summary-label" data-sk-text="step_label_3">Date</span>
+        <span class="sb-summary-label" data-sk-text="step_label_2">Date</span>
         <span class="sb-summary-text" data-sk-text="summary_date" id="sumDate">No date selected</span>
       </div>
     </div>
@@ -62,7 +48,7 @@ defined( 'ABSPATH' ) || exit;
         <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
       <div class="sb-summary-body">
-        <span class="sb-summary-label" data-sk-text="step_label_4">Time</span>
+        <span class="sb-summary-label" data-sk-text="step_label_3">Time</span>
         <span class="sb-summary-text" data-sk-text="summary_time" id="sumTime">No time selected</span>
       </div>
     </div>
@@ -73,29 +59,14 @@ defined( 'ABSPATH' ) || exit;
     <div class="sb-services-grid" id="sbServicesGrid"></div>
     <div class="sb-btn-row">
       <button class="sb-btn sb-btn-next" id="step1Next" disabled>
-        <span class="sb-btn-text" data-sk-text="step1_btn">Choose Professional →</span>
+        <span class="sb-btn-text" data-sk-text="step1_btn">Choose Date →</span>
         <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
   </div>
 
   <div class="sb-panel" id="sbPanel2" data-sk-vis="show-step2">
-    <h2 class="sb-panel-title" data-sk-text="step2_title">Choose Your Professional</h2>
-    <div class="sb-pro-grid" id="sbProGrid"></div>
-    <div class="sb-btn-row">
-      <button class="sb-btn sb-btn-back" id="step2Back">
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        <span class="sb-btn-text" data-sk-text="back_btn">← Back</span>
-      </button>
-      <button class="sb-btn sb-btn-next" id="step2Next" disabled>
-        <span class="sb-btn-text" data-sk-text="step2_btn">Choose Date →</span>
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="sb-panel" id="sbPanel3" data-sk-vis="show-step3">
-    <h2 class="sb-panel-title" data-sk-text="step3_title">Choose a Date</h2>
+    <h2 class="sb-panel-title" data-sk-text="step2_title">Choose a Date</h2>
     <div class="sb-calendar-wrap">
       <div class="sb-cal-header">
         <button class="sb-cal-nav" id="calPrev">
@@ -112,37 +83,36 @@ defined( 'ABSPATH' ) || exit;
       <div class="sb-cal-grid" id="calGrid"></div>
     </div>
     <div class="sb-btn-row">
+      <button class="sb-btn sb-btn-back" id="step2Back">
+        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="sb-btn-text" data-sk-text="back_btn">← Back</span>
+      </button>
+      <button class="sb-btn sb-btn-next" id="step2Next" disabled>
+        <span class="sb-btn-text" data-sk-text="step2_btn">Choose Time →</span>
+        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="sb-panel" id="sbPanel3" data-sk-vis="show-step3">
+    <h2 class="sb-panel-title" data-sk-text="step3_title">Choose a Time</h2>
+    <div class="sb-time-grid" id="sbTimeGrid"></div>
+    <div class="sb-btn-row">
       <button class="sb-btn sb-btn-back" id="step3Back">
         <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         <span class="sb-btn-text" data-sk-text="back_btn">← Back</span>
       </button>
       <button class="sb-btn sb-btn-next" id="step3Next" disabled>
-        <span class="sb-btn-text" data-sk-text="step3_btn">Choose Time →</span>
+        <span class="sb-btn-text" data-sk-text="step3_btn">Your Details →</span>
         <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
   </div>
 
   <div class="sb-panel" id="sbPanel4" data-sk-vis="show-step4">
-    <h2 class="sb-panel-title" data-sk-text="step4_title">Choose a Time</h2>
-    <div class="sb-time-grid" id="sbTimeGrid"></div>
-    <div class="sb-btn-row">
-      <button class="sb-btn sb-btn-back" id="step4Back">
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        <span class="sb-btn-text" data-sk-text="back_btn">← Back</span>
-      </button>
-      <button class="sb-btn sb-btn-next" id="step4Next" disabled>
-        <span class="sb-btn-text" data-sk-text="step4_btn">Your Details →</span>
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="sb-panel" id="sbPanel5" data-sk-vis="show-step5">
-    <h2 class="sb-panel-title" data-sk-text="step5_title">Your Details</h2>
+    <h2 class="sb-panel-title" data-sk-text="step4_title">Your Details</h2>
     <div class="sb-booking-summary-box" data-sk-vis="show-booking-summary">
       <div class="sb-bsb-row"><span data-sk-text="bsb_service">Service</span><strong id="bsbService">--</strong></div>
-      <div class="sb-bsb-row"><span data-sk-text="bsb_professional">Professional</span><strong id="bsbProfessional">--</strong></div>
       <div class="sb-bsb-row"><span data-sk-text="bsb_date">Date</span><strong id="bsbDate">--</strong></div>
       <div class="sb-bsb-row"><span data-sk-text="bsb_time">Time</span><strong id="bsbTime">--</strong></div>
       <div class="sb-bsb-row sb-bsb-total"><span data-sk-text="bsb_price">Price</span><strong id="bsbPrice">--</strong></div>
@@ -177,7 +147,7 @@ defined( 'ABSPATH' ) || exit;
     </div>
     <p class="sb-error-msg" id="sbErrorMsg"></p>
     <div class="sb-btn-row">
-      <button class="sb-btn sb-btn-back" id="step5Back">
+      <button class="sb-btn sb-btn-back" id="step4Back">
         <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         <span class="sb-btn-text" data-sk-text="back_btn">← Back</span>
       </button>

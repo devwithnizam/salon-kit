@@ -19,7 +19,6 @@ class Bookings_DB {
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
             id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             service_id      BIGINT UNSIGNED NOT NULL,
-            professional_id BIGINT UNSIGNED NOT NULL,
             booking_date    DATE NOT NULL,
             booking_time    TIME NOT NULL,
             client_name     VARCHAR(100) NOT NULL,
@@ -28,9 +27,8 @@ class Bookings_DB {
             notes           TEXT DEFAULT '',
             status          VARCHAR(20) DEFAULT 'confirmed',
             created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
-            INDEX idx_slot (professional_id, booking_date, booking_time, status),
+            INDEX idx_slot (service_id, booking_date, booking_time, status),
             INDEX idx_date (booking_date),
-            INDEX idx_pro (professional_id),
             INDEX idx_service (service_id)
         ) $charset;";
 
@@ -50,7 +48,6 @@ class Bookings_DB {
         global $wpdb;
         $defaults = [
             'service_id'      => 0,
-            'professional_id' => 0,
             'booking_date'    => '',
             'booking_time'    => '',
             'client_name'     => '',
@@ -65,7 +62,6 @@ class Bookings_DB {
             $wpdb->prefix . self::TABLE,
             [
                 'service_id'      => absint( $data['service_id'] ),
-                'professional_id' => absint( $data['professional_id'] ),
                 'booking_date'    => sanitize_text_field( $data['booking_date'] ),
                 'booking_time'    => sanitize_text_field( $data['booking_time'] ),
                 'client_name'     => sanitize_text_field( $data['client_name'] ),
@@ -74,31 +70,31 @@ class Bookings_DB {
                 'notes'           => sanitize_textarea_field( $data['notes'] ),
                 'status'          => in_array( $data['status'], [ 'confirmed', 'cancelled', 'pending' ] ) ? $data['status'] : 'confirmed',
             ],
-            [ '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ]
+            [ '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ]
         );
 
         return $result ? $wpdb->insert_id : false;
     }
 
-    public static function count_for_slot( $professional_id, $date, $time ) {
+    public static function count_for_slot( $service_id, $date, $time ) {
         global $wpdb;
         $table = $wpdb->prefix . self::TABLE;
         return (int) $wpdb->get_var( $wpdb->prepare(
             "SELECT COUNT(*) FROM $table
-             WHERE professional_id = %d AND booking_date = %s AND booking_time = %s AND status = 'confirmed'",
-            $professional_id, $date, $time
+             WHERE service_id = %d AND booking_date = %s AND booking_time = %s AND status = 'confirmed'",
+            $service_id, $date, $time
         ) );
     }
 
-    public static function get_counts_for_date( $professional_id, $date ) {
+    public static function get_counts_for_date( $service_id, $date ) {
         global $wpdb;
         $table = $wpdb->prefix . self::TABLE;
         $results = $wpdb->get_results( $wpdb->prepare(
             "SELECT booking_time, COUNT(*) AS booked
              FROM $table
-             WHERE professional_id = %d AND booking_date = %s AND status = 'confirmed'
+             WHERE service_id = %d AND booking_date = %s AND status = 'confirmed'
              GROUP BY booking_time",
-            $professional_id, $date
+            $service_id, $date
         ) );
 
         $counts = [];
@@ -113,7 +109,6 @@ class Bookings_DB {
         $table = $wpdb->prefix . self::TABLE;
 
         $defaults = [
-            'professional_id' => 0,
             'service_id'      => 0,
             'date_from'       => '',
             'date_to'         => '',
@@ -128,7 +123,6 @@ class Bookings_DB {
         $where  = [];
         $params = [];
 
-        if ( $args['professional_id'] ) { $where[] = 'professional_id = %d'; $params[] = $args['professional_id']; }
         if ( $args['service_id'] )      { $where[] = 'service_id = %d';      $params[] = $args['service_id']; }
         if ( $args['status'] )          { $where[] = 'status = %s';          $params[] = $args['status']; }
         if ( $args['date_from'] )       { $where[] = 'booking_date >= %s';   $params[] = $args['date_from']; }

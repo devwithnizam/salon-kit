@@ -7,20 +7,19 @@ class Slot_Engine {
 
     public static function init() {}
 
-    public static function get_available_slots( $professional_id, $service_id, $date ) {
+    public static function get_available_slots( $service_id, $date ) {
         $duration = (int) get_post_meta( $service_id, '_sb_duration', true );
         $slot_qty = max( 1, (int) get_post_meta( $service_id, '_sb_slot_qty', true ) ?: 1 );
 
         if ( ! $duration ) return [];
 
         $day_of_week = strtolower( date( 'l', strtotime( $date ) ) );
-        $schedule    = (array) get_post_meta( $professional_id, '_sb_schedule', true );
+        $schedule    = (array) get_post_meta( $service_id, '_sb_schedule', true );
 
         if ( empty( $schedule[ $day_of_week ] ) ) return [];
 
         $day_data = $schedule[ $day_of_week ];
 
-        // Normalize: new format { segments, buffer, max_daily } or legacy [ {start,end} ]
         $segments  = [];
         $buffer    = 10;
         $max_daily = 0;
@@ -30,42 +29,36 @@ class Slot_Engine {
             $buffer    = (int) ( $day_data['buffer'] ?? 10 );
             $max_daily = (int) ( $day_data['max_daily'] ?? 0 );
         } else {
-            // Legacy: first segment = work, second = lunch gap, no buffer
             $segments = $day_data;
         }
 
         if ( empty( $segments ) ) return [];
 
         // Check date exceptions
-        $exceptions = (array) get_post_meta( $professional_id, '_sb_exceptions', true );
+        $exceptions = (array) get_post_meta( $service_id, '_sb_exceptions', true );
         foreach ( $exceptions as $exc ) {
             if ( ( $exc['date'] ?? '' ) === $date ) return [];
         }
 
-        // Generate raw slots from all work segments (skip lunch/gap segments)
         $raw_slots = [];
         foreach ( $segments as $seg ) {
             $raw_slots = array_merge( $raw_slots, self::generate( $seg['start'], $seg['end'], $duration, $buffer ) );
         }
 
-        $booked_counts = Bookings_DB::get_counts_for_date( $professional_id, $date );
-        $cached_key    = "sk_slots_{$professional_id}_{$date}";
-        $cached        = get_transient( $cached_key );
+        $booked_counts = Bookings_DB::get_counts_for_date( $service_id, $date );
+        $cached_key    = "sk_slots_{$service_id}_{$date}";
 
         $result = [];
 
-        // Check max daily bookings
         if ( $max_daily > 0 ) {
             $total_booked_today = array_sum( $booked_counts );
             $remaining_daily    = max( 0, $max_daily - $total_booked_today );
             if ( $remaining_daily <= 0 ) return [];
-            // Limit slots to remaining daily capacity
             $max_slots_to_offer = ceil( $remaining_daily / $slot_qty );
             $raw_slots          = array_slice( $raw_slots, 0, $max_slots_to_offer * 2 );
         }
 
         foreach ( $raw_slots as $t ) {
-            // Remove duplicate slots from overlapping segments
             if ( isset( $result[ $t ] ) ) continue;
 
             $booked   = isset( $booked_counts[ $t ] ) ? $booked_counts[ $t ] : 0;
@@ -79,15 +72,14 @@ class Slot_Engine {
 
         $result = array_values( $result );
 
-        // Cache for 1 hour
         set_transient( $cached_key, $result, HOUR_IN_SECONDS );
 
         return $result;
     }
 
-    public static function is_slot_available( $professional_id, $service_id, $date, $time ) {
+    public static function is_slot_available( $service_id, $date, $time ) {
         $slot_qty = max( 1, (int) get_post_meta( $service_id, '_sb_slot_qty', true ) ?: 1 );
-        $booked   = Bookings_DB::count_for_slot( $professional_id, $date, $time );
+        $booked   = Bookings_DB::count_for_slot( $service_id, $date, $time );
         return $booked < $slot_qty;
     }
 

@@ -19,7 +19,6 @@ class Email {
         $settings = Settings::get();
 
         $service_name       = get_the_title( $row->service_id );
-        $professional_name  = get_the_title( $row->professional_id );
         $booking_id_display = '#BK-' . str_pad( $row->id, 4, '0', STR_PAD_LEFT );
         $booking_date       = date_i18n( get_option( 'date_format' ), strtotime( $row->booking_date ) );
         $booking_time       = date_i18n( get_option( 'time_format' ), strtotime( $row->booking_time ) );
@@ -27,7 +26,6 @@ class Email {
         $tags = [
             '{client_name}'       => $row->client_name,
             '{service_name}'      => $service_name,
-            '{professional_name}' => $professional_name,
             '{booking_date}'      => $booking_date,
             '{booking_time}'      => $booking_time,
             '{booking_id}'        => $booking_id_display,
@@ -67,7 +65,6 @@ class Email {
 
     private static function build_body( $row, $settings, $tags, $type ) {
         $service_name       = $tags['{service_name}'];
-        $professional_name  = $tags['{professional_name}'];
         $booking_date       = $tags['{booking_date}'];
         $booking_time       = $tags['{booking_time}'];
         $booking_id_display = $tags['{booking_id}'];

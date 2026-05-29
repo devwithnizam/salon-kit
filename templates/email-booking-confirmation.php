@@ -120,10 +120,6 @@
             <td class="value"><?php echo esc_html( $service_name ); ?></td>
           </tr>
           <tr>
-            <td class="label"><?php esc_html_e( 'Professional', 'salon-kit' ); ?></td>
-            <td class="value"><?php echo esc_html( $professional_name ); ?></td>
-          </tr>
-          <tr>
             <td class="label"><?php esc_html_e( 'Date', 'salon-kit' ); ?></td>
             <td class="value"><?php echo esc_html( $booking_date ); ?></td>
           </tr>

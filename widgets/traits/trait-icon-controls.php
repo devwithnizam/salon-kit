@@ -18,11 +18,9 @@ trait Icon_Controls {
 
         $icons = [
             'icon_service_card'  => [ 'Service Card Icon', 'sk-icon-scissors' ],
-            'icon_pro_card'      => [ 'Professional Card Icon', 'sk-icon-professional' ],
             'icon_date'          => [ 'Date Icon', 'sk-icon-calendar' ],
             'icon_time'          => [ 'Time Icon', 'sk-icon-clock' ],
             'icon_summary_svc'   => [ 'Summary Service Icon', 'sk-icon-scissors' ],
-            'icon_summary_pro'   => [ 'Summary Professional Icon', 'sk-icon-professional' ],
             'icon_summary_date'  => [ 'Summary Date Icon', 'sk-icon-calendar' ],
             'icon_summary_time'  => [ 'Summary Time Icon', 'sk-icon-clock' ],
             'icon_success'       => [ 'Success Checkmark', 'sk-icon-confirmed' ],
