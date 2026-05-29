@@ -158,9 +158,8 @@
 
 /* ── Summary bar ── */
 .sb-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
+  display: flex;
+  flex-wrap: wrap;
   background: var(--sk-summary-bg);
   border-radius: 10px;
   margin-bottom: 28px;
@@ -173,21 +172,27 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  border-bottom: 1px solid var(--sk-border);
-  border-right: 1px solid var(--sk-border);
   min-height: 44px;
+  flex: 1 1 150px;
+  border-right: 1px solid var(--sk-border);
+  border-bottom: 1px solid var(--sk-border);
 }
 
-/* Remove borders on last items for clean 2×2 grid */
-.sb-summary-item:nth-last-child(-n+2) {
+/* Remove border-right from last item in each row */
+.sb-summary-item:last-child {
+  border-right: none;
   border-bottom: none;
 }
 
-.sb-summary-item:nth-child(even) {
-  border-right: none;
+/* When items wrap, remove right border from even items too */
+@media (min-width: 641px) {
+  .sb-summary-item:nth-child(2n) {
+    border-right: none;
+  }
+  .sb-summary-item:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
 }
-
-/* All items when shown as 1 column on mobile — handled in responsive */
 
 .sb-summary-icon {
   display: flex;
@@ -395,6 +400,150 @@
   object-fit: cover;
   flex-shrink: 0;
   background: var(--sk-primary-lite);
+}
+
+/* ═══════════════════════════════════════
+   ADAPTIVE LAYOUTS — dynamic card reflow
+   based on visible fields
+   ═══════════════════════════════════════ */
+
+/* ── Service Cards ────────────────────── */
+
+/* No image: info takes full width, card more compact */
+[data-show-service-images="no"] .sb-service-card {
+  padding: 12px 16px;
+  min-height: 56px;
+}
+
+[data-show-service-images="no"] .sb-svc-thumb {
+  display: none;
+}
+
+[data-show-service-images="no"] .sb-svc-info {
+  padding-left: 0;
+}
+
+/* No description: name is larger, less vertical gap */
+[data-show-service-desc="no"] .sb-svc-name {
+  font-size: 16px;
+}
+
+[data-show-service-desc="no"] .sb-svc-info {
+  gap: 0;
+}
+
+/* No price: meta column collapses */
+[data-show-service-price="no"] .sb-svc-meta {
+  display: none;
+}
+
+/* No image + no price: single row, name fills width */
+[data-show-service-images="no"][data-show-service-price="no"] .sb-service-card {
+  justify-content: center;
+  text-align: center;
+  padding: 14px 16px;
+}
+
+[data-show-service-images="no"][data-show-service-price="no"] .sb-svc-name {
+  font-size: 17px;
+}
+
+/* No image + no desc: compact badge-style card */
+[data-show-service-images="no"][data-show-service-desc="no"] .sb-service-card {
+  min-height: 48px;
+  padding: 10px 16px;
+}
+
+/* All three hidden (image, desc, price): minimal pill card */
+[data-show-service-images="no"][data-show-service-desc="no"][data-show-service-price="no"] .sb-service-card {
+  justify-content: center;
+  text-align: center;
+  border-radius: 30px;
+  padding: 8px 20px;
+  min-height: 42px;
+}
+
+[data-show-service-images="no"][data-show-service-desc="no"][data-show-service-price="no"] .sb-svc-name {
+  font-size: 15px;
+}
+
+/* ── Professional Cards ────────────────── */
+
+/* No photo: info centered, more compact */
+[data-show-pro-photos="no"] .sb-pro-card {
+  justify-content: center;
+  text-align: center;
+  padding: 12px 16px;
+  min-height: 56px;
+}
+
+[data-show-pro-photos="no"] .sb-pro-photo {
+  display: none;
+}
+
+[data-show-pro-photos="no"] .sb-pro-name {
+  font-size: 16px;
+}
+
+/* No photo + single row: balanced spacing */
+[data-show-pro-photos="no"] .sb-pro-info {
+  align-items: center;
+}
+
+/* ── Summary Bar — Auto-fit grid ────────── */
+
+.sb-summary {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.sb-summary-item {
+  border-right: 1px solid var(--sk-border);
+}
+
+.sb-summary-item:nth-child(even) {
+  border-right: 1px solid var(--sk-border);
+}
+
+/* When only 1 item visible: full width */
+.sb-summary-item:only-child {
+  grid-column: 1 / -1;
+  border-right: none;
+}
+
+/* ── Step Indicator — Adapt to hidden steps ── */
+
+/* If step 2 (pro selection) is hidden, step line still looks connected */
+.sb-step[data-step="2"]:not([style*="display: none"]) ~ .sb-step-line {
+  /* Default behavior — keep visible */
+}
+
+/* Smooth out steps when some are hidden */
+.sb-steps:has(.sb-step[style*="display: none"]) {
+  justify-content: center;
+  gap: 4px;
+}
+
+/* ── Booking Summary Box (Step 5) ──────────── */
+
+/* When booking summary box is hidden */
+[data-show-booking-summary="no"] .sb-booking-summary-box {
+  display: none;
+}
+
+.sb-booking-summary-box:empty {
+  display: none;
+}
+
+/* ── Panel: when step has no content ────────── */
+
+.sb-panel:not([style*="display: none"]):empty {
+  display: none !important;
+}
+
+/* ── Field groups: compact when single column ── */
+
+.sb-fields:has(.sb-field-group:only-child) {
+  gap: 0;
 }
 
 /* ── Calendar ── */
@@ -988,7 +1137,7 @@
   .sb-cal-month-label { font-size: 15px; }
 
   .sb-summary {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     border-radius: 8px;
     margin-bottom: 18px;
   }
@@ -996,9 +1145,7 @@
     padding: 8px 12px;
     min-height: 40px;
     border-right: none;
-  }
-  .sb-summary-item:nth-last-child(-n+2) {
-    border-bottom: 1px solid var(--sk-border);
+    flex: 1 1 auto;
   }
   .sb-summary-item:last-child {
     border-bottom: none;
