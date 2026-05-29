@@ -49,37 +49,8 @@ class Admin {
 
         if ( in_array( $screen->post_type, [ 'salon_service', 'salon_booking' ] ) ) : ?>
         <style>
-            .fixed .column-sb_thumb { width: 44px; }
-            .fixed .column-sb_price,
-            .fixed .column-sb_dur,
-            .fixed .column-sb_slots { width: 70px; }
-            .fixed .column-sb_sched { width: 100px; }
-            .fixed .column-booking_date,
-            .fixed .column-booking_time,
-            .fixed .column-booking_price { width: 90px; }
-            .fixed .column-status { width: 80px; }
-        </style>
-        <?php endif;
-
-        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_booking' ] ) ) : ?>
-        <style>
-            #sb_service_details .inside,
-            #sb_service_schedule .inside { padding: 14px 16px; }
-            #sb_service_details .postbox-header,
-            #sb_service_schedule .postbox-header { border-bottom: 1px solid #e5e7eb; }
             .post-type-salon_service .handle-actions,
             .post-type-salon_booking .handle-actions { display: flex; align-items: center; }
-            .sk-booking-info-table { width:100%; border-collapse:collapse; }
-            .sk-booking-info-table td { padding:6px 0; border-bottom:1px solid #f1f5f9; font-size:13px; }
-            .sk-booking-info-table .sk-bit-label { color:#64748b; font-weight:500; width:100px; vertical-align:top; }
-            .sk-booking-info-table .sk-bit-value { color:#1e293b; font-weight:600; }
-            .sk-booking-id-badge { display:inline-block; background:#eef2ff; color:#4f46e5; font-weight:700; font-size:14px; padding:2px 12px; border-radius:6px; letter-spacing:0.5px; }
-            .sk-booking-meta-row { display:flex; justify-content:space-between; padding:4px 0; font-size:12px; }
-            .sk-booking-meta-label { color:#94a3b8; }
-            .sk-booking-meta-value { color:#475569; font-weight:500; }
-            .sk-input { border:1px solid #d1d5db; border-radius:6px; padding:6px 10px; font-size:13px; width:100%; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
-            .sk-input:focus { border-color:#6366f1; box-shadow:0 0 0 1px #6366f1; outline:none; }
-            .sk-mb-card-head { display:flex; align-items:center; gap:6px; font-weight:600; font-size:13px; color:#1e293b; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #f1f5f9; }
         </style>
         <?php endif;
     }

@@ -74,6 +74,16 @@
 
     state.step = step;
     updateSummary();
+
+    // Relocate summary bar into active panel (before button row)
+    const summary = $('#sbSummaryBar');
+    if (summary && panel) {
+      const btnRow = panel.querySelector('.sb-btn-row');
+      if (btnRow) {
+        panel.insertBefore(summary, btnRow);
+      }
+    }
+
     const focusable = panel ? panel.querySelector('button, input, [tabindex]:not([tabindex="-1"])') : null;
     if (focusable) focusable.focus();
   }
@@ -441,6 +451,14 @@
     state.services = SalonKit.services || [];
 
     renderServices();
+
+    // Relocate summary bar into initial active panel
+    const initialPanel = $('#sbPanel1');
+    const summary = $('#sbSummaryBar');
+    if (summary && initialPanel) {
+      const btnRow = initialPanel.querySelector('.sb-btn-row');
+      if (btnRow) initialPanel.insertBefore(summary, btnRow);
+    }
 
     const bind = (id, event, fn) => {
       const el = $(id);

@@ -92,7 +92,12 @@ class Meta_Boxes {
         $exceptions = (array) get_post_meta( $post->ID, '_sb_exceptions', true );
         $days       = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
         $labels     = [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ];
+        $full_names = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ];
         ?>
+        <p style="margin:0 0 14px;color:var(--sk-muted);font-size:13px;line-height:1.5;">
+            Set your weekly availability. Enable a day, then add one or more time segments (e.g. 09:00–12:00 and 13:00–17:00).
+            The system will generate bookable slots within each segment.
+        </p>
         <div class="sk-sched" data-sk-sched>
             <?php foreach ( $days as $i => $day ) :
                 $day_data  = $schedule[ $day ] ?? [];
@@ -123,72 +128,102 @@ class Meta_Boxes {
                         <span class="sk-sched-abbr"><?php echo esc_html( $labels[ $i ] ); ?></span>
                     </label>
                     <div class="sk-sched-head-actions">
-                        <button type="button" class="sk-sched-copy-btn button-link" title="Copy to other days" data-sk-copy="<?php echo esc_attr( $day ); ?>">
+                        <span class="sk-sched-range"><?php echo $active ? esc_html( $segments[0]['start'] ?? '--' ) . ' – ' . esc_html( $segments[0]['end'] ?? '--' ) . ( count( $segments ) > 1 ? ' <span class="sk-plus">+' . ( count( $segments ) - 1 ) . ' more</span>' : '' ) : 'Closed'; ?></span>
+                        <button type="button" class="sk-sched-copy-btn button-link" title="Copy this schedule to other days" data-sk-copy="<?php echo esc_attr( $day ); ?>">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                            <span class="sk-sched-copy-label">Copy</span>
                         </button>
-                        <span class="sk-sched-range"><?php echo $active ? esc_html( $segments[0]['start'] ?? '--' ) . ' – ' . esc_html( $segments[0]['end'] ?? '--' ) . ( count( $segments ) > 1 ? ' <span class="sk-plus">+' . ( count( $segments ) - 1 ) . '</span>' : '' ) : '—'; ?></span>
                     </div>
                 </div>
                 <div class="sk-sched-body">
                     <div class="sk-sched-segments" data-sk-segments>
+                        <?php if ( ! empty( $segments ) ) : ?>
                         <?php foreach ( $segments as $si => $seg ) : ?>
                         <div class="sk-sched-seg" data-sk-seg="<?php echo esc_attr( $si ); ?>">
+                            <span class="sk-sched-seg-label">Time segment <?php echo $si + 1; ?></span>
                             <label class="sk-sched-fld">
                                 <span>From</span>
-                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][start]" value="<?php echo esc_attr( $seg['start'] ); ?>">
+                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][start]" value="<?php echo esc_attr( $seg['start'] ); ?>" placeholder="09:00">
                             </label>
+                            <span class="sk-sched-to">→</span>
                             <label class="sk-sched-fld">
                                 <span>To</span>
-                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][end]" value="<?php echo esc_attr( $seg['end'] ); ?>">
+                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][end]" value="<?php echo esc_attr( $seg['end'] ); ?>" placeholder="17:00">
                             </label>
-                            <button type="button" class="sk-sched-remove-seg button-link" title="Remove segment"<?php echo count( $segments ) <= 1 ? ' style="display:none"' : ''; ?>>
+                            <button type="button" class="sk-sched-remove-seg button-link" title="Remove this segment"<?php echo count( $segments ) <= 1 ? ' style="display:none"' : ''; ?>>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                             </button>
                         </div>
                         <?php endforeach; ?>
+                        <?php else : ?>
+                        <div class="sk-sched-seg" data-sk-seg="0" style="display:none">
+                            <span class="sk-sched-seg-label">Time segment 1</span>
+                            <label class="sk-sched-fld">
+                                <span>From</span>
+                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][0][start]" value="" placeholder="09:00">
+                            </label>
+                            <span class="sk-sched-to">→</span>
+                            <label class="sk-sched-fld">
+                                <span>To</span>
+                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][0][end]" value="" placeholder="17:00">
+                            </label>
+                            <button type="button" class="sk-sched-remove-seg button-link" title="Remove this segment" style="display:none">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                            </button>
+                        </div>
+                        <?php endif; ?>
                     </div>
-                    <button type="button" class="sk-sched-add-seg button-link">+ Add segment</button>
+                    <button type="button" class="sk-sched-add-seg button-link">+ Add another time segment</button>
 
                     <div class="sk-sched-options">
                         <label class="sk-sched-opt">
-                            <span>Buffer</span>
+                            <span class="sk-sched-opt-label">Buffer between slots</span>
                             <input type="number" name="sb_schedule[<?php echo esc_attr( $day ); ?>][buffer]" value="<?php echo esc_attr( $buffer ); ?>" min="0" max="60" step="5" class="sk-sched-num">
-                            <span class="sk-unit">min</span>
+                            <span class="sk-unit">minutes</span>
+                            <span class="sk-sched-hint">Clean-up time between appointments</span>
                         </label>
                         <label class="sk-sched-opt">
-                            <span>Max/day</span>
+                            <span class="sk-sched-opt-label">Max bookings per day</span>
                             <input type="number" name="sb_schedule[<?php echo esc_attr( $day ); ?>][max_daily]" value="<?php echo esc_attr( $max_daily ); ?>" min="0" max="200" class="sk-sched-num">
-                            <span class="sk-unit">0 = unlimited</span>
+                            <span class="sk-sched-hint">0 = no limit</span>
                         </label>
                     </div>
+
+                    <div class="sk-sched-timeline" data-sk-timeline></div>
                 </div>
             </div>
             <?php endforeach; ?>
 
             <div class="sk-sched-toolbar">
-                <button type="button" class="button button-small sk-sched-copy-all" data-sk-copy-all>Apply Mon–Fri to all weekdays</button>
-                <span class="sk-sched-toolbar-hint">Use the <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="vertical-align:text-bottom"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> button on any day to copy to other days.</span>
+                <button type="button" class="button button-small sk-sched-copy-mwf" data-sk-copy-mwf>Copy Mon–Wed–Fri</button>
+                <button type="button" class="button button-small sk-sched-copy-all" data-sk-copy-all>Copy Mon–Fri to all weekdays</button>
+                <span class="sk-sched-toolbar-hint">Use <strong>Copy</strong> on any day to apply its schedule to other days.</span>
             </div>
         </div>
 
-        <div class="sk-exceptions" style="margin-top:16px;">
-            <div class="sk-mb-card-head">
+        <div class="sk-exceptions">
+            <div class="sk-exc-heading">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                Date Exceptions (blocked days / holidays)
+                Date Exceptions
+                <span class="sk-exc-heading-desc">Block specific dates (holidays, closures)</span>
             </div>
             <div class="sk-exceptions-list" data-sk-exceptions>
                 <?php foreach ( $exceptions as $ei => $exc ) : ?>
                 <div class="sk-exc-row" data-sk-exc="<?php echo esc_attr( $ei ); ?>">
                     <input type="date" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][date]" value="<?php echo esc_attr( $exc['date'] ?? '' ); ?>">
-                    <input type="text" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][reason]" value="<?php echo esc_attr( $exc['reason'] ?? '' ); ?>" placeholder="Reason (optional)" class="sk-exc-reason">
-                    <button type="button" class="sk-sched-remove-exc button-link" title="Remove exception">
+                    <input type="text" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][reason]" value="<?php echo esc_attr( $exc['reason'] ?? '' ); ?>" placeholder="e.g. Christmas, maintenance" class="sk-exc-reason">
+                    <button type="button" class="sk-btn-remove button-link" title="Remove exception">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </div>
                 <?php endforeach; ?>
             </div>
-            <button type="button" class="button button-small sk-sched-add-exc" data-sk-add-exc>+ Add exception</button>
+            <button type="button" class="button button-small sk-sched-add-exc" data-sk-add-exc>+ Add exception date</button>
         </div>
+        <p style="margin:10px 0 0;color:var(--sk-muted);font-size:12px;font-style:italic;">
+            <strong>How it works:</strong> On each enabled day, the system divides your time segments into slots matching the service duration.
+            Buffer adds cleanup time between slots. Max daily limit caps the total slots offered. Exception dates are fully blocked.
+        </p>
         <?php
     }
 

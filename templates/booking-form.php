@@ -24,36 +24,6 @@ defined( 'ABSPATH' ) || exit;
     </div>
   </div>
 
-  <div class="sb-summary" id="sbSummaryBar" data-sk-vis="show-summary-bar">
-    <div class="sb-summary-item" id="summaryService">
-      <div class="sb-summary-icon">
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.862 4.487l1.687-1.688a2.25 2.25 0 113.182 3.182L10.582 17.13a4.5 4.5 0 01-1.897 1.13L6 19l.74-2.685a4.5 4.5 0 011.13-1.897L16.862 4.487z"/></svg>
-      </div>
-      <div class="sb-summary-body">
-        <span class="sb-summary-label" data-sk-text="step_label_1">Service</span>
-        <span class="sb-summary-text" data-sk-text="summary_service" id="sumService">No service selected</span>
-      </div>
-    </div>
-    <div class="sb-summary-item" id="summaryDate">
-      <div class="sb-summary-icon">
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-      </div>
-      <div class="sb-summary-body">
-        <span class="sb-summary-label" data-sk-text="step_label_2">Date</span>
-        <span class="sb-summary-text" data-sk-text="summary_date" id="sumDate">No date selected</span>
-      </div>
-    </div>
-    <div class="sb-summary-item" id="summaryTime">
-      <div class="sb-summary-icon">
-        <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <div class="sb-summary-body">
-        <span class="sb-summary-label" data-sk-text="step_label_3">Time</span>
-        <span class="sb-summary-text" data-sk-text="summary_time" id="sumTime">No time selected</span>
-      </div>
-    </div>
-  </div>
-
   <div class="sb-panel active" id="sbPanel1" data-sk-vis="show-step1">
     <h2 class="sb-panel-title" data-sk-text="step1_title">Choose a Service</h2>
     <div class="sb-services-grid" id="sbServicesGrid"></div>
@@ -168,6 +138,30 @@ defined( 'ABSPATH' ) || exit;
     <button class="sb-btn sb-btn-next" id="sbBookAgain">
       <span class="sb-btn-text" data-sk-text="book_again">Book Another Appointment</span>
     </button>
+  </div>
+
+  <div class="sb-summary" id="sbSummaryBar" data-sk-vis="show-summary-bar">
+    <div class="sb-pill" id="summaryService">
+      <span class="sb-pill-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16.862 4.487l1.687-1.688a2.25 2.25 0 113.182 3.182L10.582 17.13a4.5 4.5 0 01-1.897 1.13L6 19l.74-2.685a4.5 4.5 0 011.13-1.897L16.862 4.487z"/></svg>
+      </span>
+      <span class="sb-pill-label" data-sk-text="step_label_1">Service</span>
+      <span class="sb-pill-value" id="sumService" data-sk-text="summary_service">Not selected</span>
+    </div>
+    <div class="sb-pill" id="summaryDate">
+      <span class="sb-pill-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      </span>
+      <span class="sb-pill-label" data-sk-text="step_label_2">Date</span>
+      <span class="sb-pill-value" id="sumDate" data-sk-text="summary_date">Not selected</span>
+    </div>
+    <div class="sb-pill" id="summaryTime">
+      <span class="sb-pill-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </span>
+      <span class="sb-pill-label" data-sk-text="step_label_3">Time</span>
+      <span class="sb-pill-value" id="sumTime" data-sk-text="summary_time">Not selected</span>
+    </div>
   </div>
 
 </div>
