@@ -51,6 +51,8 @@ class Meta_Boxes {
         $duration = get_post_meta( $post->ID, '_sb_duration', true );
         $slot_qty = get_post_meta( $post->ID, '_sb_slot_qty', true ) ?: 1;
         $slot_interval = get_post_meta( $post->ID, '_sb_slot_interval', true ) ?: '';
+        $sort_order = $post->menu_order;
+        $break_time = get_post_meta( $post->ID, '_sb_buffer', true ) ?: 10;
 
         $currency = apply_filters( 'sk_currency_symbol', '$' );
         ?>
@@ -78,6 +80,15 @@ class Meta_Boxes {
                 </div>
                 <div class="sk-mb-card">
                     <?php self::field(
+                        'Sort Order',
+                        self::input_group(
+                            '<input type="number" min="0" step="1" id="sb_sort_order" name="sb_sort_order" value="' . esc_attr( $sort_order ) . '" placeholder="0">',
+                            '',
+                            ''
+                        ),
+                        'Lower numbers appear first in the booking form. Set widget sort to "Menu Order" to use this.'
+                    ); ?>
+                    <?php self::field(
                         'Parallel Slots',
                         self::input_group(
                             '<input type="number" min="1" id="sb_slot_qty" name="sb_slot_qty" value="' . esc_attr( $slot_qty ) . '" required>',
@@ -95,6 +106,15 @@ class Meta_Boxes {
                         ),
                         'Time between slot starts. Leave empty to match duration.'
                     ); ?>
+                    <?php self::field(
+                        'Break Time',
+                        self::input_group(
+                            '<input type="number" min="0" max="60" step="5" id="sb_break_time" name="sb_buffer" value="' . esc_attr( $break_time ) . '">',
+                            '',
+                            'min'
+                        ),
+                        'Gap between consecutive slots (clean-up / break). Shows in the booking form.'
+                    ); ?>
                 </div>
             </div>
         </div>
@@ -105,7 +125,6 @@ class Meta_Boxes {
         $schedule   = (array) get_post_meta( $post->ID, '_sb_schedule', true );
         $exceptions = (array) get_post_meta( $post->ID, '_sb_exceptions', true );
 
-        $global_buffer    = (int) get_post_meta( $post->ID, '_sb_buffer', true ) ?: 10;
         $global_max_daily = (int) get_post_meta( $post->ID, '_sb_max_daily', true );
         ?>
         <p style="margin:0 0 12px;color:var(--sk-muted);font-size:13px;line-height:1.5;">
@@ -113,12 +132,6 @@ class Meta_Boxes {
         </p>
 
         <div class="sk-sched-globals">
-            <label class="sk-sched-global">
-                <span class="sk-sched-global-label">Buffer between slots</span>
-                <input type="number" name="sb_buffer" value="<?php echo esc_attr( $global_buffer ); ?>" min="0" max="60" step="5" class="sk-sched-global-num">
-                <span class="sk-unit-small">min</span>
-                <span class="sk-sched-global-hint">Clean-up time between appointments</span>
-            </label>
             <label class="sk-sched-global">
                 <span class="sk-sched-global-label">Max per day</span>
                 <input type="number" name="sb_max_daily" value="<?php echo esc_attr( $global_max_daily ); ?>" min="0" max="200" class="sk-sched-global-num">
@@ -228,6 +241,14 @@ class Meta_Boxes {
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
         if ( ! current_user_can( 'edit_post', $post_id ) ) return;
         if ( $post->post_type !== 'salon_service' ) return;
+
+        // Sort order (menu_order)
+        $new_order = absint( $_POST['sb_sort_order'] ?? 0 );
+        if ( $new_order !== $post->menu_order ) {
+            remove_action( 'save_post_salon_service', [ __CLASS__, 'save_service_meta' ], 10 );
+            wp_update_post( [ 'ID' => $post_id, 'menu_order' => $new_order ] );
+            add_action( 'save_post_salon_service', [ __CLASS__, 'save_service_meta' ], 10, 2 );
+        }
 
         update_post_meta( $post_id, '_sb_price',    sprintf( '%.2f', floatval( $_POST['sb_price'] ?? 0 ) ) );
         update_post_meta( $post_id, '_sb_duration', max( 5, absint( $_POST['sb_duration'] ?? 0 ) ) );

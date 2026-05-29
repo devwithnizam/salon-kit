@@ -147,13 +147,54 @@ add_shortcode( 'salon_booking', function ( $atts ) {
         'data-require-email' => 'yes',
     ];
 
+    $all_services = get_posts( [
+        'post_type'      => 'salon_service',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+    ] );
+    $svc_data = [];
+    foreach ( $all_services as $svc ) {
+        $thumb_id = get_post_thumbnail_id( $svc->ID );
+        $svc_data[] = [
+            'id'          => $svc->ID,
+            'name'        => $svc->post_title,
+            'description' => get_the_excerpt( $svc ),
+                'price'       => get_post_meta( $svc->ID, '_sb_price', true ),
+                'duration'    => (int) get_post_meta( $svc->ID, '_sb_duration', true ),
+                'slot_qty'    => (int) get_post_meta( $svc->ID, '_sb_slot_qty', true ) ?: 1,
+                'break_time'  => (int) get_post_meta( $svc->ID, '_sb_buffer', true ) ?: 10,
+                'thumb_url'   => $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'thumbnail' ) : '',
+                'menu_order'  => $svc->menu_order,
+        ];
+    }
+
     $data_attrs = '';
     foreach ( $defaults as $key => $val ) {
         $data_attrs .= ' ' . $key . '="' . esc_attr( $val ) . '"';
     }
+    $data_attrs .= " data-services='" . esc_attr( wp_json_encode( $svc_data ) ) . "'";
+
+    $currency = apply_filters( 'sk_currency_symbol', '$' );
+    $svc_cards_html = '';
+    foreach ( $svc_data as $svc ) {
+        $thumb = $svc['thumb_url']
+            ? '<img src="' . esc_url( $svc['thumb_url'] ) . '" alt="' . esc_attr( $svc['name'] ) . '" class="sb-svc-thumb">'
+            : '<div class="sb-svc-thumb" style="background:var(--sk-primary-lite)"></div>';
+        $desc  = $svc['description'] ? '<span class="sb-svc-desc">' . esc_html( $svc['description'] ) . '</span>' : '';
+        $price_raw = $svc['price'];
+        $price = ( $price_raw !== '' && $price_raw !== null )
+            ? '<span class="sb-svc-price">' . esc_html( $currency . $price_raw ) . '</span>' : '';
+        $duration = $svc['duration'] ? '<span class="sb-svc-duration">' . esc_html( $svc['duration'] ) . ' min</span>' : '';
+        $svc_cards_html .= '<div class="sb-service-card" data-id="' . esc_attr( $svc['id'] ) . '">';
+        $svc_cards_html .= $thumb;
+        $svc_cards_html .= '<div class="sb-svc-info"><span class="sb-svc-name">' . esc_html( $svc['name'] ) . '</span>' . $desc . '</div>';
+        $svc_cards_html .= '<div class="sb-svc-meta">' . $price . $duration . '</div>';
+        $svc_cards_html .= '</div>';
+    }
 
     ob_start();
-    echo '<div id="salonBookingWrap" class="sb-wrap"' . $data_attrs . '>';
+    echo '<div class="sb-wrap"' . $data_attrs . '>';
     include SK_PATH . 'templates/booking-form.php';
     echo '</div>';
     return ob_get_clean();

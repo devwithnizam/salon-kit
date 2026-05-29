@@ -41,6 +41,14 @@ class Booking_Widget extends \Elementor\Widget_Base {
         return [ 'salon', 'booking', 'appointment', 'salonkit', 'form' ];
     }
 
+    public function get_script_depends() {
+        return [ 'salon-kit-js' ];
+    }
+
+    public function get_style_depends() {
+        return [ 'salon-kit-css' ];
+    }
+
     protected function register_controls() {
         $this->register_text_controls();
         $this->register_visibility_controls();
@@ -80,7 +88,7 @@ class Booking_Widget extends \Elementor\Widget_Base {
 
         $this->add_control( 'services_order_note', [
             'type' => \Elementor\Controls_Manager::RAW_HTML,
-            'raw'  => '<small>Set the custom order (menu order) from <strong>Services → Edit Service → Page Attributes → Order</strong>.</small>',
+            'raw'  => '<small>Set the custom order from <strong>Services → Edit Service → Sort Order</strong> field in the Service Details metabox.</small>',
         ] );
 
         $this->end_controls_section();
@@ -183,7 +191,7 @@ class Booking_Widget extends \Elementor\Widget_Base {
             'msg_loading_services', 'msg_loading_slots',
             'msg_empty_services', 'msg_empty_slots',
             'msg_error_name', 'msg_error_email', 'msg_error_network', 'msg_error_slot_taken',
-            'msg_submitting', 'slot_remaining', 'slot_full',
+            'msg_submitting', 'slot_remaining', 'slot_full', 'free_label',
         ];
         $data = [];
         foreach ( $keys as $k ) {
@@ -224,7 +232,7 @@ class Booking_Widget extends \Elementor\Widget_Base {
 
         $wrapper_classes = [ 'sb-wrap' ];
         if ( ! empty( $settings['css_classes'] ) ) {
-            $wrapper_classes[] = esc_attr( $settings['css_classes'] );
+            $wrapper_classes[] = $settings['css_classes'];
         }
 
         $custom_attrs = '';
@@ -249,7 +257,48 @@ class Booking_Widget extends \Elementor\Widget_Base {
         $data_attrs .= ' data-services-orderby="' . esc_attr( $settings['services_orderby'] ?? 'menu_order' ) . '"';
         $data_attrs .= ' data-services-order="' . esc_attr( $settings['services_order'] ?? 'asc' ) . '"';
 
-        echo '<div id="salonBookingWrap" class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $data_attrs . $custom_attrs . '>';
+        $all_services = get_posts( [
+            'post_type'      => 'salon_service',
+            'posts_per_page' => -1,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        ] );
+        $svc_data = [];
+        foreach ( $all_services as $svc ) {
+            $thumb_id = get_post_thumbnail_id( $svc->ID );
+            $svc_data[] = [
+                'id'          => $svc->ID,
+                'name'        => $svc->post_title,
+                'description' => get_the_excerpt( $svc ),
+                'price'       => get_post_meta( $svc->ID, '_sb_price', true ),
+                'duration'    => (int) get_post_meta( $svc->ID, '_sb_duration', true ),
+                'slot_qty'    => (int) get_post_meta( $svc->ID, '_sb_slot_qty', true ) ?: 1,
+                'break_time'  => (int) get_post_meta( $svc->ID, '_sb_buffer', true ) ?: 10,
+                'thumb_url'   => $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'thumbnail' ) : '',
+                'menu_order'  => $svc->menu_order,
+            ];
+        }
+        $data_attrs .= " data-services='" . esc_attr( wp_json_encode( $svc_data ) ) . "'";
+
+        $currency = apply_filters( 'sk_currency_symbol', '$' );
+        $svc_cards_html = '';
+        foreach ( $svc_data as $svc ) {
+            $thumb = $svc['thumb_url']
+                ? '<img src="' . esc_url( $svc['thumb_url'] ) . '" alt="' . esc_attr( $svc['name'] ) . '" class="sb-svc-thumb">'
+                : '<div class="sb-svc-thumb" style="background:var(--sk-primary-lite)"></div>';
+            $desc  = $svc['description'] ? '<span class="sb-svc-desc">' . esc_html( $svc['description'] ) . '</span>' : '';
+            $price_raw = $svc['price'];
+            $price = ( $price_raw !== '' && $price_raw !== null )
+                ? '<span class="sb-svc-price">' . esc_html( $currency . $price_raw ) . '</span>' : '';
+            $duration = $svc['duration'] ? '<span class="sb-svc-duration">' . esc_html( $svc['duration'] ) . ' min</span>' : '';
+            $svc_cards_html .= '<div class="sb-service-card" data-id="' . esc_attr( $svc['id'] ) . '">';
+            $svc_cards_html .= $thumb;
+            $svc_cards_html .= '<div class="sb-svc-info"><span class="sb-svc-name">' . esc_html( $svc['name'] ) . '</span>' . $desc . '</div>';
+            $svc_cards_html .= '<div class="sb-svc-meta">' . $price . $duration . '</div>';
+            $svc_cards_html .= '</div>';
+        }
+
+        echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $data_attrs . $custom_attrs . '>';
         include SK_PATH . 'templates/booking-form.php';
         echo '</div>';
     }

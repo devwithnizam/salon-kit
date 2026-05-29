@@ -136,6 +136,7 @@ trait Text_Controls {
             'msg_submitting'       => [ 'Submitting Text', 'Submitting...' ],
             'slot_remaining'       => [ 'Slots Remaining Text', 'left' ],
             'slot_full'            => [ 'Slot Full Text', 'Full' ],
+            'free_label'           => [ 'Free Label (price=0)', 'Free' ],
         ];
         foreach ( $messages as $key => $data ) {
             $this->add_control( $key, [
