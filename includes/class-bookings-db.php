@@ -72,7 +72,7 @@ class Bookings_DB {
                 'client_email'    => sanitize_email( $data['client_email'] ),
                 'client_phone'    => sanitize_text_field( $data['client_phone'] ),
                 'notes'           => sanitize_textarea_field( $data['notes'] ),
-                'status'          => in_array( $data['status'], [ 'confirmed', 'cancelled' ] ) ? $data['status'] : 'confirmed',
+                'status'          => in_array( $data['status'], [ 'confirmed', 'cancelled', 'pending' ] ) ? $data['status'] : 'confirmed',
             ],
             [ '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s' ]
         );
@@ -148,7 +148,7 @@ class Bookings_DB {
 
     public static function update_status( $id, $status ) {
         global $wpdb;
-        $status = in_array( $status, [ 'confirmed', 'cancelled' ] ) ? $status : 'confirmed';
+        $status = in_array( $status, [ 'confirmed', 'cancelled', 'pending' ] ) ? $status : 'confirmed';
         return $wpdb->update(
             $wpdb->prefix . self::TABLE,
             [ 'status' => $status ],

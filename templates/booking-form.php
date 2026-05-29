@@ -192,6 +192,7 @@ defined( 'ABSPATH' ) || exit;
       <svg class="sk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
     </div>
     <h2 data-sk-text="success_title">You're all booked!</h2>
+    <p class="sb-booking-id-line">Booking ID: <strong id="successBookingId"></strong></p>
     <p><span data-sk-text="success_text">A confirmation email has been sent to</span> <strong id="successEmail"></strong>.</p>
     <div class="sb-success-details" id="successDetails"></div>
     <button class="sb-btn sb-btn-next" id="sbBookAgain">

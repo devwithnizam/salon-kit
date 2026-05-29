@@ -126,31 +126,32 @@ class Ajax {
         // Create admin record
         $svc_name = get_the_title( $service_id );
         $pro_name = get_the_title( $professional_id );
+        $booking_id_display = '#BK-' . str_pad( $booking_id, 4, '0', STR_PAD_LEFT );
         $post_id  = wp_insert_post( [
-            'post_title'  => "Booking – $name – $date",
+            'post_title'  => "{$booking_id_display} – {$name} – {$date}",
             'post_type'   => 'salon_booking',
             'post_status' => 'publish',
         ] );
         if ( $post_id && ! is_wp_error( $post_id ) ) {
-            update_post_meta( $post_id, '_client_name',   $name );
-            update_post_meta( $post_id, '_client_email',  $email );
-            update_post_meta( $post_id, '_client_phone',  $phone );
-            update_post_meta( $post_id, '_service',       $svc_name );
-            update_post_meta( $post_id, '_professional',  $pro_name );
-            update_post_meta( $post_id, '_booking_date',  $date );
-            update_post_meta( $post_id, '_booking_time',  $time );
-            update_post_meta( $post_id, '_booking_price', get_post_meta( $service_id, '_sb_price', true ) );
-            update_post_meta( $post_id, '_booking_notes', $notes );
-            update_post_meta( $post_id, '_status',        'confirmed' );
-            update_post_meta( $post_id, '_submitted_at',  current_time( 'mysql' ) );
+            update_post_meta( $post_id, '_client_name',    $name );
+            update_post_meta( $post_id, '_client_email',   $email );
+            update_post_meta( $post_id, '_client_phone',   $phone );
+            update_post_meta( $post_id, '_service',        $svc_name );
+            update_post_meta( $post_id, '_service_id',     $service_id );
+            update_post_meta( $post_id, '_professional',   $pro_name );
+            update_post_meta( $post_id, '_professional_id',$professional_id );
+            update_post_meta( $post_id, '_booking_date',   $date );
+            update_post_meta( $post_id, '_booking_time',   $time );
+            update_post_meta( $post_id, '_booking_price',  get_post_meta( $service_id, '_sb_price', true ) );
+            update_post_meta( $post_id, '_booking_notes',  $notes );
+            update_post_meta( $post_id, '_status',         'confirmed' );
+            update_post_meta( $post_id, '_submitted_at',   current_time( 'mysql' ) );
+            update_post_meta( $post_id, '_booking_db_id',  $booking_id );
         }
 
-        // Email
-        $subject = 'Booking Confirmed – ' . $svc_name;
-        $body    = "Hi $name,\n\nYour appointment is confirmed!\n\n"
-                 . "Service: $svc_name\nProfessional: $pro_name\nDate: $date\nTime: $time\n\nSee you soon!";
-        wp_mail( $email, $subject, $body );
+        // Send email notifications
+        Email::send_booking_confirmation( $booking_id );
 
-        wp_send_json_success( [ 'message' => 'Booking confirmed!', 'booking_id' => $booking_id ] );
+        wp_send_json_success( [ 'message' => 'Booking confirmed!', 'booking_id' => $booking_id, 'booking_id_display' => $booking_id_display ] );
     }
 }

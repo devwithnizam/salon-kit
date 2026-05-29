@@ -461,7 +461,7 @@
     .then(r => r.json())
     .then(res => {
       if (res.success) {
-        showSuccess(name, email);
+        showSuccess(name, email, res.data);
       } else {
         errEl.textContent = res.data.message || (text('msg_error_slot_taken') || 'Something went wrong.');
         resetBtn(btn);
@@ -480,13 +480,18 @@
     state.isSubmitting = false;
   }
 
-  function showSuccess(name, email) {
+  function showSuccess(name, email, data) {
     $$('.sb-panel').forEach(p => p.classList.remove('active'));
     const success = $('#sbSuccess');
     if (success && success.style.display !== 'none') success.classList.add('active');
 
     const emailEl = $('#successEmail');
     if (emailEl) emailEl.textContent = email;
+
+    const bookingIdEl = $('#successBookingId');
+    if (bookingIdEl && data && data.booking_id_display) {
+      bookingIdEl.textContent = data.booking_id_display;
+    }
 
     const details = $('#successDetails');
     if (details) {

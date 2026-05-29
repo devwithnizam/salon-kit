@@ -16,7 +16,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SK_VERSION', '2.0.0' );
+define( 'SK_VERSION', '2.1.0' );
 define( 'SK_FILE',    __FILE__ );
 define( 'SK_PATH',    plugin_dir_path( __FILE__ ) );
 define( 'SK_URL',     plugin_dir_url( __FILE__ ) );
@@ -67,6 +67,8 @@ add_action( 'plugins_loaded', function () {
     \SalonKit\Admin::init();
     \SalonKit\Icons::init();
     \SalonKit\Frontend_Assets::init();
+    \SalonKit\Settings::init();
+    \SalonKit\Email::init();
 
     add_action( 'elementor/widgets/register', function ( $widgets_manager ) {
         require_once SK_PATH . 'widgets/class-booking-widget.php';

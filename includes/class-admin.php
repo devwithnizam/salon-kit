@@ -57,18 +57,34 @@ class Admin {
         <?php endif;
 
         // Postbox polish for meta box screens
-        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_professional' ] ) ) : ?>
+        if ( in_array( $screen->post_type, [ 'salon_service', 'salon_professional', 'salon_booking' ] ) ) : ?>
         <style>
             #sb_service_details .inside,
-            #sb_pro_schedule .inside { padding: 14px 16px; }
+            #sb_pro_schedule .inside,
+            #sb_booking_details .inside { padding: 14px 16px; }
             #sb_service_pros .inside,
-            #sb_pro_services .inside { padding: 11px 11px 12px; }
+            #sb_pro_services .inside,
+            #sb_booking_actions .inside { padding: 11px 11px 12px; }
             #sb_service_details .postbox-header,
             #sb_service_pros .postbox-header,
             #sb_pro_services .postbox-header,
-            #sb_pro_schedule .postbox-header { border-bottom: 1px solid #e5e7eb; }
+            #sb_pro_schedule .postbox-header,
+            #sb_booking_details .postbox-header,
+            #sb_booking_actions .postbox-header { border-bottom: 1px solid #e5e7eb; }
             .post-type-salon_service .handle-actions,
-            .post-type-salon_professional .handle-actions { display: flex; align-items: center; }
+            .post-type-salon_professional .handle-actions,
+            .post-type-salon_booking .handle-actions { display: flex; align-items: center; }
+            .sk-booking-info-table { width:100%; border-collapse:collapse; }
+            .sk-booking-info-table td { padding:6px 0; border-bottom:1px solid #f1f5f9; font-size:13px; }
+            .sk-booking-info-table .sk-bit-label { color:#64748b; font-weight:500; width:100px; vertical-align:top; }
+            .sk-booking-info-table .sk-bit-value { color:#1e293b; font-weight:600; }
+            .sk-booking-id-badge { display:inline-block; background:#eef2ff; color:#4f46e5; font-weight:700; font-size:14px; padding:2px 12px; border-radius:6px; letter-spacing:0.5px; }
+            .sk-booking-meta-row { display:flex; justify-content:space-between; padding:4px 0; font-size:12px; }
+            .sk-booking-meta-label { color:#94a3b8; }
+            .sk-booking-meta-value { color:#475569; font-weight:500; }
+            .sk-input { border:1px solid #d1d5db; border-radius:6px; padding:6px 10px; font-size:13px; width:100%; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+            .sk-input:focus { border-color:#6366f1; box-shadow:0 0 0 1px #6366f1; outline:none; }
+            .sk-mb-card-head { display:flex; align-items:center; gap:6px; font-weight:600; font-size:13px; color:#1e293b; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #f1f5f9; }
         </style>
         <?php endif;
     }
@@ -213,15 +229,17 @@ class Admin {
         ];
 
         if ( $col === 'title' ) {
-            echo '<span class="sk-booking-id">#' . esc_html( $post_id ) . '</span>';
+            $db_id  = get_post_meta( $post_id, '_booking_db_id', true );
+            $display = $db_id ? '#BK-' . str_pad( $db_id, 4, '0', STR_PAD_LEFT ) : '#' . $post_id;
+            echo '<span class="sk-booking-id">' . esc_html( $display ) . '</span>';
             return;
         }
 
         if ( isset( $map[ $col ] ) ) {
             $val = get_post_meta( $post_id, $map[ $col ], true );
             if ( $col === 'status' ) {
-                $is_confirmed = $val === 'confirmed';
-                echo '<span class="sk-status-dot ' . ( $is_confirmed ? 'sk-status-dot--confirmed' : 'sk-status-dot--cancelled' ) . '"></span>';
+                $status_class = $val === 'confirmed' ? 'sk-status-dot--confirmed' : ( $val === 'pending' ? 'sk-status-dot--pending' : 'sk-status-dot--cancelled' );
+                echo '<span class="sk-status-dot ' . $status_class . '"></span>';
                 echo '<span class="sk-status-text">' . esc_html( $val ?: 'pending' ) . '</span>';
             } elseif ( $col === 'booking_date' ) {
                 echo $val ? '<span class="sk-date">' . esc_html( date_i18n( 'M j, Y', strtotime( $val ) ) ) . '</span>' : '—';

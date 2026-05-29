@@ -8,8 +8,10 @@ class Meta_Boxes {
     public static function init() {
         add_action( 'add_meta_boxes', [ __CLASS__, 'register_service_boxes' ] );
         add_action( 'add_meta_boxes', [ __CLASS__, 'register_professional_boxes' ] );
+        add_action( 'add_meta_boxes', [ __CLASS__, 'register_booking_boxes' ] );
         add_action( 'save_post_salon_service',      [ __CLASS__, 'save_service_meta' ], 10, 2 );
         add_action( 'save_post_salon_professional', [ __CLASS__, 'save_professional_meta' ], 10, 2 );
+        add_action( 'save_post_salon_booking',      [ __CLASS__, 'save_booking_meta' ], 10, 2 );
         add_action( 'admin_footer', [ __CLASS__, 'assign_search_script' ] );
     }
 
@@ -303,6 +305,153 @@ class Meta_Boxes {
                 $pros = array_values( array_diff( $pros, [ $pro_id ] ) );
             }
             update_post_meta( $svc_id, '_sb_professionals', $pros );
+        }
+    }
+
+    // ── BOOKING META BOXES ────────────────────────────────
+
+    public static function register_booking_boxes() {
+        add_meta_box( 'sb_booking_details',
+            '<span class="sk-mb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Booking Details</span>',
+            [ __CLASS__, 'render_booking_details' ], 'salon_booking', 'normal', 'high' );
+        add_meta_box( 'sb_booking_actions',
+            '<span class="sk-mb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Booking Actions</span>',
+            [ __CLASS__, 'render_booking_actions' ], 'salon_booking', 'side', 'high' );
+    }
+
+    public static function render_booking_details( $post ) {
+        wp_nonce_field( 'sb_save_booking', 'sb_booking_nonce' );
+
+        $cid    = get_post_meta( $post->ID, '_client_name', true );
+        $cemail = get_post_meta( $post->ID, '_client_email', true );
+        $cphone = get_post_meta( $post->ID, '_client_phone', true );
+        $svc    = get_post_meta( $post->ID, '_service', true );
+        $pro    = get_post_meta( $post->ID, '_professional', true );
+        $date   = get_post_meta( $post->ID, '_booking_date', true );
+        $time   = get_post_meta( $post->ID, '_booking_time', true );
+        $price  = get_post_meta( $post->ID, '_booking_price', true );
+        $notes  = get_post_meta( $post->ID, '_booking_notes', true );
+        $db_id  = get_post_meta( $post->ID, '_booking_db_id', true );
+        ?>
+
+        <div class="sk-mb">
+            <div class="sk-mb-grid">
+                <div class="sk-mb-card">
+                    <div class="sk-mb-card-head">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Client Information
+                    </div>
+                    <?php self::field( 'Name',
+                        '<input type="text" name="sb_client_name" value="' . esc_attr( $cid ) . '" placeholder="Client name" class="sk-input">'
+                    ); ?>
+                    <?php self::field( 'Email',
+                        '<input type="email" name="sb_client_email" value="' . esc_attr( $cemail ) . '" placeholder="Email address" class="sk-input">'
+                    ); ?>
+                    <?php self::field( 'Phone',
+                        '<input type="text" name="sb_client_phone" value="' . esc_attr( $cphone ) . '" placeholder="Phone number" class="sk-input">'
+                    ); ?>
+                </div>
+
+                <div class="sk-mb-card">
+                    <div class="sk-mb-card-head">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Appointment Details
+                    </div>
+                    <table class="sk-booking-info-table">
+                        <tr><td class="sk-bit-label">Booking ID</td><td class="sk-bit-value"><span class="sk-booking-id-badge"><?php echo $db_id ? esc_html( '#BK-' . str_pad( $db_id, 4, '0', STR_PAD_LEFT ) ) : esc_html( '#' . $post->ID ); ?></span></td></tr>
+                        <tr><td class="sk-bit-label">Service</td><td class="sk-bit-value"><?php echo esc_html( $svc ?: '—' ); ?></td></tr>
+                        <tr><td class="sk-bit-label">Professional</td><td class="sk-bit-value"><?php echo esc_html( $pro ?: '—' ); ?></td></tr>
+                        <tr><td class="sk-bit-label">Date</td><td class="sk-bit-value"><?php echo $date ? esc_html( date_i18n( get_option( 'date_format' ), strtotime( $date ) ) ) : '—'; ?></td></tr>
+                        <tr><td class="sk-bit-label">Time</td><td class="sk-bit-value"><?php echo $time ? esc_html( date_i18n( get_option( 'time_format' ), strtotime( $time ) ) ) : '—'; ?></td></tr>
+                        <tr><td class="sk-bit-label">Price</td><td class="sk-bit-value"><?php echo $price ? '<span class="sk-badge sk-badge-price">$' . esc_html( $price ) . '</span>' : '—'; ?></td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="sk-mb-card" style="margin-top:12px;">
+                <div class="sk-mb-card-head">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Notes
+                </div>
+                <textarea name="sb_booking_notes" rows="3" class="sk-input" style="width:100%;"><?php echo esc_textarea( $notes ); ?></textarea>
+            </div>
+
+            <input type="hidden" name="sb_service_name" value="<?php echo esc_attr( $svc ); ?>">
+            <input type="hidden" name="sb_professional_name" value="<?php echo esc_attr( $pro ); ?>">
+            <input type="hidden" name="sb_booking_date" value="<?php echo esc_attr( $date ); ?>">
+            <input type="hidden" name="sb_booking_time" value="<?php echo esc_attr( $time ); ?>">
+            <input type="hidden" name="sb_booking_price" value="<?php echo esc_attr( $price ); ?>">
+            <input type="hidden" name="sb_db_id" value="<?php echo esc_attr( $db_id ); ?>">
+        </div>
+        <?php
+    }
+
+    public static function render_booking_actions( $post ) {
+        $status  = get_post_meta( $post->ID, '_status', true ) ?: 'confirmed';
+        $submitted = get_post_meta( $post->ID, '_submitted_at', true );
+        ?>
+        <div class="sk-mb">
+            <div class="sk-mb-card" style="margin-bottom:0;">
+                <div class="sk-fld">
+                    <label class="sk-fld-label">Status</label>
+                    <select name="sb_status" class="sk-input">
+                        <option value="confirmed" <?php selected( $status, 'confirmed' ); ?>>Confirmed</option>
+                        <option value="cancelled" <?php selected( $status, 'cancelled' ); ?>>Cancelled</option>
+                        <option value="pending" <?php selected( $status, 'pending' ); ?>>Pending</option>
+                    </select>
+                </div>
+            </div>
+            <div style="padding:12px 0 4px;">
+                <div class="sk-booking-meta-row">
+                    <span class="sk-booking-meta-label">Submitted</span>
+                    <span class="sk-booking-meta-value"><?php echo $submitted ? esc_html( wp_date( 'M j, Y g:i A', strtotime( $submitted ) ) ) : '—'; ?></span>
+                </div>
+                <div class="sk-booking-meta-row">
+                    <span class="sk-booking-meta-label">Post ID</span>
+                    <span class="sk-booking-meta-value">#<?php echo esc_html( $post->ID ); ?></span>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    public static function save_booking_meta( $post_id, $post ) {
+        if ( ! isset( $_POST['sb_booking_nonce'] ) || ! wp_verify_nonce( $_POST['sb_booking_nonce'], 'sb_save_booking' ) ) return;
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+        if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+        if ( $post->post_type !== 'salon_booking' ) return;
+
+        // Editable fields
+        $client_name  = sanitize_text_field( $_POST['sb_client_name'] ?? '' );
+        $client_email = sanitize_email( $_POST['sb_client_email'] ?? '' );
+        $client_phone = sanitize_text_field( $_POST['sb_client_phone'] ?? '' );
+        $notes        = sanitize_textarea_field( $_POST['sb_booking_notes'] ?? '' );
+        $status       = in_array( $_POST['sb_status'] ?? '', [ 'confirmed', 'cancelled', 'pending' ] ) ? $_POST['sb_status'] : 'confirmed';
+
+        update_post_meta( $post_id, '_client_name',   $client_name );
+        update_post_meta( $post_id, '_client_email',  $client_email );
+        update_post_meta( $post_id, '_client_phone',  $client_phone );
+        update_post_meta( $post_id, '_booking_notes', $notes );
+        update_post_meta( $post_id, '_status',        $status );
+
+        // Read-only fields that might be updated via form
+        $fields = [
+            '_service'        => 'sb_service_name',
+            '_professional'   => 'sb_professional_name',
+            '_booking_date'   => 'sb_booking_date',
+            '_booking_time'   => 'sb_booking_time',
+            '_booking_price'  => 'sb_booking_price',
+        ];
+        foreach ( $fields as $meta_key => $post_key ) {
+            if ( isset( $_POST[ $post_key ] ) ) {
+                update_post_meta( $post_id, $meta_key, sanitize_text_field( $_POST[ $post_key ] ) );
+            }
+        }
+
+        // Sync status to bookings DB table
+        $db_id = absint( $_POST['sb_db_id'] ?? 0 );
+        if ( $db_id ) {
+            Bookings_DB::update_status( $db_id, $status );
         }
     }
 }

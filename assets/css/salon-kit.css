@@ -974,6 +974,14 @@
   letter-spacing: -0.02em;
 }
 
+.sb-booking-id-line {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sk-primary) !important;
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+
 .sb-success p {
   color: var(--sk-text-muted);
   margin-bottom: 18px;
