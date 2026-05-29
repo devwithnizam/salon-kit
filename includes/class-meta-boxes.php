@@ -5,6 +5,9 @@ defined( 'ABSPATH' ) || exit;
 
 class Meta_Boxes {
 
+    const DAYS   = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
+    const LABELS = [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ];
+
     public static function init() {
         add_action( 'add_meta_boxes', [ __CLASS__, 'register_service_boxes' ] );
         add_action( 'add_meta_boxes', [ __CLASS__, 'register_booking_boxes' ] );
@@ -48,6 +51,8 @@ class Meta_Boxes {
         $duration = get_post_meta( $post->ID, '_sb_duration', true );
         $slot_qty = get_post_meta( $post->ID, '_sb_slot_qty', true ) ?: 1;
         $slot_interval = get_post_meta( $post->ID, '_sb_slot_interval', true ) ?: '';
+
+        $currency = apply_filters( 'sk_currency_symbol', '$' );
         ?>
         <div class="sk-mb">
             <div class="sk-mb-grid">
@@ -57,7 +62,7 @@ class Meta_Boxes {
                         self::input_group(
                             '<input type="number" step="0.01" min="0" id="sb_price" name="sb_price" value="' . esc_attr( $price ) . '" placeholder="35.00" required>',
                             '',
-                            'USD'
+                            $currency
                         ),
                         'How much does this service cost?'
                     ); ?>
@@ -97,25 +102,11 @@ class Meta_Boxes {
     }
 
     public static function render_service_schedule( $post ) {
-        wp_nonce_field( 'sb_save_service', 'sb_service_nonce' );
         $schedule   = (array) get_post_meta( $post->ID, '_sb_schedule', true );
         $exceptions = (array) get_post_meta( $post->ID, '_sb_exceptions', true );
-        $days       = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
-        $labels     = [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ];
 
-        // Determine global buffer and max_daily (from first active day or defaults)
-        $global_buffer    = 10;
-        $global_max_daily = 0;
-        foreach ( $days as $d ) {
-            if ( ! empty( $schedule[ $d ] ) ) {
-                $day_data = $schedule[ $d ];
-                if ( isset( $day_data['segments'] ) ) {
-                    $global_buffer    = (int) ( $day_data['buffer'] ?? 10 );
-                    $global_max_daily = (int) ( $day_data['max_daily'] ?? 0 );
-                }
-                break;
-            }
-        }
+        $global_buffer    = (int) get_post_meta( $post->ID, '_sb_buffer', true ) ?: 10;
+        $global_max_daily = (int) get_post_meta( $post->ID, '_sb_max_daily', true );
         ?>
         <p style="margin:0 0 12px;color:var(--sk-muted);font-size:13px;line-height:1.5;">
             Set the hours your service is available each day. Enable a day and pick your open &amp; close times.
@@ -143,23 +134,19 @@ class Meta_Boxes {
                 <span class="sk-sched-tbl-cell sk-sched-tbl-cell--time">Close</span>
                 <span class="sk-sched-tbl-cell sk-sched-tbl-cell--copy"></span>
             </div>
-            <?php foreach ( $days as $i => $day ) :
+            <?php foreach ( self::DAYS as $i => $day ) :
                 $day_data = $schedule[ $day ] ?? [];
                 $segments = [];
                 $active   = false;
                 if ( ! empty( $day_data ) ) {
-                    if ( isset( $day_data['segments'] ) ) {
-                        $segments = $day_data['segments'];
-                    } else {
-                        $segments = $day_data;
-                    }
-                    $active = ! empty( $segments );
+                    $segments = isset( $day_data['segments'] ) ? $day_data['segments'] : $day_data;
+                    $active   = ! empty( $segments );
                 }
                 $start = ! empty( $segments[0]['start'] ) ? $segments[0]['start'] : '';
                 $end   = ! empty( $segments[0]['end'] )   ? $segments[0]['end']   : '';
             ?>
             <div class="sk-sched-tbl-row<?php echo $active ? ' sk-sched-tbl-row--on' : ''; ?>" data-sk-day="<?php echo esc_attr( $day ); ?>">
-                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--day"><?php echo esc_html( $labels[ $i ] ); ?></span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--day"><?php echo esc_html( self::LABELS[ $i ] ); ?></span>
                 <label class="sk-sched-tbl-cell sk-sched-tbl-cell--status">
                     <span class="sk-toggle">
                         <input type="checkbox" name="sb_schedule[<?php echo esc_attr( $day ); ?>][active]" value="1" <?php checked( $active ); ?> data-sk-toggle>
@@ -206,10 +193,6 @@ class Meta_Boxes {
         <?php
         // Blocked hours
         $blocked_hours = (array) get_post_meta( $post->ID, '_sb_blocked_hours', true );
-        $day_options = '';
-        foreach ( $labels as $k => $l ) {
-            $day_options .= '<option value="' . esc_attr( $days[ $k ] ) . '">' . esc_html( $l ) . '</option>';
-        }
         ?>
         <div class="sk-exceptions" style="margin-top:12px;">
             <div class="sk-exc-heading">
@@ -220,14 +203,14 @@ class Meta_Boxes {
             <div class="sk-exceptions-list" data-sk-blocked>
                 <?php foreach ( $blocked_hours as $bi => $bh ) : ?>
                 <div class="sk-exc-row" data-sk-block="<?php echo esc_attr( $bi ); ?>">
-                    <select name="sb_blocked[<?php echo esc_attr( $bi ); ?>][day]" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">
-                        <?php foreach ( $days as $k => $d ) : ?>
-                        <option value="<?php echo esc_attr( $d ); ?>" <?php selected( $bh['day'] ?? '', $d ); ?>><?php echo esc_html( $labels[ $k ] ); ?></option>
+                    <select name="sb_blocked[<?php echo esc_attr( $bi ); ?>][day]" class="sk-blocked-day">
+                        <?php foreach ( self::DAYS as $k => $d ) : ?>
+                        <option value="<?php echo esc_attr( $d ); ?>" <?php selected( $bh['day'] ?? '', $d ); ?>><?php echo esc_html( self::LABELS[ $k ] ); ?></option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="time" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][start]" value="<?php echo esc_attr( $bh['start'] ?? '' ); ?>" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">
+                    <input type="time" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][start]" value="<?php echo esc_attr( $bh['start'] ?? '' ); ?>" class="sk-blocked-time">
                     <span class="sk-sched-to">→</span>
-                    <input type="time" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][end]" value="<?php echo esc_attr( $bh['end'] ?? '' ); ?>" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">
+                    <input type="time" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][end]" value="<?php echo esc_attr( $bh['end'] ?? '' ); ?>" class="sk-blocked-time">
                     <input type="text" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][label]" value="<?php echo esc_attr( $bh['label'] ?? '' ); ?>" placeholder="e.g. Lunch" class="sk-exc-reason">
                     <button type="button" class="sk-btn-remove" title="Remove">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -244,31 +227,32 @@ class Meta_Boxes {
         if ( ! isset( $_POST['sb_service_nonce'] ) || ! wp_verify_nonce( $_POST['sb_service_nonce'], 'sb_save_service' ) ) return;
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
         if ( ! current_user_can( 'edit_post', $post_id ) ) return;
+        if ( $post->post_type !== 'salon_service' ) return;
 
-        update_post_meta( $post_id, '_sb_price',    sanitize_text_field( $_POST['sb_price'] ?? '' ) );
-        update_post_meta( $post_id, '_sb_duration', absint( $_POST['sb_duration'] ?? 0 ) );
+        update_post_meta( $post_id, '_sb_price',    sprintf( '%.2f', floatval( $_POST['sb_price'] ?? 0 ) ) );
+        update_post_meta( $post_id, '_sb_duration', max( 5, absint( $_POST['sb_duration'] ?? 0 ) ) );
         update_post_meta( $post_id, '_sb_slot_qty', max( 1, absint( $_POST['sb_slot_qty'] ?? 1 ) ) );
-        update_post_meta( $post_id, '_sb_slot_interval', absint( $_POST['sb_slot_interval'] ?? 0 ) );
 
-        // Global buffer & max_daily
+        $interval = absint( $_POST['sb_slot_interval'] ?? 0 );
+        update_post_meta( $post_id, '_sb_slot_interval', $interval ?: '' );
+
+        // Global buffer & max_daily (top-level only — not duplicated in schedule)
         $global_buffer    = min( 60, max( 0, absint( $_POST['sb_buffer'] ?? 10 ) ) );
         $global_max_daily = max( 0, absint( $_POST['sb_max_daily'] ?? 0 ) );
         update_post_meta( $post_id, '_sb_buffer',    $global_buffer );
         update_post_meta( $post_id, '_sb_max_daily', $global_max_daily );
 
-        // Save schedule (backward-compatible format)
+        // Save schedule (buffer/max_daily no longer embedded per-day)
         $schedule = [];
         $raw = isset( $_POST['sb_schedule'] ) ? $_POST['sb_schedule'] : [];
-        foreach ( [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ] as $day ) {
+        foreach ( self::DAYS as $day ) {
             $start  = sanitize_text_field( $raw[ $day ]['start'] ?? '' );
             $end    = sanitize_text_field( $raw[ $day ]['end'] ?? '' );
             $active = ! empty( $raw[ $day ]['active'] );
 
             if ( $active && $start && $end ) {
                 $schedule[ $day ] = [
-                    'segments'  => [ [ 'start' => $start, 'end' => $end ] ],
-                    'buffer'    => $global_buffer,
-                    'max_daily' => $global_max_daily,
+                    'segments' => [ [ 'start' => $start, 'end' => $end ] ],
                 ];
             }
         }
@@ -311,6 +295,8 @@ class Meta_Boxes {
     public static function render_booking_details( $post ) {
         wp_nonce_field( 'sb_save_booking', 'sb_booking_nonce' );
 
+        $currency = apply_filters( 'sk_currency_symbol', '$' );
+
         $cid    = get_post_meta( $post->ID, '_client_name', true );
         $cemail = get_post_meta( $post->ID, '_client_email', true );
         $cphone = get_post_meta( $post->ID, '_client_phone', true );
@@ -350,7 +336,7 @@ class Meta_Boxes {
                         <tr><td class="sk-bit-label">Service</td><td class="sk-bit-value"><?php echo esc_html( $svc ?: '—' ); ?></td></tr>
                         <tr><td class="sk-bit-label">Date</td><td class="sk-bit-value"><?php echo $date ? esc_html( date_i18n( get_option( 'date_format' ), strtotime( $date ) ) ) : '—'; ?></td></tr>
                         <tr><td class="sk-bit-label">Time</td><td class="sk-bit-value"><?php echo $time ? esc_html( date_i18n( get_option( 'time_format' ), strtotime( $time ) ) ) : '—'; ?></td></tr>
-                        <tr><td class="sk-bit-label">Price</td><td class="sk-bit-value"><?php echo $price ? '<span class="sk-badge sk-badge-price">$' . esc_html( $price ) . '</span>' : '—'; ?></td></tr>
+                        <tr><td class="sk-bit-label">Price</td><td class="sk-bit-value"><?php echo $price ? '<span class="sk-badge sk-badge-price">' . esc_html( $currency ) . esc_html( $price ) . '</span>' : '—'; ?></td></tr>
                     </table>
                 </div>
             </div>

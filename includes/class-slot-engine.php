@@ -22,17 +22,10 @@ class Slot_Engine {
 
         $day_data = $schedule[ $day_of_week ];
 
-        $segments  = [];
-        $buffer    = 10;
-        $max_daily = 0;
+        $buffer    = (int) get_post_meta( $service_id, '_sb_buffer', true ) ?: 10;
+        $max_daily = (int) get_post_meta( $service_id, '_sb_max_daily', true );
 
-        if ( isset( $day_data['segments'] ) ) {
-            $segments  = $day_data['segments'];
-            $buffer    = (int) ( $day_data['buffer'] ?? 10 );
-            $max_daily = (int) ( $day_data['max_daily'] ?? 0 );
-        } else {
-            $segments = $day_data;
-        }
+        $segments = isset( $day_data['segments'] ) ? $day_data['segments'] : $day_data;
 
         if ( empty( $segments ) ) return [];
 

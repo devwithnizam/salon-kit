@@ -418,6 +418,28 @@
   background: #fff;
 }
 .sk-exc-reason:focus { border-color: var(--sk-pri); box-shadow: 0 0 0 1.5px rgba(99,102,241,.1); outline: none; }
+
+/* ── Blocked hours inputs ─────────────────────── */
+.sk-blocked-day,
+.sk-blocked-time {
+  width: 100px;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-r);
+  padding: 4px 6px;
+  font-size: 12px;
+  background: #fff;
+}
+.sk-blocked-day:focus,
+.sk-blocked-time:focus {
+  border-color: var(--sk-pri);
+  box-shadow: 0 0 0 1.5px rgba(99,102,241,.1);
+  outline: none;
+}
+.sk-sched-to {
+  color: var(--sk-muted);
+  font-size: 13px;
+  flex-shrink: 0;
+}
 .sk-btn-remove {
   display: inline-flex;
   align-items: center;
@@ -807,8 +829,6 @@
   .sk-mb-card { padding: 14px; }
 
   .sk-ig { max-width: 100%; }
-
-  .sk-sched-fld input[type="time"] { width: 100%; }
 
   .sk-dash-stat { padding: 18px 12px 16px; }
   .sk-dash-stat-num { font-size: 30px; }

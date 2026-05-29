@@ -71,6 +71,8 @@ class Admin {
     }
 
     public static function service_values( $col, $post_id ) {
+        $currency = apply_filters( 'sk_currency_symbol', '$' );
+
         switch ( $col ) {
             case 'sb_thumb':
                 $img = get_the_post_thumbnail( $post_id, [ 36, 36 ], [ 'class' => 'sk-admin-thumb' ] );
@@ -81,7 +83,7 @@ class Admin {
 
             case 'sb_price':
                 $p = get_post_meta( $post_id, '_sb_price', true );
-                echo $p ? '<span class="sk-badge sk-badge-price">$' . esc_html( $p ) . '</span>' : '<span class="sk-na">—</span>';
+                echo $p ? '<span class="sk-badge sk-badge-price">' . esc_html( $currency ) . esc_html( $p ) . '</span>' : '<span class="sk-na">—</span>';
                 break;
 
             case 'sb_dur':
@@ -130,6 +132,8 @@ class Admin {
     }
 
     public static function booking_values( $col, $post_id ) {
+        $currency = apply_filters( 'sk_currency_symbol', '$' );
+
         $map = [
             'client_name'   => '_client_name',
             'client_email'  => '_client_email',
@@ -158,7 +162,7 @@ class Admin {
             } elseif ( $col === 'booking_time' ) {
                 echo $val ? '<span class="sk-time">' . esc_html( date( 'g:i A', strtotime( $val ) ) ) . '</span>' : '—';
             } elseif ( $col === 'booking_price' ) {
-                echo $val ? '<span class="sk-badge sk-badge-price">$' . esc_html( $val ) . '</span>' : '—';
+                echo $val ? '<span class="sk-badge sk-badge-price">' . esc_html( $currency ) . esc_html( $val ) . '</span>' : '—';
             } elseif ( $col === 'client_email' ) {
                 echo $val ? '<a href="mailto:' . esc_attr( $val ) . '" class="sk-email-link">' . esc_html( $val ) . '</a>' : '—';
             } else {
