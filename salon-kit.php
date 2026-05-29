@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       SalonKit — Booking System
- * Plugin URI:        https://salonkit.com
+ * Plugin URI:        https://github.com/devwithnizam/salon-kit
  * Description:       Complete salon appointment booking system with services, professionals, dynamic slots, Elementor widgets, and overbooking prevention. Fully customizable via Elementor.
  * Version:           2.0.0
  * Requires at least: 5.8
