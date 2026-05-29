@@ -645,8 +645,8 @@
 }
 
 .sb-time-slot.active .sb-slot-remaining {
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--sk-primary);
 }
 
 .sb-slot-full {
