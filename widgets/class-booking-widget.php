@@ -50,6 +50,67 @@ class Booking_Widget extends \Elementor\Widget_Base {
         $this->register_typography_controls();
         $this->register_spacing_controls();
 
+        $this->start_controls_section( 'section_summary', [
+            'label' => 'Summary Bar',
+            'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
+        ] );
+
+        $this->add_control( 'summary_bg', [
+            'label'     => 'Background',
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'default'   => '#ffffff',
+            'selectors' => [
+                '{{WRAPPER}} .sb-wrap' => '--sk-summary-bg: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'summary_border', [
+            'label'     => 'Border',
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'default'   => '#e2e8f0',
+            'selectors' => [
+                '{{WRAPPER}} .sb-wrap' => '--sk-summary-border: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'summary_icon_bg', [
+            'label'     => 'Icon Background',
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'default'   => '#eef2ff',
+            'selectors' => [
+                '{{WRAPPER}} .sb-wrap' => '--sk-summary-icon-bg: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'summary_label', [
+            'label'     => 'Label Color',
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'default'   => '#64748b',
+            'selectors' => [
+                '{{WRAPPER}} .sb-wrap' => '--sk-summary-label: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'summary_value', [
+            'label'     => 'Value Color (inactive)',
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'default'   => '#0f172a',
+            'selectors' => [
+                '{{WRAPPER}} .sb-wrap' => '--sk-summary-value: {{VALUE}};',
+            ],
+        ] );
+
+        $this->add_control( 'summary_value_active', [
+            'label'     => 'Value Color (selected)',
+            'type'      => \Elementor\Controls_Manager::COLOR,
+            'default'   => '#6366f1',
+            'selectors' => [
+                '{{WRAPPER}} .sb-wrap' => '--sk-summary-active: {{VALUE}};',
+            ],
+        ] );
+
+        $this->end_controls_section();
+
         $this->start_controls_section( 'section_advanced', [
             'label' => 'Advanced',
             'tab'   => \Elementor\Controls_Manager::TAB_ADVANCED,

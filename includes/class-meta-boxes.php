@@ -47,6 +47,7 @@ class Meta_Boxes {
         $price    = get_post_meta( $post->ID, '_sb_price', true );
         $duration = get_post_meta( $post->ID, '_sb_duration', true );
         $slot_qty = get_post_meta( $post->ID, '_sb_slot_qty', true ) ?: 1;
+        $slot_interval = get_post_meta( $post->ID, '_sb_slot_interval', true ) ?: '';
         ?>
         <div class="sk-mb">
             <div class="sk-mb-grid">
@@ -79,6 +80,15 @@ class Meta_Boxes {
                             'seats'
                         ),
                         'Max clients that can book the same time slot.'
+                    ); ?>
+                    <?php self::field(
+                        'Slot Interval',
+                        self::input_group(
+                            '<input type="number" min="5" step="5" id="sb_slot_interval" name="sb_slot_interval" value="' . esc_attr( $slot_interval ) . '" placeholder="' . esc_attr( $duration ?: 45 ) . '">',
+                            '',
+                            'min'
+                        ),
+                        'Time between slot starts. Leave empty to match duration.'
                     ); ?>
                 </div>
             </div>
@@ -127,8 +137,8 @@ class Meta_Boxes {
 
         <div class="sk-sched-tbl">
             <div class="sk-sched-tbl-head">
-                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--day"></span>
-                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--status">Status</span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--day">Day</span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--status">On</span>
                 <span class="sk-sched-tbl-cell sk-sched-tbl-cell--time">Open</span>
                 <span class="sk-sched-tbl-cell sk-sched-tbl-cell--time">Close</span>
                 <span class="sk-sched-tbl-cell sk-sched-tbl-cell--copy"></span>
@@ -192,6 +202,41 @@ class Meta_Boxes {
             </div>
             <button type="button" class="button button-small" data-sk-add-exc>+ Add exception</button>
         </div>
+
+        <?php
+        // Blocked hours
+        $blocked_hours = (array) get_post_meta( $post->ID, '_sb_blocked_hours', true );
+        $day_options = '';
+        foreach ( $labels as $k => $l ) {
+            $day_options .= '<option value="' . esc_attr( $days[ $k ] ) . '">' . esc_html( $l ) . '</option>';
+        }
+        ?>
+        <div class="sk-exceptions" style="margin-top:12px;">
+            <div class="sk-exc-heading">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+                Blocked Hours
+                <span class="sk-exc-heading-desc">Recurring time ranges to block on specific days</span>
+            </div>
+            <div class="sk-exceptions-list" data-sk-blocked>
+                <?php foreach ( $blocked_hours as $bi => $bh ) : ?>
+                <div class="sk-exc-row" data-sk-block="<?php echo esc_attr( $bi ); ?>">
+                    <select name="sb_blocked[<?php echo esc_attr( $bi ); ?>][day]" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">
+                        <?php foreach ( $days as $k => $d ) : ?>
+                        <option value="<?php echo esc_attr( $d ); ?>" <?php selected( $bh['day'] ?? '', $d ); ?>><?php echo esc_html( $labels[ $k ] ); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <input type="time" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][start]" value="<?php echo esc_attr( $bh['start'] ?? '' ); ?>" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">
+                    <span class="sk-sched-to">→</span>
+                    <input type="time" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][end]" value="<?php echo esc_attr( $bh['end'] ?? '' ); ?>" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">
+                    <input type="text" name="sb_blocked[<?php echo esc_attr( $bi ); ?>][label]" value="<?php echo esc_attr( $bh['label'] ?? '' ); ?>" placeholder="e.g. Lunch" class="sk-exc-reason">
+                    <button type="button" class="sk-btn-remove" title="Remove">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <button type="button" class="button button-small" data-sk-add-blocked>+ Add blocked hours</button>
+        </div>
         <?php
     }
 
@@ -203,6 +248,7 @@ class Meta_Boxes {
         update_post_meta( $post_id, '_sb_price',    sanitize_text_field( $_POST['sb_price'] ?? '' ) );
         update_post_meta( $post_id, '_sb_duration', absint( $_POST['sb_duration'] ?? 0 ) );
         update_post_meta( $post_id, '_sb_slot_qty', max( 1, absint( $_POST['sb_slot_qty'] ?? 1 ) ) );
+        update_post_meta( $post_id, '_sb_slot_interval', absint( $_POST['sb_slot_interval'] ?? 0 ) );
 
         // Global buffer & max_daily
         $global_buffer    = min( 60, max( 0, absint( $_POST['sb_buffer'] ?? 10 ) ) );
@@ -237,6 +283,18 @@ class Meta_Boxes {
             if ( $date ) $exceptions[] = [ 'date' => $date, 'reason' => $reason ];
         }
         update_post_meta( $post_id, '_sb_exceptions', $exceptions );
+
+        // Save blocked hours
+        $blocked = [];
+        $raw_blk = isset( $_POST['sb_blocked'] ) ? $_POST['sb_blocked'] : [];
+        foreach ( $raw_blk as $b ) {
+            $day   = sanitize_text_field( $b['day'] ?? '' );
+            $start = sanitize_text_field( $b['start'] ?? '' );
+            $end   = sanitize_text_field( $b['end'] ?? '' );
+            $label = sanitize_text_field( $b['label'] ?? '' );
+            if ( $day && $start && $end ) $blocked[] = [ 'day' => $day, 'start' => $start, 'end' => $end, 'label' => $label ];
+        }
+        update_post_meta( $post_id, '_sb_blocked_hours', $blocked );
     }
 
     // ── BOOKING META BOXES ────────────────────────────────

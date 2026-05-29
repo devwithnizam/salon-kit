@@ -10,6 +10,8 @@ class Slot_Engine {
     public static function get_available_slots( $service_id, $date ) {
         $duration = (int) get_post_meta( $service_id, '_sb_duration', true );
         $slot_qty = max( 1, (int) get_post_meta( $service_id, '_sb_slot_qty', true ) ?: 1 );
+        $interval = (int) get_post_meta( $service_id, '_sb_slot_interval', true );
+        if ( ! $interval ) $interval = $duration;
 
         if ( ! $duration ) return [];
 
@@ -42,7 +44,19 @@ class Slot_Engine {
 
         $raw_slots = [];
         foreach ( $segments as $seg ) {
-            $raw_slots = array_merge( $raw_slots, self::generate( $seg['start'], $seg['end'], $duration, $buffer ) );
+            $raw_slots = array_merge( $raw_slots, self::generate( $seg['start'], $seg['end'], $interval, $buffer ) );
+        }
+
+        // Filter out blocked hours
+        $blocked_hours = (array) get_post_meta( $service_id, '_sb_blocked_hours', true );
+        foreach ( $blocked_hours as $bh ) {
+            if ( ( $bh['day'] ?? '' ) !== $day_of_week ) continue;
+            $blk_start = $bh['start'] ?? '';
+            $blk_end   = $bh['end'] ?? '';
+            if ( ! $blk_start || ! $blk_end ) continue;
+            $raw_slots = array_filter( $raw_slots, function ( $t ) use ( $blk_start, $blk_end ) {
+                return $t < $blk_start || $t >= $blk_end;
+            } );
         }
 
         $booked_counts = Bookings_DB::get_counts_for_date( $service_id, $date );

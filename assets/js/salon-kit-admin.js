@@ -26,10 +26,17 @@
         return;
       }
 
-      var rmExc = e.target.closest('.sk-btn-remove');
-      if (rmExc) {
-        var exc = rmExc.closest('[data-sk-exc]');
-        if (exc) exc.remove();
+      if (e.target.closest('[data-sk-add-blocked]')) {
+        addBlockedRow();
+        return;
+      }
+
+      var rmBtn = e.target.closest('.sk-btn-remove');
+      if (rmBtn) {
+        var exc = rmBtn.closest('[data-sk-exc]');
+        if (exc) { exc.remove(); return; }
+        var blk = rmBtn.closest('[data-sk-block]');
+        if (blk) { blk.remove(); return; }
         return;
       }
     });
@@ -134,6 +141,29 @@
       div.innerHTML =
         '<input type="date" name="sb_exceptions[' + idx + '][date]" value="">' +
         '<input type="text" name="sb_exceptions[' + idx + '][reason]" value="" placeholder="e.g. Christmas" class="sk-exc-reason">' +
+        '<button type="button" class="sk-btn-remove" title="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+      list.appendChild(div);
+    }
+
+    function addBlockedRow() {
+      var list = document.querySelector('[data-sk-blocked]');
+      if (!list) return;
+      var idx = list.querySelectorAll('[data-sk-block]').length;
+      var opts = '';
+      var days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+      var labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+      for (var i = 0; i < days.length; i++) {
+        opts += '<option value="' + days[i] + '">' + labels[i] + '</option>';
+      }
+      var div = document.createElement('div');
+      div.className = 'sk-exc-row';
+      div.setAttribute('data-sk-block', idx);
+      div.innerHTML =
+        '<select name="sb_blocked[' + idx + '][day]" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">' + opts + '</select>' +
+        '<input type="time" name="sb_blocked[' + idx + '][start]" value="" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">' +
+        '<span class="sk-sched-to" style="padding:0 2px;">\u2192</span>' +
+        '<input type="time" name="sb_blocked[' + idx + '][end]" value="" style="width:100px;border:1px solid var(--sk-bd);border-radius:var(--sk-r);padding:4px 6px;font-size:12px;">' +
+        '<input type="text" name="sb_blocked[' + idx + '][label]" value="" placeholder="e.g. Lunch" class="sk-exc-reason">' +
         '<button type="button" class="sk-btn-remove" title="Remove"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
       list.appendChild(div);
     }

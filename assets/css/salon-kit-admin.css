@@ -45,10 +45,11 @@
   position: relative;
 }
 
-/* Scrollable schedule meta box */
+/* Scrollable schedule meta box — 70vh height */
 #sb_service_schedule .inside {
   padding: 16px 18px;
-  max-height: 520px;
+  max-height: 70vh;
+  min-height: 320px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
@@ -791,5 +792,5 @@
   .sk-dash-stat { padding: 18px 12px 16px; }
   .sk-dash-stat-num { font-size: 30px; }
 
-  #sb_service_schedule .inside { max-height: 400px; }
+  #sb_service_schedule .inside { max-height: 70vh; min-height: 280px; }
 }
