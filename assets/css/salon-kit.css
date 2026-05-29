@@ -354,9 +354,9 @@
 .sb-summary {
   display: flex;
   align-items: stretch;
-  background: var(--sk-summary-bg);
-  border: 1px solid var(--sk-summary-border);
-  border-radius: var(--sk-radius-lg);
+  background: var(--sk-summary-bg, var(--sk-bg, #ffffff));
+  border: 1px solid var(--sk-summary-border, var(--sk-border, #e2e8f0));
+  border-radius: var(--sk-radius-lg, 10px);
   overflow: hidden;
   margin-bottom: 14px;
   box-shadow: var(--sk-sh, 0 1px 3px rgba(0,0,0,.04));
@@ -378,13 +378,13 @@
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background: var(--sk-summary-icon-bg);
+  background: var(--sk-summary-icon-bg, var(--sk-primary-lite, #eef2ff));
   flex-shrink: 0;
 }
 .sb-summary-icon svg {
   width: 14px;
   height: 14px;
-  color: var(--sk-summary-active);
+  color: var(--sk-summary-active, var(--sk-primary, #6366f1));
 }
 
 .sb-summary-content {
@@ -399,14 +399,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .04em;
-  color: var(--sk-summary-label);
+  color: var(--sk-summary-label, var(--sk-text-muted, #64748b));
   line-height: 1.2;
 }
 
 .sb-summary-value {
   font-size: 12px;
   font-weight: 600;
-  color: var(--sk-summary-value);
+  color: var(--sk-summary-value, var(--sk-text, #0f172a));
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -415,13 +415,13 @@
 
 .sb-summary-sep {
   width: 1px;
-  background: var(--sk-summary-border);
+  background: var(--sk-summary-border, var(--sk-border, #e2e8f0));
   flex-shrink: 0;
   margin: 10px 0;
 }
 
 .sb-summary-col:has(.sb-summary-value:not(:empty):not([data-sk-text])) .sb-summary-value {
-  color: var(--sk-summary-active);
+  color: var(--sk-summary-active, var(--sk-primary, #6366f1));
 }
 
 .sk-summary-thumb {
