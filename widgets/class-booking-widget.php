@@ -50,6 +50,41 @@ class Booking_Widget extends \Elementor\Widget_Base {
         $this->register_typography_controls();
         $this->register_spacing_controls();
 
+        $this->start_controls_section( 'section_service_order', [
+            'label' => 'Service Order',
+            'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+        ] );
+
+        $this->add_control( 'services_orderby', [
+            'label'   => 'Order By',
+            'type'    => \Elementor\Controls_Manager::SELECT,
+            'options' => [
+                'menu_order' => 'Custom Order (menu order)',
+                'title'      => 'Name (alphabetical)',
+                'date'       => 'Date Created',
+                'price'      => 'Price',
+                'duration'   => 'Duration',
+            ],
+            'default' => 'menu_order',
+        ] );
+
+        $this->add_control( 'services_order', [
+            'label'   => 'Order Direction',
+            'type'    => \Elementor\Controls_Manager::SELECT,
+            'options' => [
+                'asc'  => 'Ascending',
+                'desc' => 'Descending',
+            ],
+            'default' => 'asc',
+        ] );
+
+        $this->add_control( 'services_order_note', [
+            'type' => \Elementor\Controls_Manager::RAW_HTML,
+            'raw'  => '<small>Set the custom order (menu order) from <strong>Services → Edit Service → Page Attributes → Order</strong>.</small>',
+        ] );
+
+        $this->end_controls_section();
+
         $this->start_controls_section( 'section_summary', [
             'label' => 'Summary Bar',
             'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
@@ -211,6 +246,8 @@ class Booking_Widget extends \Elementor\Widget_Base {
         foreach ( $visiblity as $key => $val ) {
             $data_attrs .= ' data-' . str_replace( '_', '-', $key ) . '="' . esc_attr( $val ) . '"';
         }
+        $data_attrs .= ' data-services-orderby="' . esc_attr( $settings['services_orderby'] ?? 'menu_order' ) . '"';
+        $data_attrs .= ' data-services-order="' . esc_attr( $settings['services_order'] ?? 'asc' ) . '"';
 
         echo '<div id="salonBookingWrap" class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $data_attrs . $custom_attrs . '>';
         include SK_PATH . 'templates/booking-form.php';

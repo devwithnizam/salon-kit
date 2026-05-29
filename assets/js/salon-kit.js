@@ -450,6 +450,25 @@
 
     state.services = SalonKit.services || [];
 
+    // Sort services by widget-defined order
+    const orderby = wrap.getAttribute('data-services-orderby') || 'menu_order';
+    const order   = wrap.getAttribute('data-services-order') || 'asc';
+    const dir     = order === 'desc' ? -1 : 1;
+
+    state.services.sort(function (a, b) {
+      var va, vb;
+      switch (orderby) {
+        case 'title':    va = (a.name || '').toLowerCase(); vb = (b.name || '').toLowerCase(); break;
+        case 'date':     va = a.id || 0; vb = b.id || 0; break;
+        case 'price':    va = parseFloat(a.price) || 0; vb = parseFloat(b.price) || 0; break;
+        case 'duration': va = a.duration || 0; vb = b.duration || 0; break;
+        default:         va = a.menu_order || 0; vb = b.menu_order || 0; break; // menu_order
+      }
+      if (va < vb) return -1 * dir;
+      if (va > vb) return 1 * dir;
+      return 0;
+    });
+
     renderServices();
 
     // Relocate summary bar into initial active panel

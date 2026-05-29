@@ -45,6 +45,7 @@ class Frontend_Assets {
                 'duration'    => (int) get_post_meta( $svc->ID, '_sb_duration', true ),
                 'slot_qty'    => (int) get_post_meta( $svc->ID, '_sb_slot_qty', true ) ?: 1,
                 'thumb_url'   => $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'thumbnail' ) : '',
+                'menu_order'  => $svc->menu_order,
             ];
         }
 
