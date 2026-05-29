@@ -1,0 +1,646 @@
+/* ═══════════════════════════════════════════════════
+   SalonKit Admin Styles
+   ═══════════════════════════════════════════════════ */
+
+/* ── Variables ─────────────────────────────────── */
+
+:root {
+  --sk-primary: #6366f1;
+  --sk-primary-bg: #eef2ff;
+  --sk-primary-hover: #4f46e5;
+  --sk-green: #10b981;
+  --sk-green-bg: #ecfdf5;
+  --sk-red: #ef4444;
+  --sk-red-bg: #fef2f2;
+  --sk-amber: #f59e0b;
+  --sk-amber-bg: #fffbeb;
+  --sk-gray: #6b7280;
+  --sk-gray-bg: #f9fafb;
+  --sk-border: #e5e7eb;
+  --sk-text: #111827;
+  --sk-text-muted: #6b7280;
+  --sk-radius: 6px;
+  --sk-radius-lg: 8px;
+  --sk-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --sk-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --sk-transition: 0.15s ease;
+}
+
+/* ── Meta Box: Container ───────────────────────── */
+
+.sk-mb {
+  padding: 4px 0;
+}
+
+.sk-mb-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sk-mb-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sk-mb-label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--sk-text);
+  display: block;
+}
+
+.sk-mb-input input[type="number"],
+.sk-mb-input input[type="text"] {
+  border: 1px solid var(--sk-border);
+  border-radius: var(--sk-radius);
+  padding: 6px 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  transition: border-color var(--sk-transition), box-shadow var(--sk-transition);
+}
+
+.sk-mb-input input:focus {
+  border-color: var(--sk-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+
+.sk-mb-input--sm { width: 140px; }
+.sk-mb-input--xs { width: 100px; }
+
+.sk-mb-note {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: var(--sk-text-muted);
+  font-style: italic;
+}
+
+.sk-mb-empty {
+  color: var(--sk-text-muted);
+  font-size: 13px;
+}
+
+/* ── Meta Box: Icon in Title ───────────────────── */
+
+.sk-mb-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: var(--sk-text);
+}
+
+.sk-mb-icon svg {
+  color: var(--sk-primary);
+  flex-shrink: 0;
+}
+
+/* ── Meta Box: Checkbox List ───────────────────── */
+
+.sk-mb-checkbox-list {
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sk-mb-cb-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--sk-radius);
+  cursor: pointer;
+  font-size: 13px;
+  transition: background var(--sk-transition);
+}
+
+.sk-mb-cb-label:hover {
+  background: var(--sk-gray-bg);
+}
+
+.sk-mb-cb-label--on {
+  background: var(--sk-primary-bg);
+}
+
+.sk-mb-cb-label input[type="checkbox"] {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.sk-mb-cb-label span {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Meta Box: Avatar in Checkbox ──────────────── */
+
+.sk-mb-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sk-mb-avatar--empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sk-gray-bg);
+  color: var(--sk-text-muted);
+}
+
+/* ── Meta Box: Schedule ────────────────────────── */
+
+.sk-mb-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sk-mb-sched-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--sk-border);
+  border-radius: var(--sk-radius-lg);
+  background: #fff;
+  transition: background var(--sk-transition), border-color var(--sk-transition);
+}
+
+.sk-mb-sched-row--on {
+  background: #f8f9ff;
+  border-color: var(--sk-primary);
+}
+
+.sk-mb-sched-row--on .sk-mb-sched-times input {
+  border-color: #c7d2fe;
+}
+
+/* Toggle switch */
+.sk-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sk-toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.sk-toggle-track {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  background: #d1d5db;
+  border-radius: 10px;
+  transition: background var(--sk-transition);
+  flex-shrink: 0;
+}
+
+.sk-toggle input:checked + .sk-toggle-track {
+  background: var(--sk-primary);
+}
+
+.sk-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform var(--sk-transition);
+  box-shadow: var(--sk-shadow-sm);
+}
+
+.sk-toggle input:checked + .sk-toggle-track .sk-toggle-knob {
+  transform: translateX(14px);
+}
+
+.sk-toggle-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--sk-text-muted);
+  width: 22px;
+  text-align: center;
+}
+
+.sk-toggle input:checked ~ .sk-toggle-label {
+  color: var(--sk-primary);
+}
+
+/* Schedule time inputs */
+.sk-mb-sched-times {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sk-mb-sched-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--sk-text-muted);
+}
+
+.sk-mb-sched-time input[type="time"] {
+  width: 100px;
+  border: 1px solid var(--sk-border);
+  border-radius: var(--sk-radius);
+  padding: 4px 6px;
+  font-size: 12px;
+  transition: border-color var(--sk-transition);
+}
+
+.sk-mb-sched-time input[type="time"]:focus {
+  border-color: var(--sk-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  outline: none;
+}
+
+.sk-mb-sched-time--lunch span {
+  display: none;
+}
+
+/* ── Admin Table: Thumbs & Avatars ─────────────── */
+
+.sk-admin-thumb,
+.sk-admin-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  background: var(--sk-gray-bg);
+}
+
+.sk-admin-thumb--empty,
+.sk-admin-avatar--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sk-text-muted);
+  border: 1px solid var(--sk-border);
+}
+
+.column-sb_thumb,
+.column-sb_photo {
+  width: 48px;
+}
+
+/* ── Admin Table: Badges ───────────────────────── */
+
+.sk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.sk-badge-price {
+  background: var(--sk-green-bg);
+  color: #059669;
+}
+
+.sk-badge-dur {
+  background: #f3f4f6;
+  color: var(--sk-text);
+}
+
+.sk-badge-slot {
+  background: var(--sk-amber-bg);
+  color: #b45309;
+}
+
+.sk-badge-svc {
+  background: var(--sk-primary-bg);
+  color: var(--sk-primary);
+}
+
+.sk-unit {
+  font-weight: 400;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.sk-na {
+  color: var(--sk-text-muted);
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* ── Admin Table: Team / Services List ─────────── */
+
+.sk-team-count,
+.sk-badge-svc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 4px;
+  padding: 0 5px;
+}
+
+.sk-team-count {
+  background: var(--sk-primary-bg);
+  color: var(--sk-primary);
+}
+
+.sk-team-list {
+  font-size: 12px;
+  color: var(--sk-text);
+}
+
+/* ── Admin Table: Day Dots ─────────────────────── */
+
+.sk-day-dots {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.sk-day-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--sk-gray-bg);
+  color: var(--sk-text-muted);
+  border: 1px solid var(--sk-border);
+  transition: all var(--sk-transition);
+}
+
+.sk-day-dot--on {
+  background: var(--sk-primary-bg);
+  color: var(--sk-primary);
+  border-color: var(--sk-primary);
+}
+
+/* ── Admin Table: Booking Specific ─────────────── */
+
+.sk-booking-id {
+  font-weight: 600;
+  color: var(--sk-primary);
+  font-size: 13px;
+}
+
+.sk-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.sk-status-dot--confirmed {
+  background: var(--sk-green);
+  box-shadow: 0 0 0 3px var(--sk-green-bg);
+}
+
+.sk-status-dot--pending {
+  background: var(--sk-amber);
+  box-shadow: 0 0 0 3px var(--sk-amber-bg);
+}
+
+.sk-status-dot--cancelled {
+  background: var(--sk-red);
+  box-shadow: 0 0 0 3px var(--sk-red-bg);
+}
+
+.sk-status-text {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  vertical-align: middle;
+}
+
+.sk-date {
+  font-size: 12px;
+  color: var(--sk-text);
+  white-space: nowrap;
+}
+
+.sk-time {
+  font-size: 12px;
+  font-family: "SF Mono", "Consolas", monospace;
+  color: var(--sk-text);
+  background: var(--sk-gray-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.sk-email-link {
+  color: var(--sk-primary);
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.sk-email-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Dashboard Widget ──────────────────────────── */
+
+#sk_dashboard_today .inside {
+  margin: 0;
+  padding: 0;
+}
+
+.sk-dash {
+  padding: 0;
+}
+
+.sk-dash-stat {
+  text-align: center;
+  padding: 18px 16px 14px;
+  background: linear-gradient(135deg, var(--sk-primary-bg), #e8f0fe);
+  border-bottom: 1px solid var(--sk-border);
+}
+
+.sk-dash-stat-num {
+  display: block;
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--sk-primary);
+  line-height: 1;
+}
+
+.sk-dash-stat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--sk-text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sk-dash-empty {
+  text-align: center;
+  padding: 28px 16px;
+  color: var(--sk-text-muted);
+}
+
+.sk-dash-empty svg {
+  color: var(--sk-green);
+  margin-bottom: 6px;
+}
+
+.sk-dash-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.sk-dash-list {
+  padding: 4px 0;
+}
+
+.sk-dash-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background var(--sk-transition);
+}
+
+.sk-dash-row:last-child {
+  border-bottom: none;
+}
+
+.sk-dash-row:hover {
+  background: var(--sk-gray-bg);
+}
+
+.sk-dash-time {
+  flex-shrink: 0;
+  width: 54px;
+  font-size: 12px;
+  font-family: "SF Mono", "Consolas", monospace;
+  color: var(--sk-primary);
+  font-weight: 600;
+}
+
+.sk-dash-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sk-dash-client {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sk-text);
+}
+
+.sk-dash-meta {
+  font-size: 11px;
+  color: var(--sk-text-muted);
+}
+
+.sk-dash-footer {
+  border-top: 1px solid var(--sk-border);
+  padding: 8px 16px;
+  background: var(--sk-gray-bg);
+}
+
+.sk-dash-footer a {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sk-primary);
+  text-decoration: none;
+}
+
+.sk-dash-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ── Admin Menu Brand Icon ─────────────────────── */
+
+#adminmenu .menu-icon-salon_service .wp-menu-image img {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+#adminmenu .menu-icon-salon_service.wp-has-current-submenu .wp-menu-image img,
+#adminmenu .menu-icon-salon_service:hover .wp-menu-image img {
+  opacity: 1;
+  filter: brightness(0) invert(1);
+}
+
+#adminmenu .menu-icon-salon_service div.wp-menu-image.svg {
+  background-size: 20px 20px;
+}
+
+/* ── Dashboard Widget Brand Icon ──────────────── */
+
+.sk-dash-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.sk-dash-header svg {
+  flex-shrink: 0;
+  color: #6366f1;
+}
+
+/* ── Dark Mode Compatibility ───────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  .wrap.wp-admin .sk-mb-sched-row {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .wrap.wp-admin .sk-mb-sched-row--on {
+    background: #1e1b4b;
+    border-color: #6366f1;
+  }
+
+  .wrap.wp-admin .sk-mb-cb-label:hover {
+    background: #1f2937;
+  }
+
+  .wrap.wp-admin .sk-mb-cb-label--on {
+    background: rgba(99, 102, 241, 0.15);
+  }
+}

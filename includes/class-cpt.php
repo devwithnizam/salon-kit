@@ -33,7 +33,7 @@ class CPT {
             'show_ui'       => true,
             'show_in_menu'  => true,
             'menu_position' => 25,
-            'menu_icon'     => 'dashicons-admin-tools',
+            'menu_icon'     => self::menu_icon_data_url(),
             'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
             'has_archive'   => false,
             'rewrite'       => [ 'slug' => 'service' ],
@@ -62,6 +62,30 @@ class CPT {
             'rewrite'       => [ 'slug' => 'professional' ],
             'show_in_rest'  => true,
         ] );
+    }
+
+    public static function menu_icon_svg() {
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#7f8388" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 3q4 5 7 8-2 4-4 7"/>
+            <path d="M19 3q-4 5-7 8 2 4 4 7"/>
+            <circle cx="8" cy="20" r="2.5"/>
+            <circle cx="16" cy="20" r="2.5"/>
+            <polygon points="12,9.5 13.5,11 12,12.5 10.5,11" fill="#7f8388"/>
+        </svg>';
+    }
+
+    public static function menu_icon_data_url() {
+        return 'data:image/svg+xml;base64,' . base64_encode( self::menu_icon_svg() );
+    }
+
+    public static function brand_icon_svg( $size = 20, $color = 'currentColor' ) {
+        return '<svg width="' . esc_attr( $size ) . '" height="' . esc_attr( $size ) . '" viewBox="0 0 24 24" fill="none" stroke="' . esc_attr( $color ) . '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle">
+            <path d="M5 3q4 5 7 8-2 4-4 7"/>
+            <path d="M19 3q-4 5-7 8 2 4 4 7"/>
+            <circle cx="8" cy="20" r="2.5"/>
+            <circle cx="16" cy="20" r="2.5"/>
+            <polygon points="12,9.5 13.5,11 12,12.5 10.5,11" fill="' . esc_attr( $color ) . '"/>
+        </svg>';
     }
 
     private static function register_booking() {

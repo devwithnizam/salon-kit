@@ -12,13 +12,64 @@ class Meta_Boxes {
         add_action( 'save_post_salon_professional', [ __CLASS__, 'save_professional_meta' ], 10, 2 );
     }
 
-    // ── SERVICE ───────────────────────────────────────────
+    // ── HELPERS ───────────────────────────────────────────
+
+    private static function field_wrap( $label, $input, $note = '' ) {
+        printf(
+            '<div class="sk-mb-field"><label class="sk-mb-label">%s</label><div class="sk-mb-input">%s%s</div></div>',
+            esc_html( $label ),
+            $input,
+            $note ? '<p class="sk-mb-note">' . esc_html( $note ) . '</p>' : ''
+        );
+    }
+
+    private static function checkbox_list( $name, $items, $selected_ids, $empty_msg, $empty_url, $image_cb = null ) {
+        if ( empty( $items ) ) {
+            printf(
+                '<p class="sk-mb-empty">%s <a href="%s">%s</a></p>',
+                esc_html( $empty_msg ),
+                esc_url( $empty_url ),
+                esc_html__( 'Create one', 'salon-kit' )
+            );
+            return;
+        }
+
+        echo '<div class="sk-mb-checkbox-list" data-max-height="260">';
+        foreach ( $items as $item ) {
+            $id = $item->ID;
+            $checked = in_array( $id, $selected_ids, false );
+            $img = $image_cb ? $image_cb( $id ) : '';
+            printf(
+                '<label class="sk-mb-cb-label%s"><input type="checkbox" name="%s[]" value="%s" %s>%s<span>%s</span></label>',
+                $checked ? ' sk-mb-cb-label--on' : '',
+                esc_attr( $name ),
+                esc_attr( $id ),
+                checked( $checked, true, false ),
+                $img,
+                esc_html( $item->post_title )
+            );
+        }
+        echo '</div>';
+    }
+
+    // ── SERVICE META BOXES ────────────────────────────────
 
     public static function register_service_boxes() {
-        add_meta_box( 'sb_service_details', 'Service Details',
-            [ __CLASS__, 'render_service_details' ], 'salon_service', 'normal', 'high' );
-        add_meta_box( 'sb_service_pros', 'Assign Professionals',
-            [ __CLASS__, 'render_service_pros' ], 'salon_service', 'side' );
+        add_meta_box(
+            'sb_service_details',
+            '<span class="sk-mb-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M16.86 4.49l1.69-1.69a2.25 2.25 0 113.18 3.18L10.58 17.13a4.5 4.5 0 01-1.9 1.13L6 19l.74-2.69a4.5 4.5 0 011.13-1.9L16.86 4.49z"/></svg>Service Details</span>',
+            [ __CLASS__, 'render_service_details' ],
+            'salon_service',
+            'normal',
+            'high'
+        );
+        add_meta_box(
+            'sb_service_pros',
+            '<span class="sk-mb-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Assign Team</span>',
+            [ __CLASS__, 'render_service_pros' ],
+            'salon_service',
+            'side'
+        );
     }
 
     public static function render_service_details( $post ) {
@@ -27,48 +78,48 @@ class Meta_Boxes {
         $duration = get_post_meta( $post->ID, '_sb_duration', true );
         $slot_qty = get_post_meta( $post->ID, '_sb_slot_qty', true ) ?: 1;
         ?>
-        <table class="form-table">
-            <tr>
-                <th><label for="sb_price">Price ($)</label></th>
-                <td><input type="number" step="0.01" min="0" id="sb_price" name="sb_price"
-                    value="<?php echo esc_attr( $price ); ?>" class="regular-text" placeholder="35.00" required></td>
-            </tr>
-            <tr>
-                <th><label for="sb_duration">Duration (minutes)</label></th>
-                <td><input type="number" min="5" step="5" id="sb_duration" name="sb_duration"
-                    value="<?php echo esc_attr( $duration ); ?>" class="regular-text" placeholder="45" required></td>
-            </tr>
-            <tr>
-                <th><label for="sb_slot_qty">Slot Quantity</label></th>
-                <td>
-                    <input type="number" min="1" id="sb_slot_qty" name="sb_slot_qty"
-                        value="<?php echo esc_attr( $slot_qty ); ?>" class="small-text" required>
-                    <p class="description">Max clients per time slot for this service.</p>
-                </td>
-            </tr>
-        </table>
+        <div class="sk-mb sk-mb-fields">
+            <?php self::field_wrap(
+                'Price ($)',
+                '<input type="number" step="0.01" min="0" id="sb_price" name="sb_price" value="' . esc_attr( $price ) . '" class="sk-mb-input--sm" placeholder="35.00" required>',
+                'Set the service price in USD.'
+            ); ?>
+            <?php self::field_wrap(
+                'Duration (minutes)',
+                '<input type="number" min="5" step="5" id="sb_duration" name="sb_duration" value="' . esc_attr( $duration ) . '" class="sk-mb-input--sm" placeholder="45" required>',
+                'How long does this service take?'
+            ); ?>
+            <?php self::field_wrap(
+                'Slot Quantity',
+                '<input type="number" min="1" id="sb_slot_qty" name="sb_slot_qty" value="' . esc_attr( $slot_qty ) . '" class="sk-mb-input--xs" required>',
+                'Max clients per time slot.'
+            ); ?>
+        </div>
         <?php
     }
 
     public static function render_service_pros( $post ) {
-        $assigned_pros = (array) get_post_meta( $post->ID, '_sb_professionals', true );
-        $pros = get_posts( [ 'post_type' => 'salon_professional', 'posts_per_page' => -1, 'orderby' => 'title', 'order' => 'ASC' ] );
+        $assigned = (array) get_post_meta( $post->ID, '_sb_professionals', true );
+        $pros     = get_posts( [
+            'post_type'      => 'salon_professional',
+            'posts_per_page' => -1,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        ] );
 
-        if ( empty( $pros ) ) {
-            echo '<p>No professionals yet. <a href="' . admin_url( 'post-new.php?post_type=salon_professional' ) . '">Create one</a>.</p>';
-            return;
-        }
-
-        echo '<ul style="margin:0;max-height:260px;overflow-y:auto;">';
-        foreach ( $pros as $pro ) {
-            $img = get_the_post_thumbnail( $pro->ID, [ 24, 24 ], [ 'style' => 'border-radius:50%;vertical-align:middle;margin-right:6px;' ] ) ?: '';
-            echo '<li style="padding:4px 0;"><label>';
-            echo '<input type="checkbox" name="sb_professionals[]" value="' . esc_attr( $pro->ID ) . '" '
-                . ( in_array( $pro->ID, $assigned_pros ) ? 'checked' : '' ) . '> '
-                . $img . esc_html( $pro->post_title );
-            echo '</label></li>';
-        }
-        echo '</ul>';
+        self::checkbox_list(
+            'sb_professionals',
+            $pros,
+            $assigned,
+            'No professionals yet.',
+            admin_url( 'post-new.php?post_type=salon_professional' ),
+            function ( $id ) {
+                $img = get_the_post_thumbnail( $id, [ 20, 20 ], [ 'class' => 'sk-mb-avatar' ] );
+                return $img ?: '<span class="sk-mb-avatar sk-mb-avatar--empty">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>';
+            }
+        );
     }
 
     public static function save_service_meta( $post_id, $post ) {
@@ -86,7 +137,11 @@ class Meta_Boxes {
     }
 
     private static function sync_pros_for_service( $service_id, $assigned_pro_ids ) {
-        $all_pros = get_posts( [ 'post_type' => 'salon_professional', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+        $all_pros = get_posts( [
+            'post_type'      => 'salon_professional',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ] );
         foreach ( $all_pros as $pro_id ) {
             $services = (array) get_post_meta( $pro_id, '_sb_assigned_services', true );
             if ( in_array( $pro_id, $assigned_pro_ids ) ) {
@@ -98,47 +153,51 @@ class Meta_Boxes {
         }
     }
 
-    // ── PROFESSIONAL ──────────────────────────────────────
+    // ── PROFESSIONAL META BOXES ───────────────────────────
 
     public static function register_professional_boxes() {
-        add_meta_box( 'sb_pro_services', 'Assigned Services',
-            [ __CLASS__, 'render_pro_services' ], 'salon_professional', 'side' );
-        add_meta_box( 'sb_pro_schedule', 'Weekly Schedule',
-            [ __CLASS__, 'render_pro_schedule' ], 'salon_professional', 'normal', 'high' );
+        add_meta_box(
+            'sb_pro_services',
+            '<span class="sk-mb-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 6h12M6 12h12M6 18h8"/></svg>Assigned Services</span>',
+            [ __CLASS__, 'render_pro_services' ],
+            'salon_professional',
+            'side'
+        );
+        add_meta_box(
+            'sb_pro_schedule',
+            '<span class="sk-mb-icon"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Weekly Schedule</span>',
+            [ __CLASS__, 'render_pro_schedule' ],
+            'salon_professional',
+            'normal',
+            'high'
+        );
     }
 
     public static function render_pro_services( $post ) {
         wp_nonce_field( 'sb_save_professional', 'sb_pro_nonce' );
         $assigned = (array) get_post_meta( $post->ID, '_sb_assigned_services', true );
-        $services = get_posts( [ 'post_type' => 'salon_service', 'posts_per_page' => -1, 'orderby' => 'title', 'order' => 'ASC' ] );
+        $services = get_posts( [
+            'post_type'      => 'salon_service',
+            'posts_per_page' => -1,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+        ] );
 
-        if ( empty( $services ) ) {
-            echo '<p>No services yet. <a href="' . admin_url( 'post-new.php?post_type=salon_service' ) . '">Create one</a>.</p>';
-            return;
-        }
-
-        echo '<ul style="margin:0;max-height:260px;overflow-y:auto;">';
-        foreach ( $services as $svc ) {
-            echo '<li style="padding:4px 0;"><label>';
-            echo '<input type="checkbox" name="sb_services[]" value="' . esc_attr( $svc->ID ) . '" '
-                . ( in_array( $svc->ID, $assigned ) ? 'checked' : '' ) . '> '
-                . esc_html( $svc->post_title );
-            echo '</label></li>';
-        }
-        echo '</ul>';
+        self::checkbox_list(
+            'sb_services',
+            $services,
+            $assigned,
+            'No services yet.',
+            admin_url( 'post-new.php?post_type=salon_service' )
+        );
     }
 
     public static function render_pro_schedule( $post ) {
         $schedule = (array) get_post_meta( $post->ID, '_sb_schedule', true );
-        $days = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
-        $labels = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ];
+        $days     = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
+        $labels   = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ];
         ?>
-        <table class="form-table sb-schedule-table">
-            <thead><tr>
-                <th style="width:100px;">Day</th><th style="width:60px;">Works?</th>
-                <th>Start</th><th>End</th><th>Lunch Start</th><th>Lunch End</th>
-            </tr></thead>
-            <tbody>
+        <div class="sk-mb sk-mb-schedule">
             <?php foreach ( $days as $i => $day ) :
                 $segments = $schedule[ $day ] ?? [];
                 $active   = ! empty( $segments );
@@ -146,20 +205,38 @@ class Meta_Boxes {
                 $end      = $segments[0]['end']   ?? '17:00';
                 $lunch_s  = $segments[1]['start'] ?? '';
                 $lunch_e  = $segments[1]['end']   ?? '';
-                ?>
-                <tr>
-                    <td><strong><?php echo $labels[ $i ]; ?></strong></td>
-                    <td><input type="checkbox" name="sb_schedule[<?php echo $day; ?>][active]" value="1" <?php checked( $active ); ?>></td>
-                    <td><input type="time" name="sb_schedule[<?php echo $day; ?>][start]" value="<?php echo esc_attr( $start ); ?>"></td>
-                    <td><input type="time" name="sb_schedule[<?php echo $day; ?>][end]" value="<?php echo esc_attr( $end ); ?>"></td>
-                    <td><input type="time" name="sb_schedule[<?php echo $day; ?>][lunch_start]" value="<?php echo esc_attr( $lunch_s ); ?>"></td>
-                    <td><input type="time" name="sb_schedule[<?php echo $day; ?>][lunch_end]" value="<?php echo esc_attr( $lunch_e ); ?>"></td>
-                </tr>
+                $abbr     = substr( $day, 0, 3 );
+            ?>
+                <div class="sk-mb-sched-row<?php echo $active ? ' sk-mb-sched-row--on' : ''; ?>">
+                    <div class="sk-mb-sched-day">
+                        <label class="sk-toggle" title="Toggle <?php echo esc_attr( $labels[ $i ] ); ?>">
+                            <input type="checkbox" name="sb_schedule[<?php echo esc_attr( $day ); ?>][active]" value="1" <?php checked( $active ); ?>>
+                            <span class="sk-toggle-track"><span class="sk-toggle-knob"></span></span>
+                            <span class="sk-toggle-label"><?php echo esc_html( $abbr ); ?></span>
+                        </label>
+                    </div>
+                    <div class="sk-mb-sched-times">
+                        <label class="sk-mb-sched-time">
+                            <span>Start</span>
+                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][start]" value="<?php echo esc_attr( $start ); ?>">
+                        </label>
+                        <label class="sk-mb-sched-time">
+                            <span>End</span>
+                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][end]" value="<?php echo esc_attr( $end ); ?>">
+                        </label>
+                        <label class="sk-mb-sched-time sk-mb-sched-time--lunch">
+                            <span>Lunch start</span>
+                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][lunch_start]" value="<?php echo esc_attr( $lunch_s ); ?>">
+                        </label>
+                        <label class="sk-mb-sched-time sk-mb-sched-time--lunch">
+                            <span>Lunch end</span>
+                            <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][lunch_end]" value="<?php echo esc_attr( $lunch_e ); ?>">
+                        </label>
+                    </div>
+                </div>
             <?php endforeach; ?>
-            </tbody>
-        </table>
-        <p class="description">Check a day to mark as working. Leave lunch blank for no break.</p>
-        <style>.sb-schedule-table input[type="time"]{width:110px}.sb-schedule-table td{vertical-align:middle;padding:6px 4px}</style>
+            <p class="sk-mb-note">Toggle a day on to set working hours. Leave lunch blank for no break.</p>
+        </div>
         <?php
     }
 
@@ -189,7 +266,11 @@ class Meta_Boxes {
     }
 
     private static function sync_services_for_pro( $pro_id, $assigned_service_ids ) {
-        $all = get_posts( [ 'post_type' => 'salon_service', 'posts_per_page' => -1, 'fields' => 'ids' ] );
+        $all = get_posts( [
+            'post_type'      => 'salon_service',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+        ] );
         foreach ( $all as $svc_id ) {
             $pros = (array) get_post_meta( $svc_id, '_sb_professionals', true );
             if ( in_array( $svc_id, $assigned_service_ids ) ) {
