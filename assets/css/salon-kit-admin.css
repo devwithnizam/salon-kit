@@ -1,200 +1,201 @@
 /* ═══════════════════════════════════════════════════
-   SalonKit Admin Styles
+   SalonKit Admin Styles — Modern v2
    ═══════════════════════════════════════════════════ */
 
-/* ── Variables ─────────────────────────────────── */
-
 :root {
-  --sk-primary: #6366f1;
-  --sk-primary-bg: #eef2ff;
-  --sk-primary-hover: #4f46e5;
-  --sk-green: #10b981;
-  --sk-green-bg: #ecfdf5;
-  --sk-red: #ef4444;
-  --sk-red-bg: #fef2f2;
-  --sk-amber: #f59e0b;
-  --sk-amber-bg: #fffbeb;
-  --sk-gray: #6b7280;
-  --sk-gray-bg: #f9fafb;
-  --sk-border: #e5e7eb;
-  --sk-text: #111827;
-  --sk-text-muted: #6b7280;
-  --sk-radius: 6px;
-  --sk-radius-lg: 8px;
-  --sk-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --sk-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --sk-transition: 0.15s ease;
+  --sk-pri:   #6366f1;
+  --sk-pri-bg: #eef2ff;
+  --sk-pri-h: #4f46e5;
+  --sk-grn:   #10b981;
+  --sk-grn-bg:#ecfdf5;
+  --sk-red:   #ef4444;
+  --sk-red-bg:#fef2f2;
+  --sk-amb:   #f59e0b;
+  --sk-amb-bg:#fffbeb;
+  --sk-gray:  #6b7280;
+  --sk-gray-bg:#f9fafb;
+  --sk-bd:    #e5e7eb;
+  --sk-text:  #111827;
+  --sk-muted: #6b7280;
+  --sk-r:     6px;
+  --sk-rl:    10px;
+  --sk-sh:    0 1px 3px rgba(0,0,0,.08);
+  --sk-tr:    .15s ease;
 }
 
-/* ── Meta Box: Container ───────────────────────── */
-
-.sk-mb {
-  padding: 4px 0;
-}
-
-.sk-mb-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.sk-mb-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sk-mb-label {
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--sk-text);
-  display: block;
-}
-
-.sk-mb-input input[type="number"],
-.sk-mb-input input[type="text"] {
-  border: 1px solid var(--sk-border);
-  border-radius: var(--sk-radius);
-  padding: 6px 10px;
-  font-size: 13px;
-  line-height: 1.5;
-  transition: border-color var(--sk-transition), box-shadow var(--sk-transition);
-}
-
-.sk-mb-input input:focus {
-  border-color: var(--sk-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
-  outline: none;
-}
-
-.sk-mb-input--sm { width: 140px; }
-.sk-mb-input--xs { width: 100px; }
-
-.sk-mb-note {
-  margin: 3px 0 0;
-  font-size: 12px;
-  color: var(--sk-text-muted);
-  font-style: italic;
-}
-
-.sk-mb-empty {
-  color: var(--sk-text-muted);
-  font-size: 13px;
-}
-
-/* ── Meta Box: Icon in Title ───────────────────── */
+/* ═══ META BOX: Icon in title ═══════════════════ */
 
 .sk-mb-icon {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   font-weight: 600;
   color: var(--sk-text);
 }
+.sk-mb-icon svg { color: var(--sk-pri); flex-shrink: 0; }
 
-.sk-mb-icon svg {
-  color: var(--sk-primary);
-  flex-shrink: 0;
+/* ═══ META BOX: Grid & Cards ════════════════════ */
+
+.sk-mb { padding: 0; }
+
+.sk-mb-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* ── Meta Box: Checkbox List ───────────────────── */
+.sk-mb-card {
+  background: #fff;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-rl);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow var(--sk-tr), border-color var(--sk-tr);
+}
+.sk-mb-card:hover {
+  border-color: #d1d5db;
+  box-shadow: var(--sk-sh);
+}
 
-.sk-mb-checkbox-list {
-  max-height: 260px;
-  overflow-y: auto;
+/* ═══ FIELDS ═════════════════════════════════════ */
+
+.sk-fld {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sk-fld-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--sk-text);
+  letter-spacing: .01em;
+}
+
+.sk-fld-body input,
+.sk-fld-body select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sk-fld-note {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  color: var(--sk-muted);
+  font-style: italic;
+}
+
+/* ── Input Group ────────────────────────────────── */
+
+.sk-ig {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-r);
+  overflow: hidden;
+  transition: border-color var(--sk-tr), box-shadow var(--sk-tr);
+  background: #fff;
+  max-width: 220px;
+}
+.sk-ig:focus-within {
+  border-color: var(--sk-pri);
+  box-shadow: 0 0 0 2px rgba(99,102,241,.12);
+}
+
+.sk-ig input {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 7px 10px !important;
+  font-size: 13px;
+  min-width: 0;
+  flex: 1;
+  background: transparent;
+}
+
+.sk-ig-prefix,
+.sk-ig-suffix {
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sk-muted);
+  background: var(--sk-gray-bg);
+  white-space: nowrap;
+  line-height: 1.4;
+  border-left: 1px solid var(--sk-bd);
+}
+.sk-ig-prefix {
+  border-left: none;
+  border-right: 1px solid var(--sk-bd);
+}
+
+/* ═══ ASSIGN LIST ══════════════════════════════════ */
+
+.sk-assign {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sk-assign-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -1px -11px 6px;
+  padding: 8px 11px;
+  background: var(--sk-gray-bg);
+  border-bottom: 1px solid var(--sk-bd);
+}
+
+.sk-assign-search {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--sk-bd) !important;
+  border-radius: var(--sk-r) !important;
+  padding: 5px 9px !important;
+  font-size: 12px !important;
+  background: #fff;
+}
+.sk-assign-search:focus {
+  border-color: var(--sk-pri) !important;
+  box-shadow: 0 0 0 1.5px rgba(99,102,241,.12) !important;
+  outline: none;
+}
+
+.sk-assign-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sk-muted);
+  white-space: nowrap;
+}
+
+.sk-assign-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0 -11px;
+  padding: 0 11px;
 }
 
-.sk-mb-cb-label {
+.sk-assign-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 8px;
-  border-radius: var(--sk-radius);
+  padding: 7px 10px;
+  border-radius: var(--sk-r);
   cursor: pointer;
   font-size: 13px;
-  transition: background var(--sk-transition);
-}
-
-.sk-mb-cb-label:hover {
-  background: var(--sk-gray-bg);
-}
-
-.sk-mb-cb-label--on {
-  background: var(--sk-primary-bg);
-}
-
-.sk-mb-cb-label input[type="checkbox"] {
-  margin: 0;
-  flex-shrink: 0;
-}
-
-.sk-mb-cb-label span {
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ── Meta Box: Avatar in Checkbox ──────────────── */
-
-.sk-mb-avatar {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.sk-mb-avatar--empty {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--sk-gray-bg);
-  color: var(--sk-text-muted);
-}
-
-/* ── Meta Box: Schedule ────────────────────────── */
-
-.sk-mb-schedule {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.sk-mb-sched-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid var(--sk-border);
-  border-radius: var(--sk-radius-lg);
-  background: #fff;
-  transition: background var(--sk-transition), border-color var(--sk-transition);
-}
-
-.sk-mb-sched-row--on {
-  background: #f8f9ff;
-  border-color: var(--sk-primary);
-}
-
-.sk-mb-sched-row--on .sk-mb-sched-times input {
-  border-color: #c7d2fe;
-}
-
-/* Toggle switch */
-.sk-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
+  transition: background var(--sk-tr);
   user-select: none;
 }
+.sk-assign-item:hover { background: var(--sk-gray-bg); }
+.sk-assign-item--on { background: var(--sk-pri-bg); }
 
-.sk-toggle input {
+.sk-assign-item input[type="checkbox"] {
   position: absolute;
   opacity: 0;
   width: 0;
@@ -202,445 +203,459 @@
   pointer-events: none;
 }
 
-.sk-toggle-track {
+.sk-assign-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid #d1d5db;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--sk-tr);
+  background: #fff;
+}
+.sk-assign-item:hover .sk-assign-box { border-color: var(--sk-pri); }
+.sk-assign-item--on .sk-assign-box {
+  background: var(--sk-pri);
+  border-color: var(--sk-pri);
+}
+.sk-assign-box svg {
+  opacity: 0;
+  transition: opacity var(--sk-tr);
+  color: #fff;
+}
+.sk-assign-item--on .sk-assign-box svg { opacity: 1; }
+
+.sk-assign-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sk-assign-avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--sk-gray-bg);
+}
+.sk-assign-avatar--empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sk-muted);
+}
+
+/* ═══ SCHEDULE ═════════════════════════════════════ */
+
+.sk-sched {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sk-sched-day {
+  border-radius: var(--sk-rl);
+  border: 1px solid var(--sk-bd);
+  background: #fff;
+  overflow: hidden;
+  transition: border-color var(--sk-tr), box-shadow var(--sk-tr);
+}
+.sk-sched-day:hover { border-color: #d1d5db; }
+.sk-sched-day--on {
+  border-color: var(--sk-pri);
+  box-shadow: 0 0 0 1px var(--sk-pri);
+}
+
+.sk-sched-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 13px;
+  background: var(--sk-gray-bg);
+  cursor: pointer;
+  transition: background var(--sk-tr);
+}
+.sk-sched-day--on .sk-sched-head { background: var(--sk-pri-bg); }
+.sk-sched-head:hover { background: #f3f4f6; }
+.sk-sched-day--on .sk-sched-head:hover { background: #e0e7ff; }
+
+/* ── Schedule Toggle ────────────────────────────── */
+
+.sk-sched-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.sk-sched-toggle input {
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+.sk-sched-track {
   position: relative;
-  width: 34px;
-  height: 20px;
+  width: 30px; height: 18px;
   background: #d1d5db;
-  border-radius: 10px;
-  transition: background var(--sk-transition);
+  border-radius: 9px;
+  transition: background var(--sk-tr);
   flex-shrink: 0;
 }
-
-.sk-toggle input:checked + .sk-toggle-track {
-  background: var(--sk-primary);
-}
-
-.sk-toggle-knob {
+.sk-sched-toggle input:checked + .sk-sched-track { background: var(--sk-pri); }
+.sk-sched-knob {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
+  top: 2px; left: 2px;
+  width: 14px; height: 14px;
   background: #fff;
   border-radius: 50%;
-  transition: transform var(--sk-transition);
-  box-shadow: var(--sk-shadow-sm);
+  transition: transform var(--sk-tr);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
+.sk-sched-toggle input:checked + .sk-sched-track .sk-sched-knob { transform: translateX(12px); }
 
-.sk-toggle input:checked + .sk-toggle-track .sk-toggle-knob {
-  transform: translateX(14px);
-}
-
-.sk-toggle-label {
+.sk-sched-abbr {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--sk-text-muted);
-  width: 22px;
-  text-align: center;
+  letter-spacing: .04em;
+  color: var(--sk-muted);
+  width: 28px;
 }
+.sk-sched-toggle input:checked ~ .sk-sched-abbr { color: var(--sk-pri); }
 
-.sk-toggle input:checked ~ .sk-toggle-label {
-  color: var(--sk-primary);
-}
-
-/* Schedule time inputs */
-.sk-mb-sched-times {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.sk-mb-sched-time {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  color: var(--sk-text-muted);
-}
-
-.sk-mb-sched-time input[type="time"] {
-  width: 100px;
-  border: 1px solid var(--sk-border);
-  border-radius: var(--sk-radius);
-  padding: 4px 6px;
+.sk-sched-hours {
   font-size: 12px;
-  transition: border-color var(--sk-transition);
+  font-weight: 500;
+  color: var(--sk-muted);
+}
+.sk-sched-day--on .sk-sched-hours { color: var(--sk-pri); }
+
+.sk-sched-range {
+  font-family: "SF Mono", Consolas, monospace;
+  font-size: 11.5px;
 }
 
-.sk-mb-sched-time input[type="time"]:focus {
-  border-color: var(--sk-primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+/* ── Schedule Body (expandable) ─────────────────── */
+
+.sk-sched-body {
+  display: none;
+  padding: 10px 13px 12px;
+  border-top: 1px solid var(--sk-bd);
+  flex-direction: column;
+  gap: 8px;
+}
+.sk-sched-day--on .sk-sched-body { display: flex; }
+
+.sk-sched-row {
+  display: flex;
+  gap: 10px;
+}
+
+.sk-sched-fld {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--sk-muted);
+}
+.sk-sched-fld input[type="time"] {
+  width: 100px;
+  border: 1px solid var(--sk-bd);
+  border-radius: var(--sk-r);
+  padding: 4px 7px;
+  font-size: 12px;
+  background: #fff;
+  transition: border-color var(--sk-tr);
+}
+.sk-sched-fld input[type="time"]:focus {
+  border-color: var(--sk-pri);
+  box-shadow: 0 0 0 1.5px rgba(99,102,241,.12);
   outline: none;
 }
+.sk-sched-fld--lunch span { display: none; }
 
-.sk-mb-sched-time--lunch span {
-  display: none;
+/* ═══ DATA TABLE — WordPress Overrides ═════════════ */
+
+.wp-list-table.sk-table th,
+.wp-list-table.sk-table td {
+  padding: 10px 12px !important;
+  vertical-align: middle;
 }
 
-/* ── Admin Table: Thumbs & Avatars ─────────────── */
+/* Table container polish */
+.wp-list-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  border-radius: var(--sk-rl);
+  overflow: hidden;
+  font-size: 13px;
+}
+
+/* Header */
+.wp-list-table thead th,
+.wp-list-table thead td {
+  background: var(--sk-gray-bg) !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--sk-muted) !important;
+  border-bottom: 1px solid var(--sk-bd) !important;
+  padding: 10px 12px !important;
+  white-space: nowrap;
+}
+
+/* Row stripes */
+.wp-list-table tbody tr {
+  transition: background .12s ease;
+}
+.wp-list-table tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+.wp-list-table tbody tr:nth-child(even) {
+  background: #fff;
+}
+.wp-list-table tbody tr:hover {
+  background: #f3f4f6 !important;
+}
+
+/* Row border */
+.wp-list-table tbody td {
+  border-bottom: 1px solid #f3f4f6 !important;
+  padding: 10px 12px !important;
+}
+
+/* Checkbox column */
+.wp-list-table .check-column {
+  width: 32px !important;
+  padding: 10px 4px 10px 12px !important;
+}
+
+/* Status indicators */
+.post-type-salotn_booking .status {
+  font-weight: 600;
+}
+
+/* Compact table view */
+.sk-table-compact th,
+.sk-table-compact td {
+  padding: 7px 10px !important;
+}
+
+/* Sortable header arrows */
+.wp-list-table .sorting-indicator {
+  margin-top: 4px;
+}
+
+/* Row actions */
+.wp-list-table .row-actions {
+  font-size: 12px;
+  color: var(--sk-muted);
+}
+.wp-list-table .row-actions a {
+  text-decoration: none;
+}
+.wp-list-table .row-actions a:hover {
+  text-decoration: underline;
+}
+
+/* Column width overrides via inline style or data attribute */
+[class*="column-sb_"] { white-space: nowrap; }
+
+/* ── Table cells: existing sk-* classes ─────────── */
 
 .sk-admin-thumb,
 .sk-admin-avatar {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
   background: var(--sk-gray-bg);
 }
-
 .sk-admin-thumb--empty,
 .sk-admin-avatar--empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--sk-text-muted);
-  border: 1px solid var(--sk-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--sk-muted);
+  border: 1px solid var(--sk-bd);
 }
-
-.column-sb_thumb,
-.column-sb_photo {
-  width: 48px;
-}
-
-/* ── Admin Table: Badges ───────────────────────── */
 
 .sk-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 20px;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 11.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px; white-space: nowrap;
 }
+.sk-badge-price { background: var(--sk-grn-bg); color: #059669; }
+.sk-badge-dur   { background: #f3f4f6; color: var(--sk-text); }
+.sk-badge-slot  { background: var(--sk-amb-bg); color: #b45309; }
+.sk-badge-svc   { background: var(--sk-pri-bg); color: var(--sk-pri); }
 
-.sk-badge-price {
-  background: var(--sk-green-bg);
-  color: #059669;
-}
+.sk-unit { font-weight: 400; opacity: .7; font-size: 11px; }
 
-.sk-badge-dur {
-  background: #f3f4f6;
-  color: var(--sk-text);
-}
+.sk-na { color: var(--sk-muted); font-style: italic; font-size: 12px; }
 
-.sk-badge-slot {
-  background: var(--sk-amber-bg);
-  color: #b45309;
-}
-
-.sk-badge-svc {
-  background: var(--sk-primary-bg);
-  color: var(--sk-primary);
-}
-
-.sk-unit {
-  font-weight: 400;
-  opacity: 0.7;
-  font-size: 11px;
-}
-
-.sk-na {
-  color: var(--sk-text-muted);
-  font-style: italic;
-  font-size: 12px;
-}
-
-/* ── Admin Table: Team / Services List ─────────── */
-
-.sk-team-count,
-.sk-badge-svc {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-right: 4px;
-  padding: 0 5px;
-}
+/* ── Team / Services count ──────────────────────── */
 
 .sk-team-count {
-  background: var(--sk-primary-bg);
-  color: var(--sk-primary);
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; border-radius: 10px;
+  font-size: 11px; font-weight: 700; margin-right: 4px; padding: 0 5px;
+  background: var(--sk-pri-bg); color: var(--sk-pri);
 }
+.sk-team-list { font-size: 12px; color: var(--sk-text); }
 
-.sk-team-list {
-  font-size: 12px;
-  color: var(--sk-text);
-}
-
-/* ── Admin Table: Day Dots ─────────────────────── */
+/* ── Day dots ───────────────────────────────────── */
 
 .sk-day-dots {
-  display: inline-flex;
-  gap: 3px;
-  align-items: center;
+  display: inline-flex; gap: 3px; align-items: center;
 }
-
 .sk-day-dot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  background: var(--sk-gray-bg);
-  color: var(--sk-text-muted);
-  border: 1px solid var(--sk-border);
-  transition: all var(--sk-transition);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  background: var(--sk-gray-bg); color: var(--sk-muted);
+  border: 1px solid var(--sk-bd);
+  transition: all var(--sk-tr);
 }
-
 .sk-day-dot--on {
-  background: var(--sk-primary-bg);
-  color: var(--sk-primary);
-  border-color: var(--sk-primary);
+  background: var(--sk-pri-bg); color: var(--sk-pri); border-color: var(--sk-pri);
 }
 
-/* ── Admin Table: Booking Specific ─────────────── */
+/* ── Booking specific ───────────────────────────── */
 
-.sk-booking-id {
-  font-weight: 600;
-  color: var(--sk-primary);
-  font-size: 13px;
-}
+.sk-booking-id { font-weight: 600; color: var(--sk-pri); font-size: 13px; }
 
 .sk-status-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 4px;
-  vertical-align: middle;
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 5px; vertical-align: middle;
 }
+.sk-status-dot--confirmed { background: var(--sk-grn); box-shadow: 0 0 0 3px var(--sk-grn-bg); }
+.sk-status-dot--pending   { background: var(--sk-amb); box-shadow: 0 0 0 3px var(--sk-amb-bg); }
+.sk-status-dot--cancelled { background: var(--sk-red); box-shadow: 0 0 0 3px var(--sk-red-bg); }
 
-.sk-status-dot--confirmed {
-  background: var(--sk-green);
-  box-shadow: 0 0 0 3px var(--sk-green-bg);
-}
+.sk-status-text { font-size: 12px; font-weight: 600; text-transform: capitalize; vertical-align: middle; }
 
-.sk-status-dot--pending {
-  background: var(--sk-amber);
-  box-shadow: 0 0 0 3px var(--sk-amber-bg);
-}
-
-.sk-status-dot--cancelled {
-  background: var(--sk-red);
-  box-shadow: 0 0 0 3px var(--sk-red-bg);
-}
-
-.sk-status-text {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
-  vertical-align: middle;
-}
-
-.sk-date {
-  font-size: 12px;
-  color: var(--sk-text);
-  white-space: nowrap;
-}
+.sk-date { font-size: 12px; color: var(--sk-text); white-space: nowrap; }
 
 .sk-time {
-  font-size: 12px;
-  font-family: "SF Mono", "Consolas", monospace;
-  color: var(--sk-text);
-  background: var(--sk-gray-bg);
-  padding: 1px 6px;
-  border-radius: 4px;
+  font-size: 11.5px; font-family: "SF Mono", Consolas, monospace;
+  color: var(--sk-text); background: var(--sk-gray-bg);
+  padding: 1px 6px; border-radius: 4px;
 }
 
-.sk-email-link {
-  color: var(--sk-primary);
-  text-decoration: none;
-  font-size: 12px;
-}
+.sk-email-link { color: var(--sk-pri); text-decoration: none; font-size: 12px; }
+.sk-email-link:hover { text-decoration: underline; }
 
-.sk-email-link:hover {
-  text-decoration: underline;
-}
+/* ═══ DASHBOARD WIDGET ════════════════════════════ */
 
-/* ── Dashboard Widget ──────────────────────────── */
-
-#sk_dashboard_today .inside {
-  margin: 0;
-  padding: 0;
-}
-
-.sk-dash {
-  padding: 0;
-}
+#sk_dashboard_today .inside { margin: 0; padding: 0; }
+.sk-dash { padding: 0; }
 
 .sk-dash-stat {
-  text-align: center;
-  padding: 18px 16px 14px;
-  background: linear-gradient(135deg, var(--sk-primary-bg), #e8f0fe);
-  border-bottom: 1px solid var(--sk-border);
+  text-align: center; padding: 18px 16px 14px;
+  background: linear-gradient(135deg, var(--sk-pri-bg), #e8f0fe);
+  border-bottom: 1px solid var(--sk-bd);
 }
-
 .sk-dash-stat-num {
-  display: block;
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--sk-primary);
-  line-height: 1;
+  display: block; font-size: 32px; font-weight: 800;
+  color: var(--sk-pri); line-height: 1;
 }
-
 .sk-dash-stat-label {
-  display: block;
-  font-size: 12px;
-  color: var(--sk-text-muted);
-  margin-top: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  display: block; font-size: 12px; color: var(--sk-muted);
+  margin-top: 4px; text-transform: uppercase; letter-spacing: .04em;
 }
 
-.sk-dash-empty {
-  text-align: center;
-  padding: 28px 16px;
-  color: var(--sk-text-muted);
-}
+.sk-dash-empty { text-align: center; padding: 28px 16px; color: var(--sk-muted); }
+.sk-dash-empty svg { color: var(--sk-grn); margin-bottom: 6px; }
+.sk-dash-empty p { margin: 0; font-size: 13px; }
 
-.sk-dash-empty svg {
-  color: var(--sk-green);
-  margin-bottom: 6px;
-}
-
-.sk-dash-empty p {
-  margin: 0;
-  font-size: 13px;
-}
-
-.sk-dash-list {
-  padding: 4px 0;
-}
-
+.sk-dash-list { padding: 4px 0; }
 .sk-dash-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background var(--sk-transition);
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; border-bottom: 1px solid #f3f4f6;
+  transition: background var(--sk-tr);
 }
-
-.sk-dash-row:last-child {
-  border-bottom: none;
-}
-
-.sk-dash-row:hover {
-  background: var(--sk-gray-bg);
-}
+.sk-dash-row:last-child { border-bottom: none; }
+.sk-dash-row:hover { background: var(--sk-gray-bg); }
 
 .sk-dash-time {
-  flex-shrink: 0;
-  width: 54px;
-  font-size: 12px;
-  font-family: "SF Mono", "Consolas", monospace;
-  color: var(--sk-primary);
-  font-weight: 600;
+  flex-shrink: 0; width: 54px;
+  font-size: 12px; font-family: "SF Mono", Consolas, monospace;
+  color: var(--sk-pri); font-weight: 600;
 }
-
-.sk-dash-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.sk-dash-client {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--sk-text);
-}
-
-.sk-dash-meta {
-  font-size: 11px;
-  color: var(--sk-text-muted);
-}
+.sk-dash-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.sk-dash-client { font-size: 13px; font-weight: 600; color: var(--sk-text); }
+.sk-dash-meta { font-size: 11px; color: var(--sk-muted); }
 
 .sk-dash-footer {
-  border-top: 1px solid var(--sk-border);
-  padding: 8px 16px;
-  background: var(--sk-gray-bg);
+  border-top: 1px solid var(--sk-bd);
+  padding: 8px 16px; background: var(--sk-gray-bg);
 }
+.sk-dash-footer a { font-size: 12px; font-weight: 600; color: var(--sk-pri); text-decoration: none; }
+.sk-dash-footer a:hover { text-decoration: underline; }
 
-.sk-dash-footer a {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--sk-primary);
-  text-decoration: none;
-}
-
-.sk-dash-footer a:hover {
-  text-decoration: underline;
-}
-
-/* ── Admin Menu Brand Icon ─────────────────────── */
+/* ═══ ADMIN MENU BRAND ICON ══════════════════════ */
 
 #adminmenu .menu-icon-salon_service .wp-menu-image img {
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  opacity: 0.75;
-  transition: opacity 0.15s ease;
+  width: 20px; height: 20px; padding: 0;
+  opacity: .75; transition: opacity var(--sk-tr);
 }
-
 #adminmenu .menu-icon-salon_service.wp-has-current-submenu .wp-menu-image img,
 #adminmenu .menu-icon-salon_service:hover .wp-menu-image img {
-  opacity: 1;
-  filter: brightness(0) invert(1);
+  opacity: 1; filter: brightness(0) invert(1);
 }
 
-#adminmenu .menu-icon-salon_service div.wp-menu-image.svg {
-  background-size: 20px 20px;
-}
-
-/* ── Dashboard Widget Brand Icon ──────────────── */
+/* ═══ DASHBOARD HEADER ═══════════════════════════ */
 
 .sk-dash-header {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 600;
 }
+.sk-dash-header svg { flex-shrink: 0; color: #6366f1; }
 
-.sk-dash-header svg {
-  flex-shrink: 0;
-  color: #6366f1;
-}
-
-/* ── Dark Mode Compatibility ───────────────────── */
+/* ═══ DARK MODE ═══════════════════════════════════ */
 
 @media (prefers-color-scheme: dark) {
-  .wrap.wp-admin .sk-mb-sched-row {
-    background: #1f2937;
-    border-color: #374151;
-  }
+  .sk-mb-card { background: #1f2937; border-color: #374151; }
+  .sk-mb-card:hover { border-color: #4b5563; }
 
-  .wrap.wp-admin .sk-mb-sched-row--on {
-    background: #1e1b4b;
-    border-color: #6366f1;
-  }
+  .sk-ig { background: #111827; border-color: #374151; }
+  .sk-ig-prefix, .sk-ig-suffix { background: #1f2937; color: #9ca3af; border-color: #374151; }
+  .sk-ig input { color: #f3f4f6; }
 
-  .wrap.wp-admin .sk-mb-cb-label:hover {
-    background: #1f2937;
-  }
+  .sk-assign-bar { background: #1f2937; border-color: #374151; }
+  .sk-assign-search { background: #111827; color: #f3f4f6; border-color: #374151 !important; }
 
-  .wrap.wp-admin .sk-mb-cb-label--on {
-    background: rgba(99, 102, 241, 0.15);
-  }
+  .sk-assign-item:hover { background: #1f2937; }
+  .sk-assign-item--on { background: rgba(99,102,241,.15); }
+  .sk-assign-box { background: #111827; border-color: #4b5563; }
+  .sk-assign-name { color: #f3f4f6; }
+
+  .sk-sched-day { background: #1f2937; border-color: #374151; }
+  .sk-sched-head { background: #111827; }
+  .sk-sched-day--on .sk-sched-head { background: rgba(99,102,241,.12); }
+  .sk-sched-body { border-color: #374151; }
+  .sk-sched-fld input[type="time"] { background: #111827; color: #f3f4f6; border-color: #374151; }
+
+  .sk-fld-label { color: #f3f4f6; }
+  .sk-fld-note { color: #9ca3af; }
+
+  .wp-list-table thead th,
+  .wp-list-table thead td { background: #1f2937 !important; color: #9ca3af !important; border-color: #374151 !important; }
+  .wp-list-table tbody tr:nth-child(odd) { background: #111827; }
+  .wp-list-table tbody tr:nth-child(even) { background: #1a1a2e; }
+  .wp-list-table tbody tr:hover { background: #1f2937 !important; }
+  .wp-list-table tbody td { border-color: #2d2d3d !important; color: #f3f4f6; }
+  .wp-list-table a { color: #818cf8; }
+}
+
+/* ═══ RESPONSIVE ═══════════════════════════════════ */
+
+@media screen and (max-width: 782px) {
+  .sk-mb-grid { gap: 10px; }
+  .sk-mb-card { padding: 12px; }
+
+  .sk-ig { max-width: 100%; }
+
+  .sk-sched-row { flex-direction: column; gap: 6px; }
+  .sk-sched-fld input[type="time"] { width: 100%; }
+
+  .sk-assign-list { max-height: 200px; }
+
+  .sk-dash-stat { padding: 14px 12px 12px; }
+  .sk-dash-stat-num { font-size: 26px; }
 }

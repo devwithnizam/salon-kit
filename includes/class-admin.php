@@ -60,9 +60,9 @@ class Admin {
         if ( in_array( $screen->post_type, [ 'salon_service', 'salon_professional' ] ) ) : ?>
         <style>
             #sb_service_details .inside,
-            #sb_pro_schedule .inside { padding: 12px 14px; }
+            #sb_pro_schedule .inside { padding: 14px 16px; }
             #sb_service_pros .inside,
-            #sb_pro_services .inside { padding: 10px 12px; }
+            #sb_pro_services .inside { padding: 11px 11px 12px; }
             #sb_service_details .postbox-header,
             #sb_service_pros .postbox-header,
             #sb_pro_services .postbox-header,
