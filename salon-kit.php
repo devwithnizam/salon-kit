@@ -160,7 +160,7 @@ add_shortcode( 'salon_booking', function ( $atts ) {
     }
 
     ob_start();
-    echo '<div class="sb-wrap"' . $data_attrs . '>';
+    echo '<div id="salonBookingWrap" class="sb-wrap"' . $data_attrs . '>';
     include SK_PATH . 'templates/booking-form.php';
     echo '</div>';
     return ob_get_clean();

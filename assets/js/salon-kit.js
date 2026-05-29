@@ -69,11 +69,7 @@
         }
       }
     });
-    $$('[data-sk-required]').forEach(el => {
-      const key = el.dataset.skRequired.replace(/-/g, '_');
-      const show = vis(key);
-      el.style.display = show ? 'inline' : 'none';
-    });
+    // Required marks handled via data-sk-vis in template
   }
 
   // ── Navigation ──────────────────────────────

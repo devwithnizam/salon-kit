@@ -148,7 +148,7 @@ class Booking_Widget extends \Elementor\Widget_Base {
             $data_attrs .= ' data-' . str_replace( '_', '-', $key ) . '="' . esc_attr( $val ) . '"';
         }
 
-        echo '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $data_attrs . $custom_attrs . '>';
+        echo '<div id="salonBookingWrap" class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"' . $data_attrs . $custom_attrs . '>';
         include SK_PATH . 'templates/booking-form.php';
         echo '</div>';
     }
