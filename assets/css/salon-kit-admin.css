@@ -473,16 +473,24 @@
 
 /* ═══ DATA TABLE — Modern Professional ═══════════ */
 
-.fixed .column-sb_thumb { width: 44px; }
-.fixed .column-sb_price,
-.fixed .column-sb_dur,
-.fixed .column-sb_slots { width: 72px; }
-.fixed .column-sb_sched { width: 100px; }
-.fixed .column-booking_date,
-.fixed .column-booking_time,
-.fixed .column-booking_price { width: 90px; }
-.fixed .column-status { width: 80px; }
+/* ── Services — column widths ────────────────── */
+.post-type-salon_service.fixed .column-sb_thumb { width: 50px; }
+.post-type-salon_service.fixed .column-sb_price { width: 80px; }
+.post-type-salon_service.fixed .column-sb_dur   { width: 80px; }
+.post-type-salon_service.fixed .column-sb_slots { width: 90px; }
+.post-type-salon_service.fixed .column-sb_sched { width: 150px; }
 
+/* ── Bookings — column widths ─────────────────── */
+.post-type-salon_booking.fixed .column-title         { width: 100px; }
+.post-type-salon_booking.fixed .column-client_name   { width: 130px; }
+.post-type-salon_booking.fixed .column-client_email  { width: auto; }
+.post-type-salon_booking.fixed .column-service       { width: 130px; }
+.post-type-salon_booking.fixed .column-booking_date  { width: 110px; }
+.post-type-salon_booking.fixed .column-booking_time  { width: 90px; }
+.post-type-salon_booking.fixed .column-booking_price { width: 80px; }
+.post-type-salon_booking.fixed .column-status        { width: 90px; }
+
+/* ── Base table ───────────────────────────────── */
 .wp-list-table {
   border-collapse: separate !important;
   border-spacing: 0 !important;
@@ -496,14 +504,14 @@
 /* Header */
 .wp-list-table thead th,
 .wp-list-table thead td {
-  background: #fff !important;
+  background: #f8fafc !important;
   font-weight: 600 !important;
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: .05em;
   color: var(--sk-muted) !important;
-  border-bottom: 1px solid var(--sk-bd) !important;
-  padding: 11px 12px !important;
+  border-bottom: 2px solid var(--sk-bd) !important;
+  padding: 10px 12px !important;
   white-space: nowrap;
   line-height: 1.4;
 }
@@ -522,17 +530,32 @@
   background: #f1f5f9 !important;
 }
 
-/* Cell borders — clean separation */
+/* Cell borders & padding — consistent */
 .wp-list-table tbody td {
   border-bottom: 1px solid #f1f5f9 !important;
   padding: 10px 12px !important;
   vertical-align: middle;
 }
 
+/* ── Title column — let content breathe ─────── */
+.post-type-salon_service tbody td.column-title {
+  font-weight: 500;
+  color: var(--sk-text);
+}
+
+/* ── Email + service name truncation (bookings) ── */
+.post-type-salon_booking tbody td.column-client_email,
+.post-type-salon_booking tbody td.column-service {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Checkbox column */
 .wp-list-table .check-column {
-  width: 30px !important;
-  padding: 10px 4px 10px 12px !important;
+  width: 34px !important;
+  padding: 10px 2px 10px 12px !important;
   vertical-align: middle;
 }
 
@@ -553,8 +576,6 @@
 .wp-list-table .sorting-indicator {
   margin-top: 4px;
 }
-
-[class*="column-sb_"] { white-space: nowrap; }
 
 /* ── Table cells: existing sk-* classes ─────────── */
 
