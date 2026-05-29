@@ -1,0 +1,39 @@
+/* SalonKit Custom Icons — used in Elementor icon picker & templates */
+.sk-icon-scissors,
+.sk-icon-professional,
+.sk-icon-calendar,
+.sk-icon-clock,
+.sk-icon-confirmed,
+.sk-icon-arrow-left,
+.sk-icon-arrow-right,
+.sk-icon-chevron-left,
+.sk-icon-chevron-right,
+.sk-icon-spa,
+.sk-icon-nails,
+.sk-icon-massage,
+.sk-icon-skincare,
+.sk-icon-phone,
+.sk-icon-email,
+.sk-icon-user,
+.sk-icon-notes,
+.sk-icon-star,
+.sk-icon-location,
+.sk-icon-dollar,
+.sk-icon-sun,
+.sk-icon-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+}
+
+.sk-icon-logo::before {
+  content: '';
+  display: block;
+  width: 1em;
+  height: 1em;
+  background: currentColor;
+  mask: url('salonkit-icons.svg#salonkit-logo') center/contain no-repeat;
+  -webkit-mask: url('salonkit-icons.svg#salonkit-logo') center/contain no-repeat;
+}

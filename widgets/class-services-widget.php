@@ -14,7 +14,7 @@ class Services_Widget extends \Elementor\Widget_Base {
     }
 
     public function get_icon() {
-        return 'salonkit-scissors';
+        return 'sk-icon-scissors';
     }
 
     public function get_categories() {

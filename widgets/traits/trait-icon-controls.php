@@ -17,19 +17,19 @@ trait Icon_Controls {
         ] );
 
         $icons = [
-            'icon_service_card'  => [ 'Service Card Icon', 'salonkit-scissors' ],
-            'icon_pro_card'      => [ 'Professional Card Icon', 'salonkit-professional' ],
-            'icon_date'          => [ 'Date Icon', 'salonkit-calendar' ],
-            'icon_time'          => [ 'Time Icon', 'salonkit-clock' ],
-            'icon_summary_svc'   => [ 'Summary Service Icon', 'salonkit-scissors' ],
-            'icon_summary_pro'   => [ 'Summary Professional Icon', 'salonkit-professional' ],
-            'icon_summary_date'  => [ 'Summary Date Icon', 'salonkit-calendar' ],
-            'icon_summary_time'  => [ 'Summary Time Icon', 'salonkit-clock' ],
-            'icon_success'       => [ 'Success Checkmark', 'salonkit-confirmed' ],
-            'icon_back'          => [ 'Back Arrow', 'salonkit-arrow-left' ],
-            'icon_next'          => [ 'Next Arrow', 'salonkit-arrow-right' ],
-            'icon_cal_prev'      => [ 'Calendar Prev', 'salonkit-chevron-left' ],
-            'icon_cal_next'      => [ 'Calendar Next', 'salonkit-chevron-right' ],
+            'icon_service_card'  => [ 'Service Card Icon', 'sk-icon-scissors' ],
+            'icon_pro_card'      => [ 'Professional Card Icon', 'sk-icon-professional' ],
+            'icon_date'          => [ 'Date Icon', 'sk-icon-calendar' ],
+            'icon_time'          => [ 'Time Icon', 'sk-icon-clock' ],
+            'icon_summary_svc'   => [ 'Summary Service Icon', 'sk-icon-scissors' ],
+            'icon_summary_pro'   => [ 'Summary Professional Icon', 'sk-icon-professional' ],
+            'icon_summary_date'  => [ 'Summary Date Icon', 'sk-icon-calendar' ],
+            'icon_summary_time'  => [ 'Summary Time Icon', 'sk-icon-clock' ],
+            'icon_success'       => [ 'Success Checkmark', 'sk-icon-confirmed' ],
+            'icon_back'          => [ 'Back Arrow', 'sk-icon-arrow-left' ],
+            'icon_next'          => [ 'Next Arrow', 'sk-icon-arrow-right' ],
+            'icon_cal_prev'      => [ 'Calendar Prev', 'sk-icon-chevron-left' ],
+            'icon_cal_next'      => [ 'Calendar Next', 'sk-icon-chevron-right' ],
         ];
 
         foreach ( $icons as $key => $data ) {

@@ -28,7 +28,7 @@ class Booking_Widget extends \Elementor\Widget_Base {
     }
 
     public function get_icon() {
-        return 'salonkit-logo';
+        return 'sk-icon-logo';
     }
 
     public function get_categories() {

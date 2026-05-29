@@ -7,22 +7,33 @@ class Icons {
 
     public static function init() {
         add_filter( 'elementor/icons_manager/native', [ __CLASS__, 'register_icon_set' ] );
+        add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_icon_styles' ] );
+        add_action( 'elementor/editor/after_enqueue_styles', [ __CLASS__, 'enqueue_icon_styles' ] );
     }
 
     public static function register_icon_set( $icons ) {
         $icons['salonkit'] = [
             'name'          => 'salonkit',
             'label'         => 'SalonKit',
-            'url'           => '',
-            'enqueue'       => '',
-            'prefix'        => 'salonkit-',
+            'url'           => SK_URL . 'assets/icons/salonkit-icons.css',
+            'enqueue'       => SK_URL . 'assets/icons/salonkit-icons.css',
+            'prefix'        => 'sk-icon-',
             'displayPrefix' => '',
-            'labelIcon'     => 'salonkit-logo',
+            'labelIcon'     => 'sk-icon-logo',
             'ver'           => SK_VERSION,
             'fetchJson'     => SK_URL . 'assets/icons/salonkit-icons.json',
             'native'        => true,
         ];
         return $icons;
+    }
+
+    public static function enqueue_icon_styles() {
+        wp_enqueue_style(
+            'salonkit-icons',
+            SK_URL . 'assets/icons/salonkit-icons.css',
+            [],
+            SK_VERSION
+        );
     }
 
     public static function get_default_colors() {
