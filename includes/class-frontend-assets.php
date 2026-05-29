@@ -10,11 +10,14 @@ class Frontend_Assets {
     }
 
     public static function register_assets() {
+        // Google Font
+        wp_register_style( 'sk-google-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null );
+
         // CSS
         wp_register_style(
             'salon-kit-css',
             SK_URL . 'assets/css/salon-kit.css',
-            [],
+            [ 'sk-google-font' ],
             SK_VERSION
         );
 

@@ -9,7 +9,8 @@
   const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
   function initInstance(wrap) {
-    const debug = localStorage.getItem('sk_debug') === '1' || /[?&]sk_debug=1/.test(location.search);
+    let debug = false;
+    try { debug = localStorage.getItem('sk_debug') === '1' || /[?&]sk_debug=1/.test(location.search); } catch(e) {}
     function log(...args) { if (debug) console.log('[SK]', ...args); }
 
     const st = {
@@ -614,11 +615,13 @@
   }
 
   function init() {
-    if (typeof SalonKit === 'undefined') {
-      window.SalonKit = { services: [], ajax_url: '', nonce: '' };
-    }
-    const wraps = $$('.sb-wrap');
-    wraps.forEach(wrap => initInstance(wrap));
+    try {
+      if (typeof SalonKit === 'undefined') {
+        window.SalonKit = { services: [], ajax_url: '', nonce: '' };
+      }
+      const wraps = $$('.sb-wrap');
+      wraps.forEach(wrap => initInstance(wrap));
+    } catch(e) {}
   }
 
   if (document.readyState === 'loading') {
