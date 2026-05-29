@@ -40,6 +40,7 @@
   --sk-slot-full-bg:    #fef2f2;
   --sk-radius:          6px;
   --sk-radius-lg:       10px;
+  --sk-sh:              0 1px 3px rgba(0,0,0,.06);
 
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   max-width: 740px;
@@ -343,85 +344,84 @@
   font-size: 15px;
 }
 
-/* ── Summary Bar — Modern Pill Design ──── */
+/* ── Summary Bar — Modern Card ──────────── */
 
 .sb-summary {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
-.sb-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px 6px 10px;
-  background: var(--sk-summary-bg);
+  align-items: stretch;
+  background: var(--sk-bg);
   border: 1px solid var(--sk-border);
-  border-radius: 20px;
-  font-size: 13px;
-  line-height: 1.3;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  border-radius: var(--sk-radius-lg);
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: var(--sk-sh, 0 1px 3px rgba(0,0,0,.04));
 }
 
-.sb-pill:has(.sb-pill-value:not(:empty):not([data-sk-text])) {
-  border-color: var(--sk-primary);
-  background: var(--sk-primary-lite);
+.sb-summary-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  padding: 10px 14px;
+  min-width: 0;
 }
 
-.sb-pill-icon {
-  display: inline-flex;
+.sb-summary-icon {
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   background: var(--sk-primary-lite);
   flex-shrink: 0;
 }
-.sb-pill-icon svg {
-  width: 12px;
-  height: 12px;
+.sb-summary-icon svg {
+  width: 14px;
+  height: 14px;
   color: var(--sk-primary);
 }
 
-.sb-pill:has(.sb-pill-value:not(:empty):not([data-sk-text])) .sb-pill-icon {
-  background: var(--sk-primary);
-}
-.sb-pill:has(.sb-pill-value:not(:empty):not([data-sk-text])) .sb-pill-icon svg {
-  color: #fff;
+.sb-summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
 }
 
-.sb-pill-label {
-  font-size: 10px;
+.sb-summary-label {
+  font-size: 9.5px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: .04em;
   color: var(--sk-text-muted);
-  flex-shrink: 0;
+  line-height: 1.2;
 }
 
-.sb-pill:has(.sb-pill-value:not(:empty):not([data-sk-text])) .sb-pill-label {
-  color: var(--sk-primary);
-}
-
-.sb-pill-value {
+.sb-summary-value {
+  font-size: 12px;
   font-weight: 600;
   color: var(--sk-text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 160px;
+  line-height: 1.3;
 }
 
-.sb-pill:has(.sb-pill-value:not(:empty):not([data-sk-text])) .sb-pill-value {
+.sb-summary-sep {
+  width: 1px;
+  background: var(--sk-border);
+  flex-shrink: 0;
+  margin: 10px 0;
+}
+
+.sb-summary-col:has(.sb-summary-value:not(:empty):not([data-sk-text])) .sb-summary-value {
   color: var(--sk-primary);
 }
 
 .sk-summary-thumb {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 3px;
   object-fit: cover;
   vertical-align: middle;
@@ -1015,66 +1015,13 @@
   .sb-step-num { width: 30px; height: 30px; font-size: 13px; }
   .sb-service-card { padding: 12px; }
   .sb-time-grid { grid-template-columns: repeat(2, 1fr); }
-  .sb-summary { gap: 6px; }
-  .sk-services-grid:not(.sk-mobile-cols-2) { grid-template-columns: repeat(2, 1fr); }
-}
-
-.sk-mobile-cols-2 .sk-service-card {
-  break-inside: avoid;
-}
-
-@media (max-width: 640px) {
-  .sb-wrap {
-    padding: 16px 14px 20px;
-    border-radius: 6px;
-  }
-  .sb-step-label { display: none; }
-  .sb-step-line { margin-bottom: 0; }
-
-  .sb-services-grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-  .sb-service-card { padding: 10px; }
-  .sb-svc-thumb { width: 44px; height: 44px; }
-  .sb-svc-name { font-size: 14px; }
-  .sb-svc-price { font-size: 14px; }
-
-  .sb-time-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-  .sb-time-slot { padding: 10px 6px; font-size: 13px; }
-
-  .sb-calendar-wrap { padding: 12px; border-radius: 8px; }
-  .sb-cal-day { padding: 5px 0; font-size: 13px; border-radius: 6px; min-height: 34px; }
-  .sb-cal-weekdays span { font-size: 10px; }
-  .sb-cal-nav { width: 30px; height: 30px; }
-  .sb-cal-month-label { font-size: 15px; }
-
-  .sb-summary {
-    gap: 6px;
-  }
-  .sb-pill {
-    padding: 5px 10px 5px 8px;
-    font-size: 12px;
-  }
-  .sb-pill-icon {
-    width: 18px;
-    height: 18px;
-  }
-  .sb-pill-icon svg {
-    width: 10px;
-    height: 10px;
-  }
-  .sb-pill-label {
-    font-size: 9px;
-  }
-  .sb-pill-value {
-    font-size: 12px;
-  }
+  .sb-summary { flex-direction: column; gap: 0; }
+  .sb-summary-col { padding: 8px 12px; }
+  .sb-summary-icon { width: 24px; height: 24px; }
+  .sb-summary-icon svg { width: 12px; height: 12px; }
+  .sb-summary-label { font-size: 9px; }
+  .sb-summary-value { font-size: 11px; }
+  .sb-summary-sep { width: auto; height: 1px; margin: 0 12px; }
 
   .sb-panel-title { font-size: 18px; margin-bottom: 14px; }
   .sb-steps { margin-bottom: 18px; }
@@ -1118,12 +1065,11 @@
   .sb-btn-row { flex-direction: column; gap: 8px; }
   .sb-btn-back { min-width: 100%; }
 
-  .sb-summary { gap: 4px; }
-  .sb-pill { padding: 4px 8px 4px 6px; font-size: 11px; }
-  .sb-pill-icon { width: 16px; height: 16px; }
-  .sb-pill-icon svg { width: 9px; height: 9px; }
-  .sb-pill-label { font-size: 8px; }
-  .sb-pill-value { font-size: 11px; }
+  .sb-summary-col { padding: 6px 10px; gap: 6px; }
+  .sb-summary-icon { width: 20px; height: 20px; }
+  .sb-summary-icon svg { width: 10px; height: 10px; }
+  .sb-summary-label { font-size: 8px; }
+  .sb-summary-value { font-size: 10px; }
   .sb-panel-title { font-size: 16px; margin-bottom: 12px; }
 
   .sb-field-group input,
@@ -1140,7 +1086,6 @@
   .sb-panel.active { animation: none; }
   .sb-service-card,
   .sb-btn, .sb-time-slot,
-  .sb-step-num, .sb-step-line,
-  .sb-pill svg { transition: none; }
+  .sb-step-num, .sb-step-line { transition: none; }
   .sk-skeleton { animation: none; background: var(--sk-primary-lite); }
 }

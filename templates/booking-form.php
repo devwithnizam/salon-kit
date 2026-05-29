@@ -141,26 +141,34 @@ defined( 'ABSPATH' ) || exit;
   </div>
 
   <div class="sb-summary" id="sbSummaryBar" data-sk-vis="show-summary-bar">
-    <div class="sb-pill" id="summaryService">
-      <span class="sb-pill-icon">
+    <div class="sb-summary-col" id="summaryService">
+      <span class="sb-summary-icon">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16.862 4.487l1.687-1.688a2.25 2.25 0 113.182 3.182L10.582 17.13a4.5 4.5 0 01-1.897 1.13L6 19l.74-2.685a4.5 4.5 0 011.13-1.897L16.862 4.487z"/></svg>
       </span>
-      <span class="sb-pill-label" data-sk-text="step_label_1">Service</span>
-      <span class="sb-pill-value" id="sumService" data-sk-text="summary_service">Not selected</span>
+      <span class="sb-summary-content">
+        <span class="sb-summary-label" data-sk-text="step_label_1">Service</span>
+        <span class="sb-summary-value" id="sumService" data-sk-text="summary_service">Not selected</span>
+      </span>
     </div>
-    <div class="sb-pill" id="summaryDate">
-      <span class="sb-pill-icon">
+    <div class="sb-summary-sep"></div>
+    <div class="sb-summary-col" id="summaryDate">
+      <span class="sb-summary-icon">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
       </span>
-      <span class="sb-pill-label" data-sk-text="step_label_2">Date</span>
-      <span class="sb-pill-value" id="sumDate" data-sk-text="summary_date">Not selected</span>
+      <span class="sb-summary-content">
+        <span class="sb-summary-label" data-sk-text="step_label_2">Date</span>
+        <span class="sb-summary-value" id="sumDate" data-sk-text="summary_date">Not selected</span>
+      </span>
     </div>
-    <div class="sb-pill" id="summaryTime">
-      <span class="sb-pill-icon">
+    <div class="sb-summary-sep"></div>
+    <div class="sb-summary-col" id="summaryTime">
+      <span class="sb-summary-icon">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </span>
-      <span class="sb-pill-label" data-sk-text="step_label_3">Time</span>
-      <span class="sb-pill-value" id="sumTime" data-sk-text="summary_time">Not selected</span>
+      <span class="sb-summary-content">
+        <span class="sb-summary-label" data-sk-text="step_label_3">Time</span>
+        <span class="sb-summary-value" id="sumTime" data-sk-text="summary_time">Not selected</span>
+      </span>
     </div>
   </div>
 

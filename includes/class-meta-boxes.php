@@ -92,113 +92,85 @@ class Meta_Boxes {
         $exceptions = (array) get_post_meta( $post->ID, '_sb_exceptions', true );
         $days       = [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ];
         $labels     = [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ];
-        $full_names = [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday' ];
-        ?>
-        <p style="margin:0 0 14px;color:var(--sk-muted);font-size:13px;line-height:1.5;">
-            Set your weekly availability. Enable a day, then add one or more time segments (e.g. 09:00–12:00 and 13:00–17:00).
-            The system will generate bookable slots within each segment.
-        </p>
-        <div class="sk-sched" data-sk-sched>
-            <?php foreach ( $days as $i => $day ) :
-                $day_data  = $schedule[ $day ] ?? [];
-                $segments  = [];
-                $buffer    = 10;
-                $max_daily = 0;
-                $active    = false;
 
+        // Determine global buffer and max_daily (from first active day or defaults)
+        $global_buffer    = 10;
+        $global_max_daily = 0;
+        foreach ( $days as $d ) {
+            if ( ! empty( $schedule[ $d ] ) ) {
+                $day_data = $schedule[ $d ];
+                if ( isset( $day_data['segments'] ) ) {
+                    $global_buffer    = (int) ( $day_data['buffer'] ?? 10 );
+                    $global_max_daily = (int) ( $day_data['max_daily'] ?? 0 );
+                }
+                break;
+            }
+        }
+        ?>
+        <p style="margin:0 0 12px;color:var(--sk-muted);font-size:13px;line-height:1.5;">
+            Set the hours your service is available each day. Enable a day and pick your open &amp; close times.
+        </p>
+
+        <div class="sk-sched-globals">
+            <label class="sk-sched-global">
+                <span class="sk-sched-global-label">Buffer between slots</span>
+                <input type="number" name="sb_buffer" value="<?php echo esc_attr( $global_buffer ); ?>" min="0" max="60" step="5" class="sk-sched-global-num">
+                <span class="sk-unit-small">min</span>
+                <span class="sk-sched-global-hint">Clean-up time between appointments</span>
+            </label>
+            <label class="sk-sched-global">
+                <span class="sk-sched-global-label">Max per day</span>
+                <input type="number" name="sb_max_daily" value="<?php echo esc_attr( $global_max_daily ); ?>" min="0" max="200" class="sk-sched-global-num">
+                <span class="sk-sched-global-hint">0 = no limit</span>
+            </label>
+        </div>
+
+        <div class="sk-sched-tbl">
+            <div class="sk-sched-tbl-head">
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--day"></span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--status">Status</span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--time">Open</span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--time">Close</span>
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--copy"></span>
+            </div>
+            <?php foreach ( $days as $i => $day ) :
+                $day_data = $schedule[ $day ] ?? [];
+                $segments = [];
+                $active   = false;
                 if ( ! empty( $day_data ) ) {
                     if ( isset( $day_data['segments'] ) ) {
-                        $segments  = $day_data['segments'];
-                        $buffer    = (int) ( $day_data['buffer'] ?? 10 );
-                        $max_daily = (int) ( $day_data['max_daily'] ?? 0 );
-                        $active    = ! empty( $segments );
+                        $segments = $day_data['segments'];
                     } else {
                         $segments = $day_data;
-                        $active   = ! empty( $segments );
                     }
+                    $active = ! empty( $segments );
                 }
-
-                if ( $active && empty( $segments ) ) $active = false;
+                $start = ! empty( $segments[0]['start'] ) ? $segments[0]['start'] : '';
+                $end   = ! empty( $segments[0]['end'] )   ? $segments[0]['end']   : '';
             ?>
-            <div class="sk-sched-day<?php echo $active ? ' sk-sched-day--on' : ''; ?>" data-sk-day="<?php echo esc_attr( $day ); ?>">
-                <div class="sk-sched-head">
-                    <label class="sk-sched-toggle">
+            <div class="sk-sched-tbl-row<?php echo $active ? ' sk-sched-tbl-row--on' : ''; ?>" data-sk-day="<?php echo esc_attr( $day ); ?>">
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--day"><?php echo esc_html( $labels[ $i ] ); ?></span>
+                <label class="sk-sched-tbl-cell sk-sched-tbl-cell--status">
+                    <span class="sk-toggle">
                         <input type="checkbox" name="sb_schedule[<?php echo esc_attr( $day ); ?>][active]" value="1" <?php checked( $active ); ?> data-sk-toggle>
-                        <span class="sk-sched-track"><span class="sk-sched-knob"></span></span>
-                        <span class="sk-sched-abbr"><?php echo esc_html( $labels[ $i ] ); ?></span>
-                    </label>
-                    <div class="sk-sched-head-actions">
-                        <span class="sk-sched-range"><?php echo $active ? esc_html( $segments[0]['start'] ?? '--' ) . ' – ' . esc_html( $segments[0]['end'] ?? '--' ) . ( count( $segments ) > 1 ? ' <span class="sk-plus">+' . ( count( $segments ) - 1 ) . ' more</span>' : '' ) : 'Closed'; ?></span>
-                        <button type="button" class="sk-sched-copy-btn button-link" title="Copy this schedule to other days" data-sk-copy="<?php echo esc_attr( $day ); ?>">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                            <span class="sk-sched-copy-label">Copy</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="sk-sched-body">
-                    <div class="sk-sched-segments" data-sk-segments>
-                        <?php if ( ! empty( $segments ) ) : ?>
-                        <?php foreach ( $segments as $si => $seg ) : ?>
-                        <div class="sk-sched-seg" data-sk-seg="<?php echo esc_attr( $si ); ?>">
-                            <span class="sk-sched-seg-label">Time segment <?php echo $si + 1; ?></span>
-                            <label class="sk-sched-fld">
-                                <span>From</span>
-                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][start]" value="<?php echo esc_attr( $seg['start'] ); ?>" placeholder="09:00">
-                            </label>
-                            <span class="sk-sched-to">→</span>
-                            <label class="sk-sched-fld">
-                                <span>To</span>
-                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][<?php echo esc_attr( $si ); ?>][end]" value="<?php echo esc_attr( $seg['end'] ); ?>" placeholder="17:00">
-                            </label>
-                            <button type="button" class="sk-sched-remove-seg button-link" title="Remove this segment"<?php echo count( $segments ) <= 1 ? ' style="display:none"' : ''; ?>>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                            </button>
-                        </div>
-                        <?php endforeach; ?>
-                        <?php else : ?>
-                        <div class="sk-sched-seg" data-sk-seg="0" style="display:none">
-                            <span class="sk-sched-seg-label">Time segment 1</span>
-                            <label class="sk-sched-fld">
-                                <span>From</span>
-                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][0][start]" value="" placeholder="09:00">
-                            </label>
-                            <span class="sk-sched-to">→</span>
-                            <label class="sk-sched-fld">
-                                <span>To</span>
-                                <input type="time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][segments][0][end]" value="" placeholder="17:00">
-                            </label>
-                            <button type="button" class="sk-sched-remove-seg button-link" title="Remove this segment" style="display:none">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                            </button>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                    <button type="button" class="sk-sched-add-seg button-link">+ Add another time segment</button>
-
-                    <div class="sk-sched-options">
-                        <label class="sk-sched-opt">
-                            <span class="sk-sched-opt-label">Buffer between slots</span>
-                            <input type="number" name="sb_schedule[<?php echo esc_attr( $day ); ?>][buffer]" value="<?php echo esc_attr( $buffer ); ?>" min="0" max="60" step="5" class="sk-sched-num">
-                            <span class="sk-unit">minutes</span>
-                            <span class="sk-sched-hint">Clean-up time between appointments</span>
-                        </label>
-                        <label class="sk-sched-opt">
-                            <span class="sk-sched-opt-label">Max bookings per day</span>
-                            <input type="number" name="sb_schedule[<?php echo esc_attr( $day ); ?>][max_daily]" value="<?php echo esc_attr( $max_daily ); ?>" min="0" max="200" class="sk-sched-num">
-                            <span class="sk-sched-hint">0 = no limit</span>
-                        </label>
-                    </div>
-
-                    <div class="sk-sched-timeline" data-sk-timeline></div>
-                </div>
+                        <span class="sk-toggle-track"><span class="sk-toggle-knob"></span></span>
+                    </span>
+                </label>
+                <input type="time" class="sk-sched-tbl-cell sk-sched-tbl-cell--time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][start]" value="<?php echo esc_attr( $start ); ?>" placeholder="09:00">
+                <input type="time" class="sk-sched-tbl-cell sk-sched-tbl-cell--time" name="sb_schedule[<?php echo esc_attr( $day ); ?>][end]" value="<?php echo esc_attr( $end ); ?>" placeholder="17:00">
+                <span class="sk-sched-tbl-cell sk-sched-tbl-cell--copy">
+                    <button type="button" class="sk-sched-copy-btn" title="Copy to other days" data-sk-copy="<?php echo esc_attr( $day ); ?>">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    </button>
+                </span>
             </div>
             <?php endforeach; ?>
+        </div>
 
-            <div class="sk-sched-toolbar">
-                <button type="button" class="button button-small sk-sched-copy-mwf" data-sk-copy-mwf>Copy Mon–Wed–Fri</button>
-                <button type="button" class="button button-small sk-sched-copy-all" data-sk-copy-all>Copy Mon–Fri to all weekdays</button>
-                <span class="sk-sched-toolbar-hint">Use <strong>Copy</strong> on any day to apply its schedule to other days.</span>
-            </div>
+        <div class="sk-sched-toolbar">
+            <button type="button" class="button button-small" data-sk-copy-mwf>Apply Mon–Fri</button>
+            <button type="button" class="button button-small" data-sk-copy-all>Apply to all days</button>
+            <span class="sk-sched-toolbar-hint">Use <strong>Copy</strong> on any day to apply to specific days.</span>
         </div>
 
         <div class="sk-exceptions">
@@ -211,19 +183,15 @@ class Meta_Boxes {
                 <?php foreach ( $exceptions as $ei => $exc ) : ?>
                 <div class="sk-exc-row" data-sk-exc="<?php echo esc_attr( $ei ); ?>">
                     <input type="date" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][date]" value="<?php echo esc_attr( $exc['date'] ?? '' ); ?>">
-                    <input type="text" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][reason]" value="<?php echo esc_attr( $exc['reason'] ?? '' ); ?>" placeholder="e.g. Christmas, maintenance" class="sk-exc-reason">
-                    <button type="button" class="sk-btn-remove button-link" title="Remove exception">
+                    <input type="text" name="sb_exceptions[<?php echo esc_attr( $ei ); ?>][reason]" value="<?php echo esc_attr( $exc['reason'] ?? '' ); ?>" placeholder="e.g. Christmas" class="sk-exc-reason">
+                    <button type="button" class="sk-btn-remove" title="Remove">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                 </div>
                 <?php endforeach; ?>
             </div>
-            <button type="button" class="button button-small sk-sched-add-exc" data-sk-add-exc>+ Add exception date</button>
+            <button type="button" class="button button-small" data-sk-add-exc>+ Add exception</button>
         </div>
-        <p style="margin:10px 0 0;color:var(--sk-muted);font-size:12px;font-style:italic;">
-            <strong>How it works:</strong> On each enabled day, the system divides your time segments into slots matching the service duration.
-            Buffer adds cleanup time between slots. Max daily limit caps the total slots offered. Exception dates are fully blocked.
-        </p>
         <?php
     }
 
@@ -236,25 +204,26 @@ class Meta_Boxes {
         update_post_meta( $post_id, '_sb_duration', absint( $_POST['sb_duration'] ?? 0 ) );
         update_post_meta( $post_id, '_sb_slot_qty', max( 1, absint( $_POST['sb_slot_qty'] ?? 1 ) ) );
 
-        // Save schedule
+        // Global buffer & max_daily
+        $global_buffer    = min( 60, max( 0, absint( $_POST['sb_buffer'] ?? 10 ) ) );
+        $global_max_daily = max( 0, absint( $_POST['sb_max_daily'] ?? 0 ) );
+        update_post_meta( $post_id, '_sb_buffer',    $global_buffer );
+        update_post_meta( $post_id, '_sb_max_daily', $global_max_daily );
+
+        // Save schedule (backward-compatible format)
         $schedule = [];
         $raw = isset( $_POST['sb_schedule'] ) ? $_POST['sb_schedule'] : [];
         foreach ( [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ] as $day ) {
-            if ( ! empty( $raw[ $day ]['active'] ) ) {
-                $day_raw_segments = $raw[ $day ]['segments'] ?? [];
-                $segments = [];
-                foreach ( $day_raw_segments as $s ) {
-                    $start = sanitize_text_field( $s['start'] ?? '' );
-                    $end   = sanitize_text_field( $s['end'] ?? '' );
-                    if ( $start && $end ) $segments[] = [ 'start' => $start, 'end' => $end ];
-                }
-                if ( ! empty( $segments ) ) {
-                    $schedule[ $day ] = [
-                        'segments'  => $segments,
-                        'buffer'    => min( 60, max( 0, absint( $raw[ $day ]['buffer'] ?? 10 ) ) ),
-                        'max_daily' => max( 0, absint( $raw[ $day ]['max_daily'] ?? 0 ) ),
-                    ];
-                }
+            $start  = sanitize_text_field( $raw[ $day ]['start'] ?? '' );
+            $end    = sanitize_text_field( $raw[ $day ]['end'] ?? '' );
+            $active = ! empty( $raw[ $day ]['active'] );
+
+            if ( $active && $start && $end ) {
+                $schedule[ $day ] = [
+                    'segments'  => [ [ 'start' => $start, 'end' => $end ] ],
+                    'buffer'    => $global_buffer,
+                    'max_daily' => $global_max_daily,
+                ];
             }
         }
         update_post_meta( $post_id, '_sb_schedule', $schedule );
