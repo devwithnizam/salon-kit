@@ -119,6 +119,31 @@ class Services_Widget extends \Elementor\Widget_Base {
             'default' => 'ASC',
         ] );
 
+        $this->add_control( 'show_book_btn', [
+            'label'        => 'Show Book Now Button',
+            'type'         => \Elementor\Controls_Manager::SWITCHER,
+            'label_on'     => 'Show',
+            'label_off'    => 'Hide',
+            'default'      => 'yes',
+            'separator'    => 'before',
+        ] );
+
+        $this->add_control( 'book_btn_text', [
+            'label'       => 'Button Text',
+            'type'        => \Elementor\Controls_Manager::TEXT,
+            'default'     => 'Book Now',
+            'condition'   => [ 'show_book_btn' => 'yes' ],
+        ] );
+
+        $this->add_control( 'booking_page_url', [
+            'label'       => 'Booking Page URL',
+            'type'        => \Elementor\Controls_Manager::URL,
+            'placeholder' => 'https://example.com/booking/',
+            'description' => 'Leave empty for same-page smooth scroll to the booking form (uses #booking).',
+            'dynamic'     => [ 'active' => true ],
+            'condition'   => [ 'show_book_btn' => 'yes' ],
+        ] );
+
         $this->end_controls_section();
     }
 
@@ -407,9 +432,16 @@ class Services_Widget extends \Elementor\Widget_Base {
         if ( ! wp_style_is( 'salon-kit-css', 'enqueued' ) ) {
             wp_enqueue_style( 'salon-kit-css' );
         }
+        if ( ! wp_script_is( 'salon-kit-js', 'enqueued' ) ) {
+            wp_enqueue_script( 'salon-kit-js' );
+        }
 
         $style = "grid-template-columns: repeat($cols, 1fr);";
         echo '<div class="' . esc_attr( implode( ' ', $classes ) ) . '" style="' . $style . '">';
+
+        $show_btn  = $settings['show_book_btn'] === 'yes';
+        $btn_text  = $settings['book_btn_text'] ?: 'Book Now';
+        $btn_url   = ! empty( $settings['booking_page_url']['url'] ) ? $settings['booking_page_url']['url'] : '';
 
         foreach ( $services as $svc ) :
             $thumb_id  = get_post_thumbnail_id( $svc->ID );
@@ -417,6 +449,12 @@ class Services_Widget extends \Elementor\Widget_Base {
             $price     = get_post_meta( $svc->ID, '_sb_price', true );
             $duration  = (int) get_post_meta( $svc->ID, '_sb_duration', true );
             $desc      = get_the_excerpt( $svc );
+
+            if ( $show_btn ) {
+                $link = $btn_url
+                    ? add_query_arg( 'sk_service', $svc->ID, $btn_url )
+                    : '#booking?sk_service=' . $svc->ID;
+            }
             ?>
             <div class="sk-service-card">
                 <?php if ( $settings['show_image'] !== 'no' && $thumb_url ) : ?>
@@ -429,13 +467,16 @@ class Services_Widget extends \Elementor\Widget_Base {
                     <?php endif; ?>
                 </div>
                 <div class="sk-service-footer">
-                    <?php if ( $settings['show_price'] !== 'no' && $price ) : ?>
-                        <span class="price">$<?php echo esc_html( $price ); ?></span>
-                    <?php else : ?>
-                        <span></span>
-                    <?php endif; ?>
-                    <?php if ( $settings['show_duration'] !== 'no' && $duration ) : ?>
-                        <span class="duration"><?php echo esc_html( $duration ); ?> min</span>
+                    <div class="sk-svc-footer-info">
+                        <?php if ( $settings['show_price'] !== 'no' && $price ) : ?>
+                            <span class="price">$<?php echo esc_html( $price ); ?></span>
+                        <?php endif; ?>
+                        <?php if ( $settings['show_duration'] !== 'no' && $duration ) : ?>
+                            <span class="duration"><?php echo esc_html( $duration ); ?> min</span>
+                        <?php endif; ?>
+                    </div>
+                    <?php if ( $show_btn ) : ?>
+                        <a href="<?php echo esc_url( $link ); ?>" class="sk-book-btn" data-svc-id="<?php echo esc_attr( $svc->ID ); ?>"><?php echo esc_html( $btn_text ); ?></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -461,8 +502,13 @@ class Services_Widget extends \Elementor\Widget_Base {
                     <# if (settings.show_description !== 'no') { #><p>Short description of this service appears here.</p><# } #>
                 </div>
                 <div class="sk-service-footer">
-                    <# if (settings.show_price !== 'no') { #><span class="price">$35</span><# } #>
-                    <# if (settings.show_duration !== 'no') { #><span class="duration">45 min</span><# } #>
+                    <div class="sk-svc-footer-info">
+                        <# if (settings.show_price !== 'no') { #><span class="price">$35</span><# } #>
+                        <# if (settings.show_duration !== 'no') { #><span class="duration">45 min</span><# } #>
+                    </div>
+                    <# if (settings.show_book_btn === 'yes') { #>
+                    <a href="#" class="sk-book-btn">{{ settings.book_btn_text || 'Book Now' }}</a>
+                    <# } #>
                 </div>
             </div>
             <# } #>

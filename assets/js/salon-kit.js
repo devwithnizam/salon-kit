@@ -164,7 +164,7 @@
 
     function selectService(svc, card) {
       wrap.querySelectorAll('.sb-service-card').forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
+      if (card) card.classList.add('active');
       st.service = svc;
       st.date = '';
       st.dateLabel = '';
@@ -173,6 +173,44 @@
       const btn = panel ? panel.querySelector('.sb-btn-next') : null;
       if (btn) btn.disabled = false;
       updateSummary();
+    }
+
+    function selectServiceById(id) {
+      const svc = st.services.find(s => String(s.id) === String(id));
+      if (!svc) {
+        log('selectServiceById: no service found for id', id);
+        return false;
+      }
+      const card = wrap.querySelector('.sb-service-card[data-id="' + id + '"]');
+      selectService(svc, card);
+      log('selectServiceById: selected', svc.name);
+      return true;
+    }
+
+    function getServiceIdFromUrl() {
+      const params = new URLSearchParams(location.search);
+      if (params.has('sk_service')) return params.get('sk_service');
+      const hash = location.hash;
+      if (hash.startsWith('#booking')) {
+        const qs = hash.indexOf('?') !== -1 ? hash.split('?')[1] : '';
+        if (qs) {
+          const hp = new URLSearchParams(qs);
+          if (hp.has('sk_service')) return hp.get('sk_service');
+        }
+      }
+      return null;
+    }
+
+    function tryAutoSelectService() {
+      const id = getServiceIdFromUrl();
+      if (id) {
+        log('tryAutoSelectService: found service id in URL:', id);
+        if (selectServiceById(id)) {
+          st.time = '';
+          initCalendar();
+          goTo(2);
+        }
+      }
     }
 
     function initCalendar() {
@@ -503,6 +541,8 @@
 
     renderServices();
 
+    tryAutoSelectService();
+
     // ── Event binding ──
     function bind(panelNum, selector, event, fn) {
       const panel = getPanel(panelNum);
@@ -612,7 +652,32 @@
         }
       }
     });
+
+    // ── URL-based auto-selection on hash change ──
+    window.addEventListener('hashchange', () => {
+      const id = getServiceIdFromUrl();
+      if (id) {
+        log('hashchange: service id found:', id);
+        if (selectServiceById(id)) {
+          st.time = '';
+          initCalendar();
+          goTo(2);
+        }
+      }
+    });
   }
+
+  // ── Global click handler for same-page "Book Now" buttons ──
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('.sk-book-btn');
+    if (!btn) return;
+    var href = btn.getAttribute('href');
+    if (href && href.charAt(0) === '#') {
+      e.preventDefault();
+      var form = document.querySelector('.sb-wrap');
+      if (form) form.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
 
   function init() {
     try {
