@@ -206,6 +206,7 @@
       if (id) {
         log('tryAutoSelectService: found service id in URL:', id);
         selectServiceById(id);
+        if (wrap) wrap.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
@@ -655,6 +656,7 @@
       if (id) {
         log('hashchange: service id found:', id);
         selectServiceById(id);
+        if (wrap) wrap.scrollIntoView({ behavior: 'smooth' });
       }
     });
   }
@@ -667,8 +669,11 @@
     if (href && href.charAt(0) === '#') {
       e.preventDefault();
       location.hash = href;
-      var form = document.querySelector('.sb-wrap');
-      if (form) form.scrollIntoView({ behavior: 'smooth' });
+      // Extract base anchor name (before ?) for smooth scroll target
+      var anchor = href.indexOf('?') !== -1 ? href.split('?')[0] : href;
+      var target = document.querySelector(anchor);
+      if (!target) target = document.querySelector('.sb-wrap');
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
     }
   });
 

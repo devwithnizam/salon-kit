@@ -440,6 +440,22 @@ class Services_Widget extends \Elementor\Widget_Base {
         $show_btn  = $settings['show_book_btn'] === 'yes';
         $btn_text  = $settings['book_btn_text'] ?: 'Book Now';
         $btn_url   = ! empty( $settings['booking_page_url']['url'] ) ? $settings['booking_page_url']['url'] : '';
+        if ( $btn_url === '#' ) {
+            $btn_url = '';
+        }
+
+        // Cross-page link attributes
+        $target    = ! empty( $settings['booking_page_url']['is_external'] ) ? '_blank' : '';
+        $btn_rel   = [];
+        if ( ! empty( $settings['booking_page_url']['nofollow'] ) ) {
+            $btn_rel[] = 'nofollow';
+        }
+        if ( $target === '_blank' ) {
+            $btn_rel[] = 'noopener';
+            $btn_rel[] = 'noreferrer';
+        }
+        $rel_str   = ! empty( $btn_rel ) ? ' rel="' . esc_attr( implode( ' ', $btn_rel ) ) . '"' : '';
+        $target_str = $target ? ' target="' . $target . '"' : '';
 
         foreach ( $services as $svc ) :
             $thumb_id  = get_post_thumbnail_id( $svc->ID );
@@ -474,7 +490,7 @@ class Services_Widget extends \Elementor\Widget_Base {
                         <?php endif; ?>
                     </div>
                     <?php if ( $show_btn ) : ?>
-                        <a href="<?php echo esc_url( $link ); ?>" class="sk-book-btn" data-svc-id="<?php echo esc_attr( $svc->ID ); ?>"><?php echo esc_html( $btn_text ); ?></a>
+                        <a href="<?php echo $btn_url ? esc_url( $link ) : esc_attr( $link ); ?>" class="sk-book-btn" data-svc-id="<?php echo esc_attr( $svc->ID ); ?>"<?php echo $target_str . $rel_str; ?>><?php echo esc_html( $btn_text ); ?></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -488,6 +504,10 @@ class Services_Widget extends \Elementor\Widget_Base {
         <#
         var cols = settings.columns || 3;
         var style = 'grid-template-columns: repeat(' + cols + ', 1fr);';
+
+        var show_btn = settings.show_book_btn === 'yes';
+        var btn_text = settings.book_btn_text || 'Book Now';
+        var btn_url  = settings.booking_page_url && settings.booking_page_url.url ? settings.booking_page_url.url : '';
         #>
         <div class="sk-services-grid" style="{{ style }}">
             <# for (var i = 0; i < 3; i++) { #>
@@ -504,8 +524,8 @@ class Services_Widget extends \Elementor\Widget_Base {
                         <# if (settings.show_price !== 'no') { #><span class="price">$35</span><# } #>
                         <# if (settings.show_duration !== 'no') { #><span class="duration">45 min</span><# } #>
                     </div>
-                    <# if (settings.show_book_btn === 'yes') { #>
-                    <a href="#" class="sk-book-btn">{{ settings.book_btn_text || 'Book Now' }}</a>
+                    <# if (show_btn) { #>
+                    <a href="{{ btn_url ? btn_url + '?sk_service=' + i : '#booking?sk_service=' + i }}" class="sk-book-btn">{{ btn_text }}</a>
                     <# } #>
                 </div>
             </div>
