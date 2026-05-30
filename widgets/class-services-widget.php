@@ -410,8 +410,6 @@ class Services_Widget extends \Elementor\Widget_Base {
 
         $cols = (int) $settings['columns'] ?: 3;
 
-        $this->add_render_attribute( 'grid', 'class', 'sk-services-grid' );
-
         $classes = [ 'sk-services-grid' ];
         if ( ! empty( $settings['css_classes'] ) ) {
             $classes[] = esc_attr( $settings['css_classes'] );
