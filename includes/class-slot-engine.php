@@ -80,12 +80,24 @@ class Slot_Engine {
 
         $result = array_values( $result );
 
+        // Filter out past time slots for today
+        if ( $date === current_time( 'Y-m-d' ) ) {
+            $now = current_time( 'H:i' );
+            $result = array_values( array_filter( $result, function ( $s ) use ( $now ) {
+                return $s['time'] > $now;
+            } ) );
+        }
+
         set_transient( $cached_key, $result, HOUR_IN_SECONDS );
 
         return $result;
     }
 
     public static function is_slot_available( $service_id, $date, $time ) {
+        // Check if the slot time has passed for today
+        if ( $date === current_time( 'Y-m-d' ) && $time <= current_time( 'H:i' ) ) {
+            return false;
+        }
         $slot_qty = max( 1, (int) get_post_meta( $service_id, '_sb_slot_qty', true ) ?: 1 );
         $booked   = Bookings_DB::count_for_slot( $service_id, $date, $time );
         return $booked < $slot_qty;

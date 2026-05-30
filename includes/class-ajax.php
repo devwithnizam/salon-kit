@@ -64,6 +64,11 @@ class Ajax {
             wp_send_json_error( [ 'message' => 'Invalid email address.' ] );
         }
 
+        // Reject past time slots for today
+        if ( $date === current_time( 'Y-m-d' ) && $time <= current_time( 'H:i' ) ) {
+            wp_send_json_error( [ 'message' => 'This time has already passed.' ] );
+        }
+
         global $wpdb;
         $table = $wpdb->prefix . Bookings_DB::TABLE;
 
