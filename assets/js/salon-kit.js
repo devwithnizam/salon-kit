@@ -246,9 +246,10 @@
         const dd = String(d).padStart(2, '0');
         const isoStr = st.calYear + '-' + m + '-' + dd;
 
-        if (cellDate.toDateString() === today.toDateString()) cell.classList.add('today');
+        var isToday = cellDate.toDateString() === today.toDateString();
+        if (isToday) cell.classList.add('today');
 
-        if (cellDate < today || cellDate.getDay() === 0) {
+        if (!isToday && (cellDate < today || cellDate.getDay() === 0)) {
           cell.classList.add('disabled');
         } else {
           if (isoStr === st.date) cell.classList.add('selected');
