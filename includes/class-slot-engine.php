@@ -22,7 +22,8 @@ class Slot_Engine {
 
         $day_data = $schedule[ $day_of_week ];
 
-        $buffer    = (int) get_post_meta( $service_id, '_sb_buffer', true ) ?: 10;
+        $buffer_meta = get_post_meta( $service_id, '_sb_buffer', true );
+        $buffer      = $buffer_meta !== '' ? (int) $buffer_meta : 10;
         $max_daily = (int) get_post_meta( $service_id, '_sb_max_daily', true );
 
         $segments = isset( $day_data['segments'] ) ? $day_data['segments'] : $day_data;

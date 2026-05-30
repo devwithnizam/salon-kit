@@ -52,7 +52,8 @@ class Meta_Boxes {
         $slot_qty = get_post_meta( $post->ID, '_sb_slot_qty', true ) ?: 1;
         $slot_interval = get_post_meta( $post->ID, '_sb_slot_interval', true ) ?: '';
         $sort_order = $post->menu_order;
-        $break_time = get_post_meta( $post->ID, '_sb_buffer', true ) ?: 10;
+        $break_meta = get_post_meta( $post->ID, '_sb_buffer', true );
+        $break_time = $break_meta !== '' ? (int) $break_meta : 10;
 
         $currency = apply_filters( 'sk_currency_symbol', '$' );
         ?>
