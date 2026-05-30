@@ -32,12 +32,134 @@ class Settings {
     public static function add_submenu() {
         add_submenu_page(
             'edit.php?post_type=salon_service',
+            'How to Use',
+            'How to Use',
+            'manage_options',
+            'sk-how-to-use',
+            [ __CLASS__, 'render_help_page' ]
+        );
+
+        add_submenu_page(
+            'edit.php?post_type=salon_service',
             'Email Settings',
             'Email Settings',
             'manage_options',
             'sk-email-settings',
             [ __CLASS__, 'render_page' ]
         );
+    }
+
+    public static function render_help_page() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e( 'How to Use SalonKit', 'salon-kit' ); ?></h1>
+
+            <style>
+                .sk-help { max-width: 800px; }
+                .sk-help h2 { font-size: 1.4em; margin: 28px 0 8px; padding-bottom: 6px; border-bottom: 1px solid #c3c4c7; }
+                .sk-help h3 { font-size: 1.1em; margin: 18px 0 4px; }
+                .sk-help p, .sk-help li { font-size: 13px; line-height: 1.6; }
+                .sk-help ul { margin: 4px 0 12px 20px; list-style: disc; }
+                .sk-help code { background: #f0f0f1; padding: 2px 6px; border-radius: 3px; font-size: 12px; }
+                .sk-help .sk-help-box { background: #f0f6fc; border: 1px solid #c5d9ed; border-radius: 4px; padding: 14px 18px; margin: 12px 0; }
+                .sk-help .sk-help-box code { background: #e2edf7; }
+            </style>
+
+            <div class="sk-help">
+
+                <h2>1. Adding Services</h2>
+                <p>Go to <strong>SalonKit → Services</strong> → <strong>Add New</strong>. Each service can have:</p>
+                <ul>
+                    <li><strong>Title &amp; Description</strong> — Name and short excerpt</li>
+                    <li><strong>Price</strong> — e.g. <code>45</code> (currency symbol appears automatically)</li>
+                    <li><strong>Duration</strong> — e.g. <code>60</code> for 60 minutes</li>
+                    <li><strong>Slot Capacity</strong> — how many clients can book the same time slot (default: 1)</li>
+                    <li><strong>Slot Interval</strong> — minutes between each available time slot (default: 30)</li>
+                    <li><strong>Break Time</strong> — padding between bookings (default: 10 min)</li>
+                    <li><strong>Availability Schedule</strong> — which days/hours the service is offered</li>
+                    <li><strong>Featured Image</strong> — optional thumbnail</li>
+                </ul>
+
+                <h2>2. Display the Booking Form</h2>
+                <h3>Option A: Shortcode</h3>
+                <p>Place <code>[salon_booking]</code> on any page or post. The form renders as a 4-step wizard (Service → Date → Time → Details).</p>
+
+                <h3>Option B: Elementor Widget</h3>
+                <p>Drag the <strong>"Salon Booking Form"</strong> widget into any Elementor page. Customize all text, colors, typography, visibility, and spacing directly from the Elementor panel — no coding needed.</p>
+
+                <div class="sk-help-box">
+                    <strong>Customization tip:</strong> You can hide any step or field using the <strong>Visibility</strong> section in the Elementor widget settings. For example, disable the phone field or hide the summary bar.
+                </div>
+
+                <h2>3. Display Services as a Grid</h2>
+                <p>Use the <strong>"Salon Services Grid"</strong> Elementor widget to showcase your services anywhere on the site. It displays service cards with image, name, description, price, and duration.</p>
+                <p>Each card can have a <strong>"Book Now"</strong> button (enabled by default). Configure it in the widget's Content panel:</p>
+                <ul>
+                    <li><strong>Show Book Now Button</strong> — toggle on/off</li>
+                    <li><strong>Button Text</strong> — customize the label (default: "Book Now")</li>
+                    <li><strong>Booking Page URL</strong> — controls how the button behaves (see next section)</li>
+                </ul>
+
+                <h2>4. URL Auto-Selection (Book Now Feature)</h2>
+                <p>When a "Book Now" button is clicked, the service is automatically pre-selected in the booking form. Two modes available:</p>
+
+                <h3>Same-Page Mode (no URL entered)</h3>
+                <p>Leave the <strong>"Booking Page URL"</strong> empty. Clicking "Book Now" will:</p>
+                <ol style="margin:4px 0 12px 20px;list-style:decimal;">
+                    <li>Set the URL hash to <code>#booking?sk_service=SERVICE_ID</code></li>
+                    <li>Smooth-scroll to the booking form on the same page</li>
+                    <li>Auto-select the service (user stays on Step 1, "Next" button becomes active)</li>
+                </ol>
+
+                <h3>Cross-Page Mode (URL entered)</h3>
+                <p>Enter your booking page URL in the <strong>"Booking Page URL"</strong> field. Clicking "Book Now" navigates to that page with <code>?sk_service=SERVICE_ID</code> appended, and the service is auto-selected on load.</p>
+
+                <h3>Manual Linking</h3>
+                <p>You can link to the booking form from anywhere using these formats:</p>
+                <ul>
+                    <li>Query parameter: <code>/booking-page/?sk_service=42</code></li>
+                    <li>URL hash (same-page): <code>#booking?sk_service=42</code></li>
+                </ul>
+
+                <div class="sk-help-box">
+                    <strong>Note:</strong> The service ID is the WordPress post ID. You can find it in the URL when editing a service (e.g., <code>post=42</code>).
+                </div>
+
+                <h2>5. Managing Bookings</h2>
+                <p>All bookings appear under <strong>SalonKit → Bookings</strong>. Each row shows the client name, email, service, date, time, price, and status. The status can be <strong>confirmed</strong>, <strong>pending</strong>, or <strong>cancelled</strong>.</p>
+                <p>A <strong>Today's Bookings</strong> dashboard widget shows upcoming appointments for the current day.</p>
+
+                <h2>6. Email Notifications</h2>
+                <p>Configure email settings under <strong>SalonKit → Email Settings</strong>. You can:</p>
+                <ul>
+                    <li>Set the sender name and email address</li>
+                    <li>Enable/disable customer confirmation emails</li>
+                    <li>Enable/disable admin notification emails</li>
+                    <li>Customize subject lines using available tags: <code>{client_name}</code>, <code>{service_name}</code>, <code>{booking_date}</code>, <code>{booking_time}</code>, <code>{booking_id}</code></li>
+                </ul>
+
+                <h2>7. Developer Hooks</h2>
+                <table class="wp-list-table widefat striped" style="margin-top:6px;">
+                    <thead><tr><th>Hook</th><th>Type</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>sk_currency_symbol</code></td><td>filter</td><td>Change the currency symbol. Default: <code>$</code></td></tr>
+                    </tbody>
+                </table>
+                <p style="margin-top:6px;">Example: <code>add_filter( 'sk_currency_symbol', function() { return '€'; } );</code></p>
+
+                <h2>8. Troubleshooting</h2>
+                <ul>
+                    <li><strong>No services show in the form?</strong> — Make sure you've published at least one service with a price and schedule.</li>
+                    <li><strong>No time slots available?</strong> — Check the service's availability schedule and ensure today isn't blocked by a date exception.</li>
+                    <li><strong>Book Now button does nothing?</strong> — Ensure the booking form widget or <code>[salon_booking]</code> shortcode exists on the page (for same-page mode) or that the booking page URL is correct (for cross-page mode).</li>
+                    <li><strong>Icon controls missing in Elementor?</strong> — The custom icon library was removed in v2.2. The form uses clean inline SVGs instead.</li>
+                    <li><strong>Auto-selection not working?</strong> — Verify the service ID in the URL exists and is published.</li>
+                </ul>
+
+            </div>
+        </div>
+        <?php
     }
 
     public static function register_settings() {
