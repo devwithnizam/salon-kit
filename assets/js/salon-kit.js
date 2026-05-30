@@ -489,6 +489,14 @@
       if (phoneEl) phoneEl.value = '';
       if (notesEl) notesEl.value = '';
 
+      // Reset submit button in case it was left in loading state
+      const submitBtn = wrap.querySelector('.sb-btn-submit');
+      if (submitBtn) {
+        submitBtn.classList.remove('loading');
+        submitBtn.textContent = text('submit_btn') || 'Confirm Booking';
+        submitBtn.disabled = false;
+      }
+
       const panel1 = getPanel(1);
       const btn = panel1 ? panel1.querySelector('.sb-btn-next') : null;
       if (btn) btn.disabled = true;
