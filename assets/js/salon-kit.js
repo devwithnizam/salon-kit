@@ -205,11 +205,7 @@
       const id = getServiceIdFromUrl();
       if (id) {
         log('tryAutoSelectService: found service id in URL:', id);
-        if (selectServiceById(id)) {
-          st.time = '';
-          initCalendar();
-          goTo(2);
-        }
+        selectServiceById(id);
       }
     }
 
@@ -658,11 +654,7 @@
       const id = getServiceIdFromUrl();
       if (id) {
         log('hashchange: service id found:', id);
-        if (selectServiceById(id)) {
-          st.time = '';
-          initCalendar();
-          goTo(2);
-        }
+        selectServiceById(id);
       }
     });
   }

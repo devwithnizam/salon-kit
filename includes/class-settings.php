@@ -62,7 +62,37 @@ class Settings {
         $settings = self::get();
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e( 'Email Settings', 'salon-kit' ); ?></h1>
+            <h1><?php esc_html_e( 'SalonKit — Booking System', 'salon-kit' ); ?></h1>
+
+            <div class="notice notice-info" style="padding:12px 20px;margin:10px 0 20px;">
+                <h2 style="margin:0 0 10px;font-size:1.3em;">How to Use SalonKit</h2>
+
+                <h3 style="margin:16px 0 4px;">1. Add Services</h3>
+                <p>Go to <strong>SalonKit → Services</strong> → Add New. Set the name, price, duration, slot capacity, and availability schedule for each service. You can also upload a thumbnail image.</p>
+
+                <h3 style="margin:16px 0 4px;">2. Display the Booking Form</h3>
+                <p><strong>Shortcode:</strong> Use <code>[salon_booking]</code> on any page or post.</p>
+                <p><strong>Elementor:</strong> Drag the "Salon Booking Form" widget into any page built with Elementor. All text, colors, visibility, and typography are customizable from the Elementor panel.</p>
+
+                <h3 style="margin:16px 0 4px;">3. Display Services (Standalone Grid)</h3>
+                <p>Use the <strong>"Salon Services Grid"</strong> Elementor widget to show service cards anywhere on your site. Each card can have a "Book Now" button that links to the booking form with the service pre-selected.</p>
+
+                <h3 style="margin:16px 0 4px;">4. URL Auto-Selection (Book Now Buttons)</h3>
+                <p>When a "Book Now" button is clicked, the service is automatically selected in the booking form. Two modes:</p>
+                <ul style="margin:4px 0 4px 20px;list-style:disc;">
+                    <li><strong>Same page:</strong> Leave the "Booking Page URL" empty in the Services Grid widget. Clicking "Book Now" scrolls to the booking form on the same page and selects the service.</li>
+                    <li><strong>Cross page:</strong> Set a "Booking Page URL" in the Services Grid widget. Clicking navigates to that page with <code>?sk_service=SERVICE_ID</code> in the URL and the service is auto-selected.</li>
+                </ul>
+                <p>You can also link manually: <code>/your-booking-page/?sk_service=42</code> or use the hash <code>#booking?sk_service=42</code>.</p>
+
+                <h3 style="margin:16px 0 4px;">5. Customization</h3>
+                <p>Use the <code>sk_currency_symbol</code> filter to change the currency symbol. Example:</p>
+                <p><code>add_filter( 'sk_currency_symbol', function() { return '€'; } );</code></p>
+
+                <p style="margin-top:14px;">Manage email notifications using the settings below.</p>
+            </div>
+
+            <h2 style="margin-top:24px;"><?php esc_html_e( 'Email Settings', 'salon-kit' ); ?></h2>
             <form method="post" action="options.php">
                 <?php settings_fields( 'sk_email_settings_group' ); ?>
                 <table class="form-table" role="presentation">
