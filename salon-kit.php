@@ -65,7 +65,6 @@ add_action( 'plugins_loaded', function () {
     \SalonKit\Slot_Engine::init();
     \SalonKit\Ajax::init();
     \SalonKit\Admin::init();
-    \SalonKit\Icons::init();
     \SalonKit\Frontend_Assets::init();
     \SalonKit\Settings::init();
     \SalonKit\Email::init();

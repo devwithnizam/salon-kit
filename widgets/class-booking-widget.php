@@ -8,7 +8,6 @@ require_once SK_PATH . 'widgets/traits/trait-visibility-controls.php';
 require_once SK_PATH . 'widgets/traits/trait-color-controls.php';
 require_once SK_PATH . 'widgets/traits/trait-typography-controls.php';
 require_once SK_PATH . 'widgets/traits/trait-spacing-controls.php';
-require_once SK_PATH . 'widgets/traits/trait-icon-controls.php';
 require_once SK_PATH . 'widgets/traits/trait-image-controls.php';
 
 class Booking_Widget extends \Elementor\Widget_Base {
@@ -18,7 +17,6 @@ class Booking_Widget extends \Elementor\Widget_Base {
     use Color_Controls;
     use Typography_Controls;
     use Spacing_Controls;
-    use Icon_Controls;
     use Image_Controls;
 
     public function get_name() {
@@ -52,7 +50,6 @@ class Booking_Widget extends \Elementor\Widget_Base {
     protected function register_controls() {
         $this->register_text_controls();
         $this->register_visibility_controls();
-        $this->register_icon_controls();
         $this->register_image_controls();
         $this->register_color_controls();
         $this->register_typography_controls();
