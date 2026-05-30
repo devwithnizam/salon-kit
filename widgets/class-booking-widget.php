@@ -209,7 +209,8 @@ class Booking_Widget extends \Elementor\Widget_Base {
         ];
         $data = [];
         foreach ( $keys as $k ) {
-            $data[ $k ] = $s[ $k ] ?? 'yes';
+            $val = $s[ $k ] ?? 'yes';
+            $data[ $k ] = $val === 'yes' ? 'yes' : 'no';
         }
         return $data;
     }

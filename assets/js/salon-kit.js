@@ -246,11 +246,12 @@
         const dd = String(d).padStart(2, '0');
         const isoStr = st.calYear + '-' + m + '-' + dd;
 
+        if (cellDate.toDateString() === today.toDateString()) cell.classList.add('today');
+
         if (cellDate < today || cellDate.getDay() === 0) {
           cell.classList.add('disabled');
         } else {
           if (isoStr === st.date) cell.classList.add('selected');
-          if (cellDate.toDateString() === today.toDateString()) cell.classList.add('today');
           cell.tabIndex = 0;
 
           cell.addEventListener('click', () => {
