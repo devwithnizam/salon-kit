@@ -666,6 +666,7 @@
     var href = btn.getAttribute('href');
     if (href && href.charAt(0) === '#') {
       e.preventDefault();
+      location.hash = href;
       var form = document.querySelector('.sb-wrap');
       if (form) form.scrollIntoView({ behavior: 'smooth' });
     }
